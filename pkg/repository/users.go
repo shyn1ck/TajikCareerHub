@@ -29,12 +29,12 @@ func GetUserByID(id uint) (user models.User, err error) {
 
 func GetUserByUserName(username string) (user models.User, err error) {
 	log.Printf("repository.GetUserByUserName: Fetching user by username %v from the database...\n", username)
-	err = db.GetDBConn().Where("username = ?", username).First(&user).Error
+	err = db.GetDBConn().Where("user_name = ?", username).First(&user).Error
 	if err != nil {
-		log.Printf("repository.GetUserByUserName: Failed to fetch user by username %v. Error: %v\n", username, err)
+		log.Printf("repository.GetUserByUserName: Failed to fetch user by user_name %v. Error: %v\n", username, err)
 		return user, err
 	}
-	log.Printf("repository.GetUserByUserName: Successfully fetched user by username %v.\n", username)
+	log.Printf("repository.GetUserByUserName: Successfully fetched user by user_name %v.\n", username)
 	return user, nil
 }
 
@@ -86,7 +86,7 @@ func CheckUserExists(username string, email string) (exists bool, err error) {
 	log.Printf("repository.CheckUserExists: Checking if user with username %v or email %v exists...\n", username, email)
 	var count int64
 	err = db.GetDBConn().Model(&models.User{}).
-		Where("username = ? OR email = ?", username, email).
+		Where("user_name = ? OR email = ?", username, email).
 		Count(&count).Error
 	if err != nil {
 		log.Printf("repository.CheckUserExists: Error checking user existence. Error: %v\n", err)
