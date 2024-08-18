@@ -56,7 +56,7 @@ TajikCareerHub is a job listing website for Tajikistan, developed using Go with 
    DB_PORT=5432
    DB_USER=postgres
    DB_PASSWORD=2003
-   DB_NAME=tajik_career_hub
+   DB_NAME=tajik_career_hub_db
    ```
 
 ## Running the Application
