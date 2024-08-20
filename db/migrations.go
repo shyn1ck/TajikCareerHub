@@ -1,9 +1,9 @@
 package db
 
 import (
+	"TajikCareerHub/logger"
 	"TajikCareerHub/models"
 	"errors"
-	"log"
 )
 
 func Migrate() error {
@@ -11,11 +11,18 @@ func Migrate() error {
 		return errors.New("database connection is not initialized")
 	}
 
-	err := dbConn.AutoMigrate(&models.Job{}, &models.User{})
+	err := dbConn.AutoMigrate(
+		&models.Job{},
+		&models.User{},
+		&models.Application{},
+		&models.Company{},
+		&models.Favorite{},
+		&models.JobCategory{},
+	)
 	if err != nil {
 		return errors.New("failed to migrate database schema: " + err.Error())
 	}
 
-	log.Println("Database migration completed successfully")
+	logger.Info.Println("Database migration completed successfully")
 	return nil
 }

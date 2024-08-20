@@ -9,5 +9,6 @@ type Job struct {
 	Company       Company     `json:"company" gorm:"foreignKey:CompanyID"`
 	JobCategoryID uint        `json:"job_category_id" gorm:"not null"`
 	JobCategory   JobCategory `json:"job_category" gorm:"foreignKey:JobCategoryID"`
+	Salary        string      `json:"salary" gorm:"type:varchar(50)"`
 	BaseModel
 }

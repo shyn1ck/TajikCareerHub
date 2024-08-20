@@ -3,7 +3,7 @@ package main
 import (
 	"TajikCareerHub/db"
 	"TajikCareerHub/logger"
-	"log"
+	"TajikCareerHub/pkg/controllers"
 )
 
 func main() {
@@ -12,16 +12,19 @@ func main() {
 		return
 	}
 	if err := db.ConnectToDB(); err != nil {
-		log.Fatalf("Failed to connect to database: %v", err)
+		logger.Error.Fatalf("Failed to connect to database: %v", err)
 	}
 	defer func() {
 		if err := db.CloseDBConn(); err != nil {
-			log.Printf("Error closing database connection: %v", err)
+			logger.Error.Printf("Error closing database connection: %v", err)
 		}
 	}()
-
 	if err := db.Migrate(); err != nil {
-		log.Fatalf("Failed to run database migrations: %v", err)
+		logger.Error.Fatalf("Failed to run database migrations: %v", err)
+	}
+	err = controllers.RunRoutes()
+	if err != nil {
+		logger.Error.Fatalf("Failed to run routes: %v", err)
 	}
 
 }

@@ -1,0 +1,179 @@
+2024/08/20 16:35:42.388226 Database migration completed successfully
+2024/08/20 18:11:51.112758 Database migration completed successfully
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /ping                     --> TajikCareerHub/pkg/controllers.PingPong (3 handlers)
+[GIN-debug] GET    /users/                   --> TajikCareerHub/pkg/controllers.GetAllUsers (3 handlers)
+[GIN-debug] GET    /users/:id                --> TajikCareerHub/pkg/controllers.GetUserByID (3 handlers)
+[GIN-debug] POST   /users/                   --> TajikCareerHub/pkg/controllers.CreateUser (3 handlers)
+[GIN-debug] PUT    /users/:id                --> TajikCareerHub/pkg/controllers.UpdateUser (3 handlers)
+[GIN-debug] DELETE /users/:id                --> TajikCareerHub/pkg/controllers.DeleteUser (3 handlers)
+[GIN-debug] PUT    /users/:id/password/      --> TajikCareerHub/pkg/controllers.UpdateUserPassword (3 handlers)
+[GIN-debug] GET    /users/existence/         --> TajikCareerHub/pkg/controllers.CheckUserExists (3 handlers)
+[GIN-debug] [WARNING] You trusted all proxies, this is NOT safe. We recommend you to set a value.
+Please check https://pkg.go.dev/github.com/gin-gonic/gin#readme-don-t-trust-all-proxies for details.
+[GIN-debug] Listening and serving HTTP on :8181
+2024/08/20 18:13:19.225930 [repository.GetAllUsers] Successfully retrieved all users.
+2024/08/20 18:13:19.225930 [controllers.GetAllUsers] Client IP: ::1 - Successfully retrieved all users.
+[GIN] 2024/08/20 - 18:13:19 | 200 |      1.5258ms |             ::1 | GET      "/users/"
+2024/08/20 18:13:56.125028 [repository.GetUserByID] Fetching user by ID 1...
+[GIN] 2024/08/20 - 18:13:56 | 404 |       2.186ms |             ::1 | GET      "/users/1"
+2024/08/20 18:15:36.542446 [repository.GetUserByUserName] Fetching user by username shyn1ck...
+2024/08/20 18:15:36.542985 [repository.CreateUser] Creating a new user...
+2024/08/20 18:15:36.580464 [repository.CreateUser] User created successfully.
+2024/08/20 18:15:36.580464 [controllers.CreateUser] Client IP: ::1 - User shyn1ck created successfully.
+[GIN] 2024/08/20 - 18:15:36 | 201 |     38.3445ms |             ::1 | POST     "/users/"
+2024/08/20 18:15:50.684077 Database migration completed successfully
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /ping                     --> TajikCareerHub/pkg/controllers.PingPong (3 handlers)
+[GIN-debug] GET    /users/                   --> TajikCareerHub/pkg/controllers.GetAllUsers (3 handlers)
+[GIN-debug] GET    /users/:id                --> TajikCareerHub/pkg/controllers.GetUserByID (3 handlers)
+[GIN-debug] POST   /users/                   --> TajikCareerHub/pkg/controllers.CreateUser (3 handlers)
+[GIN-debug] PUT    /users/:id                --> TajikCareerHub/pkg/controllers.UpdateUser (3 handlers)
+[GIN-debug] DELETE /users/:id                --> TajikCareerHub/pkg/controllers.DeleteUser (3 handlers)
+[GIN-debug] PUT    /users/:id/password/      --> TajikCareerHub/pkg/controllers.UpdateUserPassword (3 handlers)
+[GIN-debug] GET    /users/existence/         --> TajikCareerHub/pkg/controllers.CheckUserExists (3 handlers)
+[GIN-debug] [WARNING] You trusted all proxies, this is NOT safe. We recommend you to set a value.
+Please check https://pkg.go.dev/github.com/gin-gonic/gin#readme-don-t-trust-all-proxies for details.
+[GIN-debug] Listening and serving HTTP on :8181
+2024/08/20 18:17:29.850627 [repository.GetUserByID] Fetching user by ID 1...
+2024/08/20 18:17:29.851186 [repository.GetUserByID] Successfully fetched user by ID 1.
+2024/08/20 18:17:29.851186 [controllers.GetUserByID] Client IP: ::1 - Successfully retrieved user with ID 1.
+[GIN] 2024/08/20 - 18:17:29 | 200 |      1.0835ms |             ::1 | GET      "/users/1"
+2024/08/20 18:20:01.253905 [repository.GetUserByID] Fetching user by ID 0...
+[GIN] 2024/08/20 - 18:20:01 | 400 |      1.5607ms |             ::1 | PUT      "/users/1"
+2024/08/20 18:21:31.831789 Database migration completed successfully
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /ping                     --> TajikCareerHub/pkg/controllers.PingPong (3 handlers)
+[GIN-debug] GET    /users/                   --> TajikCareerHub/pkg/controllers.GetAllUsers (3 handlers)
+[GIN-debug] GET    /users/:id                --> TajikCareerHub/pkg/controllers.GetUserByID (3 handlers)
+[GIN-debug] POST   /users/                   --> TajikCareerHub/pkg/controllers.CreateUser (3 handlers)
+[GIN-debug] PUT    /users/:id                --> TajikCareerHub/pkg/controllers.UpdateUser (3 handlers)
+[GIN-debug] DELETE /users/:id                --> TajikCareerHub/pkg/controllers.DeleteUser (3 handlers)
+[GIN-debug] PUT    /users/:id/password/      --> TajikCareerHub/pkg/controllers.UpdateUserPassword (3 handlers)
+[GIN-debug] GET    /users/existence/         --> TajikCareerHub/pkg/controllers.CheckUserExists (3 handlers)
+[GIN-debug] [WARNING] You trusted all proxies, this is NOT safe. We recommend you to set a value.
+Please check https://pkg.go.dev/github.com/gin-gonic/gin#readme-don-t-trust-all-proxies for details.
+[GIN-debug] Listening and serving HTTP on :8181
+2024/08/20 18:21:40.757856 [repository.GetAllUsers] Successfully retrieved all users.
+2024/08/20 18:21:40.757856 [controllers.GetAllUsers] Client IP: ::1 - Successfully retrieved all users.
+[GIN] 2024/08/20 - 18:21:40 | 200 |      1.0023ms |             ::1 | GET      "/users/"
+2024/08/20 18:21:57.155267 [repository.GetUserByID] Fetching user by ID 1...
+2024/08/20 18:21:57.155267 [repository.GetUserByID] Successfully fetched user by ID 1.
+2024/08/20 18:21:57.155267 [controllers.GetUserByID] Client IP: ::1 - Successfully retrieved user with ID 1.
+[GIN] 2024/08/20 - 18:21:57 | 200 |            0s |             ::1 | GET      "/users/1"
+2024/08/20 18:24:43.869272 [repository.GetUserByUserName] Fetching user by username hypar...
+[GIN] 2024/08/20 - 18:24:43 | 400 |      1.5053ms |             ::1 | POST     "/users/"
+2024/08/20 18:25:02.801870 [repository.GetUserByUserName] Fetching user by username hypar...
+2024/08/20 18:25:02.802141 [repository.CreateUser] Creating a new user...
+2024/08/20 18:25:02.803805 [repository.CreateUser] User created successfully.
+2024/08/20 18:25:02.803914 [controllers.CreateUser] Client IP: ::1 - User hypar created successfully.
+[GIN] 2024/08/20 - 18:25:02 | 201 |      2.0434ms |             ::1 | POST     "/users/"
+2024/08/20 18:26:22.181210 [repository.GetUserByID] Fetching user by ID 0...
+[GIN] 2024/08/20 - 18:26:22 | 400 |      1.5599ms |             ::1 | PUT      "/users/2"
+2024/08/20 18:26:33.409930 [repository.GetUserByID] Fetching user by ID 0...
+[GIN] 2024/08/20 - 18:26:33 | 400 |      1.2773ms |             ::1 | PUT      "/users/2"
+2024/08/20 18:29:02.652392 [repository.GetUserByID] Fetching user by ID 0...
+[GIN] 2024/08/20 - 18:29:02 | 400 |         674µs |             ::1 | PUT      "/users/2"
+2024/08/20 18:29:08.095938 Database migration completed successfully
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /ping                     --> TajikCareerHub/pkg/controllers.PingPong (3 handlers)
+[GIN-debug] GET    /users/                   --> TajikCareerHub/pkg/controllers.GetAllUsers (3 handlers)
+[GIN-debug] GET    /users/:id                --> TajikCareerHub/pkg/controllers.GetUserByID (3 handlers)
+[GIN-debug] POST   /users/                   --> TajikCareerHub/pkg/controllers.CreateUser (3 handlers)
+[GIN-debug] PUT    /users/:id                --> TajikCareerHub/pkg/controllers.UpdateUser (3 handlers)
+[GIN-debug] DELETE /users/:id                --> TajikCareerHub/pkg/controllers.DeleteUser (3 handlers)
+[GIN-debug] PUT    /users/:id/password/      --> TajikCareerHub/pkg/controllers.UpdateUserPassword (3 handlers)
+[GIN-debug] GET    /users/existence/         --> TajikCareerHub/pkg/controllers.CheckUserExists (3 handlers)
+[GIN-debug] [WARNING] You trusted all proxies, this is NOT safe. We recommend you to set a value.
+Please check https://pkg.go.dev/github.com/gin-gonic/gin#readme-don-t-trust-all-proxies for details.
+[GIN-debug] Listening and serving HTTP on :8181
+2024/08/20 18:29:11.681559 [repository.GetUserByID] Fetching user by ID 2...
+2024/08/20 18:29:11.682411 [repository.GetUserByID] Successfully fetched user by ID 2.
+2024/08/20 18:29:11.682411 [repository.UpdateUser] Updating user with ID 2...
+2024/08/20 18:29:11.684010 [repository.UpdateUser] User with ID 2 updated successfully.
+2024/08/20 18:29:11.684158 [controllers.UpdateUser] Client IP: ::1 - User with ID 2 updated successfully.
+[GIN] 2024/08/20 - 18:29:11 | 200 |       2.961ms |             ::1 | PUT      "/users/2"
+2024/08/20 18:30:06.348386 [repository.DeleteUser] Soft deleting user with ID 2...
+[GIN] 2024/08/20 - 18:30:06 | 404 |     39.8206ms |             ::1 | DELETE   "/users/2"
+2024/08/20 18:31:40.876118 Database migration completed successfully
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /ping                     --> TajikCareerHub/pkg/controllers.PingPong (3 handlers)
+[GIN-debug] GET    /users/                   --> TajikCareerHub/pkg/controllers.GetAllUsers (3 handlers)
+[GIN-debug] GET    /users/:id                --> TajikCareerHub/pkg/controllers.GetUserByID (3 handlers)
+[GIN-debug] POST   /users/                   --> TajikCareerHub/pkg/controllers.CreateUser (3 handlers)
+[GIN-debug] PUT    /users/:id                --> TajikCareerHub/pkg/controllers.UpdateUser (3 handlers)
+[GIN-debug] DELETE /users/:id                --> TajikCareerHub/pkg/controllers.DeleteUser (3 handlers)
+[GIN-debug] PUT    /users/:id/password/      --> TajikCareerHub/pkg/controllers.UpdateUserPassword (3 handlers)
+[GIN-debug] GET    /users/existence/         --> TajikCareerHub/pkg/controllers.CheckUserExists (3 handlers)
+[GIN-debug] [WARNING] You trusted all proxies, this is NOT safe. We recommend you to set a value.
+Please check https://pkg.go.dev/github.com/gin-gonic/gin#readme-don-t-trust-all-proxies for details.
+[GIN-debug] Listening and serving HTTP on :8181
+2024/08/20 18:31:53.169827 [repository.DeleteUser] Soft deleting user with ID 2...
+2024/08/20 18:31:53.171828 [repository.DeleteUser] User with ID 2 successfully soft deleted.
+2024/08/20 18:31:53.171828 [controllers.DeleteUser] Client IP: ::1 - User with ID 2 soft deleted successfully.
+[GIN] 2024/08/20 - 18:31:53 | 200 |      2.0017ms |             ::1 | DELETE   "/users/2"
+2024/08/20 18:32:53.091655 [repository.GetUserByID] Fetching user by ID 2...
+2024/08/20 18:32:53.092305 [repository.GetUserByID] Successfully fetched user by ID 2.
+2024/08/20 18:32:53.092305 [repository.UpdateUser] Updating user with ID 2...
+2024/08/20 18:32:53.092942 [repository.UpdateUser] User with ID 2 updated successfully.
+2024/08/20 18:32:53.092942 [controllers.UpdateUser] Client IP: ::1 - User with ID 2 updated successfully.
+[GIN] 2024/08/20 - 18:32:53 | 200 |      1.6083ms |             ::1 | PUT      "/users/2"
+[GIN] 2024/08/20 - 18:33:54 | 404 |            0s |             ::1 | PATCH    "/users/1/password/"
+[GIN] 2024/08/20 - 18:34:01 | 400 |       309.8µs |             ::1 | PUT      "/users/1/password/"
+[GIN] 2024/08/20 - 18:34:09 | 400 |       727.7µs |             ::1 | PUT      "/users/1/password/"
+2024/08/20 18:36:11.706309 Database migration completed successfully
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /ping                     --> TajikCareerHub/pkg/controllers.PingPong (3 handlers)
+[GIN-debug] GET    /users/                   --> TajikCareerHub/pkg/controllers.GetAllUsers (3 handlers)
+[GIN-debug] GET    /users/:id                --> TajikCareerHub/pkg/controllers.GetUserByID (3 handlers)
+[GIN-debug] POST   /users/                   --> TajikCareerHub/pkg/controllers.CreateUser (3 handlers)
+[GIN-debug] PUT    /users/:id                --> TajikCareerHub/pkg/controllers.UpdateUser (3 handlers)
+[GIN-debug] DELETE /users/:id                --> TajikCareerHub/pkg/controllers.DeleteUser (3 handlers)
+[GIN-debug] PUT    /users/:id/password/      --> TajikCareerHub/pkg/controllers.UpdateUserPassword (3 handlers)
+[GIN-debug] GET    /users/existence/         --> TajikCareerHub/pkg/controllers.CheckUserExists (3 handlers)
+[GIN-debug] [WARNING] You trusted all proxies, this is NOT safe. We recommend you to set a value.
+Please check https://pkg.go.dev/github.com/gin-gonic/gin#readme-don-t-trust-all-proxies for details.
+[GIN-debug] Listening and serving HTTP on :8181
+[GIN] 2024/08/20 - 18:36:15 | 400 |       514.3µs |             ::1 | PUT      "/users/1/password/"
+[GIN] 2024/08/20 - 18:36:26 | 400 |            0s |             ::1 | PUT      "/users/2/password/"
+2024/08/20 18:39:09.851285 [repository.UpdateUserPassword] Updating password for user with ID 2...
+2024/08/20 18:39:09.852900 [repository.UpdateUserPassword] Password for user with ID 2 updated successfully.
+2024/08/20 18:39:09.853457 [controllers.UpdateUserPassword] Client IP: ::1 - Password for user with ID 2 updated successfully.
+[GIN] 2024/08/20 - 18:39:09 | 200 |      2.1725ms |             ::1 | PUT      "/users/2/password/"
+[GIN-debug] redirecting request 301: /users/existence/ --> /users/existence/?username=shyn1ck&email=hy.parvizjon@gmail.com%0A
+2024/08/20 18:41:59.185306 [repository.CheckUserExists] Checking if user with username shyn1ck or email hy.parvizjon@gmail.com
+ exists...
+2024/08/20 18:41:59.186197 [repository.CheckUserExists] User existence check complete. Exists: true
+2024/08/20 18:41:59.186715 [controllers.CheckUserExists] Client IP: ::1 - User existence check complete for username shyn1ck and email hy.parvizjon@gmail.com
+. Exists: true
+[GIN] 2024/08/20 - 18:41:59 | 200 |       1.409ms |             ::1 | GET      "/users/existence/?username=shyn1ck&email=hy.parvizjon@gmail.com%0A"
