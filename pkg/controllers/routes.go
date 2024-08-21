@@ -8,7 +8,14 @@ import (
 func RunRoutes() error {
 	r := gin.Default()
 	r.GET("/ping", PingPong)
-	userGroup := r.Group("/users")
+
+	auth := r.Group("/auth")
+	{
+		auth.POST("/sign-up", SignUp)
+		auth.POST("/sign-in", SignIn)
+	}
+
+	userGroup := r.Group("/users").Use(checkUserAuthentication)
 	{
 		userGroup.GET("/", GetAllUsers)
 		userGroup.GET("/:id", GetUserByID)
@@ -16,7 +23,7 @@ func RunRoutes() error {
 		userGroup.PUT("/:id", UpdateUser)
 		userGroup.DELETE("/:id", DeleteUser)
 	}
-	passwordGroup := r.Group("/users/:id/password")
+	passwordGroup := r.Group("/users/:id/password").Use(checkUserAuthentication)
 	{
 		passwordGroup.PUT("/", UpdateUserPassword)
 	}
@@ -24,7 +31,8 @@ func RunRoutes() error {
 	{
 		existenceGroup.GET("/", CheckUserExists)
 	}
-	jobGroup := r.Group("/jobs")
+
+	jobGroup := r.Group("/jobs").Use(checkUserAuthentication)
 	{
 		jobGroup.GET("/", GetAllJobs)
 		jobGroup.GET("/:id", GetJobByID)
@@ -36,6 +44,44 @@ func RunRoutes() error {
 		jobGroup.PUT("/:id/salary", UpdateJobSalary)
 	}
 
+	applicationGroup := r.Group("/applications").Use(checkUserAuthentication)
+	{
+		applicationGroup.GET("/", GetAllApplications)
+		applicationGroup.GET("/:id", GetApplicationByID)
+		applicationGroup.POST("/", AddApplication)
+		applicationGroup.PUT("/:id", UpdateApplication)
+		applicationGroup.DELETE("/:id", DeleteApplication)
+		applicationGroup.GET("/user/:userID", GetApplicationsByUserID)
+		applicationGroup.GET("/job/:jobID", GetApplicationsByJobID)
+	}
+
+	companyGroup := r.Group("/companies").Use(checkUserAuthentication)
+	{
+		companyGroup.GET("/", GetAllCompanies)
+		companyGroup.GET("/:id", GetCompanyByID)
+		companyGroup.POST("/", AddCompany)
+		companyGroup.PUT("/:id", UpdateCompany)
+		companyGroup.DELETE("/:id", DeleteCompany)
+	}
+
+	favoriteGroup := r.Group("/favorites").Use(checkUserAuthentication)
+	{
+		favoriteGroup.GET("/user/:userID", GetFavoritesByUserID)
+		favoriteGroup.GET("/user/:userID/job/:jobID", GetFavoriteByUserIDAndJobID)
+		favoriteGroup.POST("/", AddFavorite)
+		favoriteGroup.DELETE("/", RemoveFavorite)
+		favoriteGroup.GET("/exists/user/:userID/job/:jobID", CheckFavoriteExists)
+	}
+
+	jobCategoryGroup := r.Group("/jobcategories").Use(checkUserAuthentication)
+	{
+		jobCategoryGroup.GET("/", GetAllJobCategories)
+		jobCategoryGroup.GET("/:id", GetJobCategoryByID)
+		jobCategoryGroup.POST("/", CreateJobCategory)
+		jobCategoryGroup.PUT("/:id", UpdateJobCategory)
+		jobCategoryGroup.DELETE("/:id", DeleteJobCategory)
+	}
+
 	port := ":8181"
 	err := r.Run(port)
 	if err != nil {
@@ -43,6 +89,7 @@ func RunRoutes() error {
 	}
 	return nil
 }
+
 func PingPong(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"message": "pong",

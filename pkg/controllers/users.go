@@ -11,9 +11,9 @@ import (
 
 func GetAllUsers(c *gin.Context) {
 	ip := c.ClientIP()
+	logger.Info.Printf("[controllers.GetAllUsers] Client IP: %s - Request to get all users.\n", ip)
 	users, err := service.GetAllUsers()
 	if err != nil {
-		logger.Error.Printf("[controllers.GetAllUsers] Client IP: %s - Error retrieving all users: %v\n", ip, err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve users"})
 		return
 	}
@@ -24,15 +24,14 @@ func GetAllUsers(c *gin.Context) {
 func GetUserByID(c *gin.Context) {
 	ip := c.ClientIP()
 	idStr := c.Param("id")
+	logger.Info.Printf("[controllers.GetUserByID] Client IP: %s - Request to get user by ID: %s\n", ip, idStr)
 	id, err := strconv.ParseUint(idStr, 10, 32)
 	if err != nil {
-		logger.Error.Printf("[controllers.GetUserByID] Client IP: %s - Invalid user ID: %v\n", ip, err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
 		return
 	}
 	user, err := service.GetUserByID(uint(id))
 	if err != nil {
-		logger.Error.Printf("[controllers.GetUserByID] Client IP: %s - Error retrieving user with ID %v: %v\n", ip, id, err)
 		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
 		return
 	}
@@ -44,12 +43,11 @@ func CreateUser(c *gin.Context) {
 	ip := c.ClientIP()
 	var user models.User
 	if err := c.ShouldBindJSON(&user); err != nil {
-		logger.Error.Printf("[controllers.CreateUser] Client IP: %s - Invalid input: %v\n", ip, err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
 		return
 	}
+	logger.Info.Printf("[controllers.CreateUser] Client IP: %s - Request to create user: %v\n", ip, user)
 	if err := service.CreateUser(user); err != nil {
-		logger.Error.Printf("[controllers.CreateUser] Client IP: %s - Error creating user %v: %v\n", ip, user.UserName, err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -61,26 +59,23 @@ func UpdateUser(c *gin.Context) {
 	ip := c.ClientIP()
 	var user models.User
 	id := c.Param("id")
+	logger.Info.Printf("[controllers.UpdateUser] Client IP: %s - Request to update user with ID: %s\n", ip, id)
 	if id == "" {
-		logger.Error.Printf("[controllers.UpdateUser] Client IP: %s - Missing user ID\n", ip)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "User ID is required"})
 		return
 	}
 	userID, err := strconv.ParseUint(id, 10, 32)
 	if err != nil {
-		logger.Error.Printf("[controllers.UpdateUser] Client IP: %s - Invalid user ID format: %v\n", ip, err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID format"})
 		return
 	}
 	user.ID = uint(userID)
 	if err := c.ShouldBindJSON(&user); err != nil {
-		logger.Error.Printf("[controllers.UpdateUser] Client IP: %s - Invalid input: %v\n", ip, err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
 		return
 	}
 
 	if err := service.UpdateUser(user); err != nil {
-		logger.Error.Printf("[controllers.UpdateUser] Client IP: %s - Error updating user with ID %v: %v\n", ip, user.ID, err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -92,14 +87,13 @@ func UpdateUser(c *gin.Context) {
 func DeleteUser(c *gin.Context) {
 	ip := c.ClientIP()
 	idStr := c.Param("id")
+	logger.Info.Printf("[controllers.DeleteUser] Client IP: %s - Request to delete user with ID: %s\n", ip, idStr)
 	id, err := strconv.ParseUint(idStr, 10, 32)
 	if err != nil {
-		logger.Error.Printf("[controllers.DeleteUser] Client IP: %s - Invalid user ID: %v\n", ip, err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
 		return
 	}
 	if err := service.DeleteUser(uint(id)); err != nil {
-		logger.Error.Printf("[controllers.DeleteUser] Client IP: %s - Error soft deleting user with ID %v: %v\n", ip, id, err)
 		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
 		return
 	}
@@ -110,9 +104,9 @@ func DeleteUser(c *gin.Context) {
 func UpdateUserPassword(c *gin.Context) {
 	ip := c.ClientIP()
 	idStr := c.Param("id")
+	logger.Info.Printf("[controllers.UpdateUserPassword] Client IP: %s - Request to update password for user with ID: %s\n", ip, idStr)
 	id, err := strconv.ParseUint(idStr, 10, 32)
 	if err != nil {
-		logger.Error.Printf("[controllers.UpdateUserPassword] Client IP: %s - Invalid user ID: %v\n", ip, err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
 		return
 	}
@@ -120,12 +114,10 @@ func UpdateUserPassword(c *gin.Context) {
 		NewPassword string `json:"new_password"`
 	}
 	if err := c.ShouldBindJSON(&request); err != nil {
-		logger.Error.Printf("[controllers.UpdateUserPassword] Client IP: %s - Invalid input: %v\n", ip, err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
 		return
 	}
 	if err := service.UpdateUserPassword(uint(id), request.NewPassword); err != nil {
-		logger.Error.Printf("[controllers.UpdateUserPassword] Client IP: %s - Error updating password for user with ID %v: %v\n", ip, id, err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -137,9 +129,9 @@ func CheckUserExists(c *gin.Context) {
 	ip := c.ClientIP()
 	username := c.Query("username")
 	email := c.Query("email")
+	logger.Info.Printf("[controllers.CheckUserExists] Client IP: %s - Request to check user existence with username: %s and email: %s\n", ip, username, email)
 	exists, err := service.CheckUserExists(username, email)
 	if err != nil {
-		logger.Error.Printf("[controllers.CheckUserExists] Client IP: %s - Error checking user existence with username %v or email %v: %v\n", ip, username, email, err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to check user existence"})
 		return
 	}

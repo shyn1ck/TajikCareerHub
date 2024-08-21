@@ -1,3 +1,5 @@
+// C:\GoProject\src\eNotes\logger\logger_old.go
+
 package logger
 
 import (
@@ -9,10 +11,10 @@ import (
 )
 
 var (
-	Info  *log.Logger
-	Error *log.Logger
-	Warn  *log.Logger
-	Debug *log.Logger
+	Info    *log.Logger
+	Error   *log.Logger
+	Warning *log.Logger
+	Debug   *log.Logger
 )
 
 const (
@@ -34,33 +36,11 @@ func Init() error {
 		}
 	}
 
-	fileInfo, err := os.OpenFile(LogInfo, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
-	if err != nil {
-		return err
-	}
-	fileError, err := os.OpenFile(LogError, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
-	if err != nil {
-		return err
-	}
-	fileWarn, err := os.OpenFile(LogWarning, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
-	if err != nil {
-		return err
-	}
-	fileDebug, err := os.OpenFile(LogDebug, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
-	if err != nil {
-		return err
-	}
-
-	Info = log.New(fileInfo, "", log.Ldate|log.Lmicroseconds)
-	Error = log.New(fileError, "", log.Ldate|log.Lmicroseconds)
-	Warn = log.New(fileWarn, "", log.Ldate|log.Lmicroseconds)
-	Debug = log.New(fileDebug, "", log.Ldate|log.Lmicroseconds)
-
 	lumberLogInfo := &lumberjack.Logger{
 		Filename:   LogInfo,
 		MaxSize:    LogMaxSize, // megabytes
 		MaxBackups: LogMaxBackups,
-		MaxAge:     LogMaxAge,   //days
+		MaxAge:     LogMaxAge,   // days
 		Compress:   LogCompress, // disabled by default
 		LocalTime:  true,
 	}
@@ -69,16 +49,16 @@ func Init() error {
 		Filename:   LogError,
 		MaxSize:    LogMaxSize, // megabytes
 		MaxBackups: LogMaxBackups,
-		MaxAge:     LogMaxAge,   //days
+		MaxAge:     LogMaxAge,   // days
 		Compress:   LogCompress, // disabled by default
 		LocalTime:  true,
 	}
 
-	lumberLogWarn := &lumberjack.Logger{
+	lumberLogWarning := &lumberjack.Logger{
 		Filename:   LogWarning,
 		MaxSize:    LogMaxSize, // megabytes
 		MaxBackups: LogMaxBackups,
-		MaxAge:     LogMaxAge,   //days
+		MaxAge:     LogMaxAge,   // days
 		Compress:   LogCompress, // disabled by default
 		LocalTime:  true,
 	}
@@ -87,16 +67,21 @@ func Init() error {
 		Filename:   LogDebug,
 		MaxSize:    LogMaxSize, // megabytes
 		MaxBackups: LogMaxBackups,
-		MaxAge:     LogMaxAge,   //days
+		MaxAge:     LogMaxAge,   // days
 		Compress:   LogCompress, // disabled by default
 		LocalTime:  true,
 	}
+
+	Info = log.New(lumberLogInfo, "", log.Ldate|log.Lmicroseconds)
+	Error = log.New(lumberLogError, "", log.Ldate|log.Lmicroseconds)
+	Warning = log.New(lumberLogWarning, "", log.Ldate|log.Lmicroseconds)
+	Debug = log.New(lumberLogDebug, "", log.Ldate|log.Lmicroseconds)
 
 	gin.DefaultWriter = io.MultiWriter(os.Stdout, lumberLogInfo)
 
 	Info.SetOutput(gin.DefaultWriter)
 	Error.SetOutput(lumberLogError)
-	Warn.SetOutput(lumberLogWarn)
+	Warning.SetOutput(lumberLogWarning)
 	Debug.SetOutput(lumberLogDebug)
 
 	return nil
