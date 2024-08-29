@@ -15,7 +15,8 @@ func RunRoutes() error {
 		auth.POST("/sign-in", SignIn)
 	}
 
-	userGroup := r.Group("/users").Use(checkUserAuthentication)
+	userGroup := r.Group("/users").Use(
+		checkUserAuthentication)
 	{
 		userGroup.GET("/", GetAllUsers)
 		userGroup.GET("/:id", GetUserByID)
