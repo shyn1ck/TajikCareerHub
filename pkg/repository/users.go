@@ -83,7 +83,7 @@ func CheckUserExists(username string, email string) (exists bool, err error) {
 }
 
 func GetUserByUsernameAndPassword(username string, password string) (user models.User, err error) {
-	err = db.GetDBConn().Where("username = ? AND password = ?", username, password).First(&user).Error
+	err = db.GetDBConn().Where("user_name = ? AND password = ?", username, password).First(&user).Error
 	if err != nil {
 		logger.Error.Printf("[repository.GetUserByUsernameAndPassword] error getting user by username and password: %v\n", err)
 		return user, err

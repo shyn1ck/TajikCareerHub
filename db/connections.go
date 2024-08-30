@@ -1,15 +1,28 @@
 package db
 
 import (
+	"TajikCareerHub/configs"
 	"fmt"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"os"
 )
 
 var dbConn *gorm.DB
 
 func ConnectToDB() error {
-	connStr := "user=postgres password=2003 dbname=tajik_career_hub_db sslmode=disable"
+	connStr := fmt.Sprintf(`host=%s 
+									port=%s 
+									user=%s 
+									dbname=%s 
+									password=%s`,
+		configs.AppSettings.PostgresParams.Host,
+		configs.AppSettings.PostgresParams.Port,
+		configs.AppSettings.PostgresParams.User,
+		configs.AppSettings.PostgresParams.Database,
+		os.Getenv("DB_PASSWORD"),
+	)
+
 	db, err := gorm.Open(postgres.Open(connStr), &gorm.Config{})
 	if err != nil {
 		return err

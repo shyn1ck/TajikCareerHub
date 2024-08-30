@@ -1,14 +1,17 @@
 package controllers
 
 import (
+	"TajikCareerHub/configs"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
 func RunRoutes() error {
 	r := gin.Default()
-	r.GET("/ping", PingPong)
+	gin.SetMode(configs.AppSettings.AppParams.GinMode)
 
+	r.GET("/ping", PingPong)
 	auth := r.Group("/auth")
 	{
 		auth.POST("/sign-up", SignUp)
@@ -83,14 +86,14 @@ func RunRoutes() error {
 		jobCategoryGroup.DELETE("/:id", DeleteJobCategory)
 	}
 
-	port := ":8181"
-	err := r.Run(port)
+	err := r.Run(fmt.Sprintf("%s:%s", configs.AppSettings.AppParams.ServerURL, configs.AppSettings.AppParams.PortRun))
+
 	if err != nil {
 		return err
 	}
+
 	return nil
 }
-
 func PingPong(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"message": "pong",

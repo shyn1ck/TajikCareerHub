@@ -1,13 +1,30 @@
 package main
 
 import (
+	"TajikCareerHub/configs"
 	"TajikCareerHub/db"
 	"TajikCareerHub/logger"
 	"TajikCareerHub/pkg/controllers"
+	"errors"
+	"fmt"
+	"github.com/joho/godotenv"
+	"os"
 )
 
 func main() {
-	err := logger.Init()
+	fmt.Println("JWT Secret Key:", os.Getenv("JWT_SECRET_KEY"))
+	fmt.Println("JWT TTL Minutes:", configs.AppSettings.AuthParams.JwtTtlMinutes)
+
+	err := godotenv.Load(".env")
+	if err != nil {
+		panic(errors.New(fmt.Sprintf("error loading .env file. Error is %s", err)))
+	}
+
+	err = configs.ReadSettings()
+	if err != nil {
+		panic(err)
+	}
+	err = logger.Init()
 	if err != nil {
 		return
 	}

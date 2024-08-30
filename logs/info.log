@@ -100,3 +100,362 @@ Please check https://pkg.go.dev/github.com/gin-gonic/gin#readme-don-t-trust-all-
 [GIN-debug] [WARNING] You trusted all proxies, this is NOT safe. We recommend you to set a value.
 Please check https://pkg.go.dev/github.com/gin-gonic/gin#readme-don-t-trust-all-proxies for details.
 [GIN-debug] Listening and serving HTTP on :8181
+2024/08/24 21:58:38.712109 Database migration completed successfully
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /ping                     --> TajikCareerHub/pkg/controllers.PingPong (3 handlers)
+[GIN-debug] POST   /auth/sign-up             --> TajikCareerHub/pkg/controllers.SignUp (3 handlers)
+[GIN-debug] POST   /auth/sign-in             --> TajikCareerHub/pkg/controllers.SignIn (3 handlers)
+[GIN-debug] GET    /users/                   --> TajikCareerHub/pkg/controllers.GetAllUsers (4 handlers)
+[GIN-debug] GET    /users/:id                --> TajikCareerHub/pkg/controllers.GetUserByID (4 handlers)
+[GIN-debug] POST   /users/                   --> TajikCareerHub/pkg/controllers.CreateUser (4 handlers)
+[GIN-debug] PUT    /users/:id                --> TajikCareerHub/pkg/controllers.UpdateUser (4 handlers)
+[GIN-debug] DELETE /users/:id                --> TajikCareerHub/pkg/controllers.DeleteUser (4 handlers)
+[GIN-debug] PUT    /users/:id/password/      --> TajikCareerHub/pkg/controllers.UpdateUserPassword (4 handlers)
+[GIN-debug] GET    /users/existence/         --> TajikCareerHub/pkg/controllers.CheckUserExists (3 handlers)
+[GIN-debug] GET    /jobs/                    --> TajikCareerHub/pkg/controllers.GetAllJobs (4 handlers)
+[GIN-debug] GET    /jobs/:id                 --> TajikCareerHub/pkg/controllers.GetJobByID (4 handlers)
+[GIN-debug] POST   /jobs/                    --> TajikCareerHub/pkg/controllers.AddJob (4 handlers)
+[GIN-debug] PUT    /jobs/:id                 --> TajikCareerHub/pkg/controllers.UpdateJob (4 handlers)
+[GIN-debug] DELETE /jobs/:id                 --> TajikCareerHub/pkg/controllers.DeleteJob (4 handlers)
+[GIN-debug] GET    /jobs/filter              --> TajikCareerHub/pkg/controllers.FilterJobs (4 handlers)
+[GIN-debug] GET    /jobs/salary-range        --> TajikCareerHub/pkg/controllers.GetJobsBySalaryRange (4 handlers)
+[GIN-debug] PUT    /jobs/:id/salary          --> TajikCareerHub/pkg/controllers.UpdateJobSalary (4 handlers)
+[GIN-debug] GET    /applications/            --> TajikCareerHub/pkg/controllers.GetAllApplications (4 handlers)
+[GIN-debug] GET    /applications/:id         --> TajikCareerHub/pkg/controllers.GetApplicationByID (4 handlers)
+[GIN-debug] POST   /applications/            --> TajikCareerHub/pkg/controllers.AddApplication (4 handlers)
+[GIN-debug] PUT    /applications/:id         --> TajikCareerHub/pkg/controllers.UpdateApplication (4 handlers)
+[GIN-debug] DELETE /applications/:id         --> TajikCareerHub/pkg/controllers.DeleteApplication (4 handlers)
+[GIN-debug] GET    /applications/user/:userID --> TajikCareerHub/pkg/controllers.GetApplicationsByUserID (4 handlers)
+[GIN-debug] GET    /applications/job/:jobID  --> TajikCareerHub/pkg/controllers.GetApplicationsByJobID (4 handlers)
+[GIN-debug] GET    /companies/               --> TajikCareerHub/pkg/controllers.GetAllCompanies (4 handlers)
+[GIN-debug] GET    /companies/:id            --> TajikCareerHub/pkg/controllers.GetCompanyByID (4 handlers)
+[GIN-debug] POST   /companies/               --> TajikCareerHub/pkg/controllers.AddCompany (4 handlers)
+[GIN-debug] PUT    /companies/:id            --> TajikCareerHub/pkg/controllers.UpdateCompany (4 handlers)
+[GIN-debug] DELETE /companies/:id            --> TajikCareerHub/pkg/controllers.DeleteCompany (4 handlers)
+[GIN-debug] GET    /favorites/user/:userID   --> TajikCareerHub/pkg/controllers.GetFavoritesByUserID (4 handlers)
+[GIN-debug] GET    /favorites/user/:userID/job/:jobID --> TajikCareerHub/pkg/controllers.GetFavoriteByUserIDAndJobID (4 handlers)
+[GIN-debug] POST   /favorites/               --> TajikCareerHub/pkg/controllers.AddFavorite (4 handlers)
+[GIN-debug] DELETE /favorites/               --> TajikCareerHub/pkg/controllers.RemoveFavorite (4 handlers)
+[GIN-debug] GET    /favorites/exists/user/:userID/job/:jobID --> TajikCareerHub/pkg/controllers.CheckFavoriteExists (4 handlers)
+[GIN-debug] GET    /jobcategories/           --> TajikCareerHub/pkg/controllers.GetAllJobCategories (4 handlers)
+[GIN-debug] GET    /jobcategories/:id        --> TajikCareerHub/pkg/controllers.GetJobCategoryByID (4 handlers)
+[GIN-debug] POST   /jobcategories/           --> TajikCareerHub/pkg/controllers.CreateJobCategory (4 handlers)
+[GIN-debug] PUT    /jobcategories/:id        --> TajikCareerHub/pkg/controllers.UpdateJobCategory (4 handlers)
+[GIN-debug] DELETE /jobcategories/:id        --> TajikCareerHub/pkg/controllers.DeleteJobCategory (4 handlers)
+[GIN-debug] [WARNING] You trusted all proxies, this is NOT safe. We recommend you to set a value.
+Please check https://pkg.go.dev/github.com/gin-gonic/gin#readme-don-t-trust-all-proxies for details.
+[GIN-debug] Listening and serving HTTP on :8181
+[GIN] 2024/08/24 - 22:00:44 | 200 |     39.5001ms |             ::1 | POST     "/auth/sign-in"
+[GIN] 2024/08/24 - 22:02:50 | 500 |       375.5µs |             ::1 | POST     "/auth/sign-up"
+[GIN] 2024/08/24 - 22:03:44 | 500 |            0s |             ::1 | POST     "/auth/sign-up"
+[GIN] 2024/08/24 - 22:04:13 | 200 |      1.0134ms |             ::1 | POST     "/auth/sign-in"
+[GIN] 2024/08/24 - 22:04:22 | 500 |            0s |             ::1 | POST     "/auth/sign-up"
+[GIN] 2024/08/24 - 22:05:22 | 200 |       665.5µs |             ::1 | POST     "/auth/sign-in"
+[GIN] 2024/08/24 - 22:05:59 | 500 |            0s |             ::1 | POST     "/auth/sign-up"
+[GIN] 2024/08/24 - 22:06:57 | 500 |            0s |             ::1 | POST     "/auth/sign-up"
+2024/08/24 22:07:29.628023 Database migration completed successfully
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /ping                     --> TajikCareerHub/pkg/controllers.PingPong (3 handlers)
+[GIN-debug] POST   /auth/sign-up             --> TajikCareerHub/pkg/controllers.SignUp (3 handlers)
+[GIN-debug] POST   /auth/sign-in             --> TajikCareerHub/pkg/controllers.SignIn (3 handlers)
+[GIN-debug] GET    /users/                   --> TajikCareerHub/pkg/controllers.GetAllUsers (4 handlers)
+[GIN-debug] GET    /users/:id                --> TajikCareerHub/pkg/controllers.GetUserByID (4 handlers)
+[GIN-debug] POST   /users/                   --> TajikCareerHub/pkg/controllers.CreateUser (4 handlers)
+[GIN-debug] PUT    /users/:id                --> TajikCareerHub/pkg/controllers.UpdateUser (4 handlers)
+[GIN-debug] DELETE /users/:id                --> TajikCareerHub/pkg/controllers.DeleteUser (4 handlers)
+[GIN-debug] PUT    /users/:id/password/      --> TajikCareerHub/pkg/controllers.UpdateUserPassword (4 handlers)
+[GIN-debug] GET    /users/existence/         --> TajikCareerHub/pkg/controllers.CheckUserExists (3 handlers)
+[GIN-debug] GET    /jobs/                    --> TajikCareerHub/pkg/controllers.GetAllJobs (4 handlers)
+[GIN-debug] GET    /jobs/:id                 --> TajikCareerHub/pkg/controllers.GetJobByID (4 handlers)
+[GIN-debug] POST   /jobs/                    --> TajikCareerHub/pkg/controllers.AddJob (4 handlers)
+[GIN-debug] PUT    /jobs/:id                 --> TajikCareerHub/pkg/controllers.UpdateJob (4 handlers)
+[GIN-debug] DELETE /jobs/:id                 --> TajikCareerHub/pkg/controllers.DeleteJob (4 handlers)
+[GIN-debug] GET    /jobs/filter              --> TajikCareerHub/pkg/controllers.FilterJobs (4 handlers)
+[GIN-debug] GET    /jobs/salary-range        --> TajikCareerHub/pkg/controllers.GetJobsBySalaryRange (4 handlers)
+[GIN-debug] PUT    /jobs/:id/salary          --> TajikCareerHub/pkg/controllers.UpdateJobSalary (4 handlers)
+[GIN-debug] GET    /applications/            --> TajikCareerHub/pkg/controllers.GetAllApplications (4 handlers)
+[GIN-debug] GET    /applications/:id         --> TajikCareerHub/pkg/controllers.GetApplicationByID (4 handlers)
+[GIN-debug] POST   /applications/            --> TajikCareerHub/pkg/controllers.AddApplication (4 handlers)
+[GIN-debug] PUT    /applications/:id         --> TajikCareerHub/pkg/controllers.UpdateApplication (4 handlers)
+[GIN-debug] DELETE /applications/:id         --> TajikCareerHub/pkg/controllers.DeleteApplication (4 handlers)
+[GIN-debug] GET    /applications/user/:userID --> TajikCareerHub/pkg/controllers.GetApplicationsByUserID (4 handlers)
+[GIN-debug] GET    /applications/job/:jobID  --> TajikCareerHub/pkg/controllers.GetApplicationsByJobID (4 handlers)
+[GIN-debug] GET    /companies/               --> TajikCareerHub/pkg/controllers.GetAllCompanies (4 handlers)
+[GIN-debug] GET    /companies/:id            --> TajikCareerHub/pkg/controllers.GetCompanyByID (4 handlers)
+[GIN-debug] POST   /companies/               --> TajikCareerHub/pkg/controllers.AddCompany (4 handlers)
+[GIN-debug] PUT    /companies/:id            --> TajikCareerHub/pkg/controllers.UpdateCompany (4 handlers)
+[GIN-debug] DELETE /companies/:id            --> TajikCareerHub/pkg/controllers.DeleteCompany (4 handlers)
+[GIN-debug] GET    /favorites/user/:userID   --> TajikCareerHub/pkg/controllers.GetFavoritesByUserID (4 handlers)
+[GIN-debug] GET    /favorites/user/:userID/job/:jobID --> TajikCareerHub/pkg/controllers.GetFavoriteByUserIDAndJobID (4 handlers)
+[GIN-debug] POST   /favorites/               --> TajikCareerHub/pkg/controllers.AddFavorite (4 handlers)
+[GIN-debug] DELETE /favorites/               --> TajikCareerHub/pkg/controllers.RemoveFavorite (4 handlers)
+[GIN-debug] GET    /favorites/exists/user/:userID/job/:jobID --> TajikCareerHub/pkg/controllers.CheckFavoriteExists (4 handlers)
+[GIN-debug] GET    /jobcategories/           --> TajikCareerHub/pkg/controllers.GetAllJobCategories (4 handlers)
+[GIN-debug] GET    /jobcategories/:id        --> TajikCareerHub/pkg/controllers.GetJobCategoryByID (4 handlers)
+[GIN-debug] POST   /jobcategories/           --> TajikCareerHub/pkg/controllers.CreateJobCategory (4 handlers)
+[GIN-debug] PUT    /jobcategories/:id        --> TajikCareerHub/pkg/controllers.UpdateJobCategory (4 handlers)
+[GIN-debug] DELETE /jobcategories/:id        --> TajikCareerHub/pkg/controllers.DeleteJobCategory (4 handlers)
+[GIN-debug] [WARNING] You trusted all proxies, this is NOT safe. We recommend you to set a value.
+Please check https://pkg.go.dev/github.com/gin-gonic/gin#readme-don-t-trust-all-proxies for details.
+[GIN-debug] Listening and serving HTTP on :8181
+2024/08/24 22:07:56.997601 Database migration completed successfully
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /ping                     --> TajikCareerHub/pkg/controllers.PingPong (3 handlers)
+[GIN-debug] POST   /auth/sign-up             --> TajikCareerHub/pkg/controllers.SignUp (3 handlers)
+[GIN-debug] POST   /auth/sign-in             --> TajikCareerHub/pkg/controllers.SignIn (3 handlers)
+[GIN-debug] GET    /users/                   --> TajikCareerHub/pkg/controllers.GetAllUsers (4 handlers)
+[GIN-debug] GET    /users/:id                --> TajikCareerHub/pkg/controllers.GetUserByID (4 handlers)
+[GIN-debug] POST   /users/                   --> TajikCareerHub/pkg/controllers.CreateUser (4 handlers)
+[GIN-debug] PUT    /users/:id                --> TajikCareerHub/pkg/controllers.UpdateUser (4 handlers)
+[GIN-debug] DELETE /users/:id                --> TajikCareerHub/pkg/controllers.DeleteUser (4 handlers)
+[GIN-debug] PUT    /users/:id/password/      --> TajikCareerHub/pkg/controllers.UpdateUserPassword (4 handlers)
+[GIN-debug] GET    /users/existence/         --> TajikCareerHub/pkg/controllers.CheckUserExists (3 handlers)
+[GIN-debug] GET    /jobs/                    --> TajikCareerHub/pkg/controllers.GetAllJobs (4 handlers)
+[GIN-debug] GET    /jobs/:id                 --> TajikCareerHub/pkg/controllers.GetJobByID (4 handlers)
+[GIN-debug] POST   /jobs/                    --> TajikCareerHub/pkg/controllers.AddJob (4 handlers)
+[GIN-debug] PUT    /jobs/:id                 --> TajikCareerHub/pkg/controllers.UpdateJob (4 handlers)
+[GIN-debug] DELETE /jobs/:id                 --> TajikCareerHub/pkg/controllers.DeleteJob (4 handlers)
+[GIN-debug] GET    /jobs/filter              --> TajikCareerHub/pkg/controllers.FilterJobs (4 handlers)
+[GIN-debug] GET    /jobs/salary-range        --> TajikCareerHub/pkg/controllers.GetJobsBySalaryRange (4 handlers)
+[GIN-debug] PUT    /jobs/:id/salary          --> TajikCareerHub/pkg/controllers.UpdateJobSalary (4 handlers)
+[GIN-debug] GET    /applications/            --> TajikCareerHub/pkg/controllers.GetAllApplications (4 handlers)
+[GIN-debug] GET    /applications/:id         --> TajikCareerHub/pkg/controllers.GetApplicationByID (4 handlers)
+[GIN-debug] POST   /applications/            --> TajikCareerHub/pkg/controllers.AddApplication (4 handlers)
+[GIN-debug] PUT    /applications/:id         --> TajikCareerHub/pkg/controllers.UpdateApplication (4 handlers)
+[GIN-debug] DELETE /applications/:id         --> TajikCareerHub/pkg/controllers.DeleteApplication (4 handlers)
+[GIN-debug] GET    /applications/user/:userID --> TajikCareerHub/pkg/controllers.GetApplicationsByUserID (4 handlers)
+[GIN-debug] GET    /applications/job/:jobID  --> TajikCareerHub/pkg/controllers.GetApplicationsByJobID (4 handlers)
+[GIN-debug] GET    /companies/               --> TajikCareerHub/pkg/controllers.GetAllCompanies (4 handlers)
+[GIN-debug] GET    /companies/:id            --> TajikCareerHub/pkg/controllers.GetCompanyByID (4 handlers)
+[GIN-debug] POST   /companies/               --> TajikCareerHub/pkg/controllers.AddCompany (4 handlers)
+[GIN-debug] PUT    /companies/:id            --> TajikCareerHub/pkg/controllers.UpdateCompany (4 handlers)
+[GIN-debug] DELETE /companies/:id            --> TajikCareerHub/pkg/controllers.DeleteCompany (4 handlers)
+[GIN-debug] GET    /favorites/user/:userID   --> TajikCareerHub/pkg/controllers.GetFavoritesByUserID (4 handlers)
+[GIN-debug] GET    /favorites/user/:userID/job/:jobID --> TajikCareerHub/pkg/controllers.GetFavoriteByUserIDAndJobID (4 handlers)
+[GIN-debug] POST   /favorites/               --> TajikCareerHub/pkg/controllers.AddFavorite (4 handlers)
+[GIN-debug] DELETE /favorites/               --> TajikCareerHub/pkg/controllers.RemoveFavorite (4 handlers)
+[GIN-debug] GET    /favorites/exists/user/:userID/job/:jobID --> TajikCareerHub/pkg/controllers.CheckFavoriteExists (4 handlers)
+[GIN-debug] GET    /jobcategories/           --> TajikCareerHub/pkg/controllers.GetAllJobCategories (4 handlers)
+[GIN-debug] GET    /jobcategories/:id        --> TajikCareerHub/pkg/controllers.GetJobCategoryByID (4 handlers)
+[GIN-debug] POST   /jobcategories/           --> TajikCareerHub/pkg/controllers.CreateJobCategory (4 handlers)
+[GIN-debug] PUT    /jobcategories/:id        --> TajikCareerHub/pkg/controllers.UpdateJobCategory (4 handlers)
+[GIN-debug] DELETE /jobcategories/:id        --> TajikCareerHub/pkg/controllers.DeleteJobCategory (4 handlers)
+[GIN-debug] [WARNING] You trusted all proxies, this is NOT safe. We recommend you to set a value.
+Please check https://pkg.go.dev/github.com/gin-gonic/gin#readme-don-t-trust-all-proxies for details.
+[GIN-debug] Listening and serving HTTP on :8181
+[GIN] 2024/08/24 - 22:08:23 | 500 |      2.6007ms |             ::1 | POST     "/auth/sign-up"
+2024/08/24 22:09:57.012914 Database migration completed successfully
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /ping                     --> TajikCareerHub/pkg/controllers.PingPong (3 handlers)
+[GIN-debug] POST   /auth/sign-up             --> TajikCareerHub/pkg/controllers.SignUp (3 handlers)
+[GIN-debug] POST   /auth/sign-in             --> TajikCareerHub/pkg/controllers.SignIn (3 handlers)
+[GIN-debug] GET    /users/                   --> TajikCareerHub/pkg/controllers.GetAllUsers (4 handlers)
+[GIN-debug] GET    /users/:id                --> TajikCareerHub/pkg/controllers.GetUserByID (4 handlers)
+[GIN-debug] POST   /users/                   --> TajikCareerHub/pkg/controllers.CreateUser (4 handlers)
+[GIN-debug] PUT    /users/:id                --> TajikCareerHub/pkg/controllers.UpdateUser (4 handlers)
+[GIN-debug] DELETE /users/:id                --> TajikCareerHub/pkg/controllers.DeleteUser (4 handlers)
+[GIN-debug] PUT    /users/:id/password/      --> TajikCareerHub/pkg/controllers.UpdateUserPassword (4 handlers)
+[GIN-debug] GET    /users/existence/         --> TajikCareerHub/pkg/controllers.CheckUserExists (3 handlers)
+[GIN-debug] GET    /jobs/                    --> TajikCareerHub/pkg/controllers.GetAllJobs (4 handlers)
+[GIN-debug] GET    /jobs/:id                 --> TajikCareerHub/pkg/controllers.GetJobByID (4 handlers)
+[GIN-debug] POST   /jobs/                    --> TajikCareerHub/pkg/controllers.AddJob (4 handlers)
+[GIN-debug] PUT    /jobs/:id                 --> TajikCareerHub/pkg/controllers.UpdateJob (4 handlers)
+[GIN-debug] DELETE /jobs/:id                 --> TajikCareerHub/pkg/controllers.DeleteJob (4 handlers)
+[GIN-debug] GET    /jobs/filter              --> TajikCareerHub/pkg/controllers.FilterJobs (4 handlers)
+[GIN-debug] GET    /jobs/salary-range        --> TajikCareerHub/pkg/controllers.GetJobsBySalaryRange (4 handlers)
+[GIN-debug] PUT    /jobs/:id/salary          --> TajikCareerHub/pkg/controllers.UpdateJobSalary (4 handlers)
+[GIN-debug] GET    /applications/            --> TajikCareerHub/pkg/controllers.GetAllApplications (4 handlers)
+[GIN-debug] GET    /applications/:id         --> TajikCareerHub/pkg/controllers.GetApplicationByID (4 handlers)
+[GIN-debug] POST   /applications/            --> TajikCareerHub/pkg/controllers.AddApplication (4 handlers)
+[GIN-debug] PUT    /applications/:id         --> TajikCareerHub/pkg/controllers.UpdateApplication (4 handlers)
+[GIN-debug] DELETE /applications/:id         --> TajikCareerHub/pkg/controllers.DeleteApplication (4 handlers)
+[GIN-debug] GET    /applications/user/:userID --> TajikCareerHub/pkg/controllers.GetApplicationsByUserID (4 handlers)
+[GIN-debug] GET    /applications/job/:jobID  --> TajikCareerHub/pkg/controllers.GetApplicationsByJobID (4 handlers)
+[GIN-debug] GET    /companies/               --> TajikCareerHub/pkg/controllers.GetAllCompanies (4 handlers)
+[GIN-debug] GET    /companies/:id            --> TajikCareerHub/pkg/controllers.GetCompanyByID (4 handlers)
+[GIN-debug] POST   /companies/               --> TajikCareerHub/pkg/controllers.AddCompany (4 handlers)
+[GIN-debug] PUT    /companies/:id            --> TajikCareerHub/pkg/controllers.UpdateCompany (4 handlers)
+[GIN-debug] DELETE /companies/:id            --> TajikCareerHub/pkg/controllers.DeleteCompany (4 handlers)
+[GIN-debug] GET    /favorites/user/:userID   --> TajikCareerHub/pkg/controllers.GetFavoritesByUserID (4 handlers)
+[GIN-debug] GET    /favorites/user/:userID/job/:jobID --> TajikCareerHub/pkg/controllers.GetFavoriteByUserIDAndJobID (4 handlers)
+[GIN-debug] POST   /favorites/               --> TajikCareerHub/pkg/controllers.AddFavorite (4 handlers)
+[GIN-debug] DELETE /favorites/               --> TajikCareerHub/pkg/controllers.RemoveFavorite (4 handlers)
+[GIN-debug] GET    /favorites/exists/user/:userID/job/:jobID --> TajikCareerHub/pkg/controllers.CheckFavoriteExists (4 handlers)
+[GIN-debug] GET    /jobcategories/           --> TajikCareerHub/pkg/controllers.GetAllJobCategories (4 handlers)
+[GIN-debug] GET    /jobcategories/:id        --> TajikCareerHub/pkg/controllers.GetJobCategoryByID (4 handlers)
+[GIN-debug] POST   /jobcategories/           --> TajikCareerHub/pkg/controllers.CreateJobCategory (4 handlers)
+[GIN-debug] PUT    /jobcategories/:id        --> TajikCareerHub/pkg/controllers.UpdateJobCategory (4 handlers)
+[GIN-debug] DELETE /jobcategories/:id        --> TajikCareerHub/pkg/controllers.DeleteJobCategory (4 handlers)
+[GIN-debug] [WARNING] You trusted all proxies, this is NOT safe. We recommend you to set a value.
+Please check https://pkg.go.dev/github.com/gin-gonic/gin#readme-don-t-trust-all-proxies for details.
+[GIN-debug] Listening and serving HTTP on :8181
+[GIN] 2024/08/24 - 22:10:39 | 500 |       681.4µs |             ::1 | POST     "/auth/sign-up"
+[GIN] 2024/08/24 - 22:10:44 | 201 |     60.2618ms |             ::1 | POST     "/auth/sign-up"
+[GIN] 2024/08/24 - 22:12:00 | 201 |      2.4193ms |             ::1 | POST     "/auth/sign-up"
+[GIN] 2024/08/24 - 22:12:16 | 500 |            0s |             ::1 | POST     "/auth/sign-up"
+[GIN] 2024/08/24 - 22:12:24 | 500 |     27.4494ms |             ::1 | POST     "/auth/sign-up"
+[GIN] 2024/08/24 - 22:12:43 | 500 |      1.7155ms |             ::1 | POST     "/auth/sign-up"
+[GIN] 2024/08/24 - 22:12:49 | 201 |      1.8333ms |             ::1 | POST     "/auth/sign-up"
+2024/08/24 22:15:33.074305 Database migration completed successfully
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /ping                     --> TajikCareerHub/pkg/controllers.PingPong (3 handlers)
+[GIN-debug] POST   /auth/sign-up             --> TajikCareerHub/pkg/controllers.SignUp (3 handlers)
+[GIN-debug] POST   /auth/sign-in             --> TajikCareerHub/pkg/controllers.SignIn (3 handlers)
+[GIN-debug] GET    /users/                   --> TajikCareerHub/pkg/controllers.GetAllUsers (4 handlers)
+[GIN-debug] GET    /users/:id                --> TajikCareerHub/pkg/controllers.GetUserByID (4 handlers)
+[GIN-debug] POST   /users/                   --> TajikCareerHub/pkg/controllers.CreateUser (4 handlers)
+[GIN-debug] PUT    /users/:id                --> TajikCareerHub/pkg/controllers.UpdateUser (4 handlers)
+[GIN-debug] DELETE /users/:id                --> TajikCareerHub/pkg/controllers.DeleteUser (4 handlers)
+[GIN-debug] PUT    /users/:id/password/      --> TajikCareerHub/pkg/controllers.UpdateUserPassword (4 handlers)
+[GIN-debug] GET    /users/existence/         --> TajikCareerHub/pkg/controllers.CheckUserExists (3 handlers)
+[GIN-debug] GET    /jobs/                    --> TajikCareerHub/pkg/controllers.GetAllJobs (4 handlers)
+[GIN-debug] GET    /jobs/:id                 --> TajikCareerHub/pkg/controllers.GetJobByID (4 handlers)
+[GIN-debug] POST   /jobs/                    --> TajikCareerHub/pkg/controllers.AddJob (4 handlers)
+[GIN-debug] PUT    /jobs/:id                 --> TajikCareerHub/pkg/controllers.UpdateJob (4 handlers)
+[GIN-debug] DELETE /jobs/:id                 --> TajikCareerHub/pkg/controllers.DeleteJob (4 handlers)
+[GIN-debug] GET    /jobs/filter              --> TajikCareerHub/pkg/controllers.FilterJobs (4 handlers)
+[GIN-debug] GET    /jobs/salary-range        --> TajikCareerHub/pkg/controllers.GetJobsBySalaryRange (4 handlers)
+[GIN-debug] PUT    /jobs/:id/salary          --> TajikCareerHub/pkg/controllers.UpdateJobSalary (4 handlers)
+[GIN-debug] GET    /applications/            --> TajikCareerHub/pkg/controllers.GetAllApplications (4 handlers)
+[GIN-debug] GET    /applications/:id         --> TajikCareerHub/pkg/controllers.GetApplicationByID (4 handlers)
+[GIN-debug] POST   /applications/            --> TajikCareerHub/pkg/controllers.AddApplication (4 handlers)
+[GIN-debug] PUT    /applications/:id         --> TajikCareerHub/pkg/controllers.UpdateApplication (4 handlers)
+[GIN-debug] DELETE /applications/:id         --> TajikCareerHub/pkg/controllers.DeleteApplication (4 handlers)
+[GIN-debug] GET    /applications/user/:userID --> TajikCareerHub/pkg/controllers.GetApplicationsByUserID (4 handlers)
+[GIN-debug] GET    /applications/job/:jobID  --> TajikCareerHub/pkg/controllers.GetApplicationsByJobID (4 handlers)
+[GIN-debug] GET    /companies/               --> TajikCareerHub/pkg/controllers.GetAllCompanies (4 handlers)
+[GIN-debug] GET    /companies/:id            --> TajikCareerHub/pkg/controllers.GetCompanyByID (4 handlers)
+[GIN-debug] POST   /companies/               --> TajikCareerHub/pkg/controllers.AddCompany (4 handlers)
+[GIN-debug] PUT    /companies/:id            --> TajikCareerHub/pkg/controllers.UpdateCompany (4 handlers)
+[GIN-debug] DELETE /companies/:id            --> TajikCareerHub/pkg/controllers.DeleteCompany (4 handlers)
+[GIN-debug] GET    /favorites/user/:userID   --> TajikCareerHub/pkg/controllers.GetFavoritesByUserID (4 handlers)
+[GIN-debug] GET    /favorites/user/:userID/job/:jobID --> TajikCareerHub/pkg/controllers.GetFavoriteByUserIDAndJobID (4 handlers)
+[GIN-debug] POST   /favorites/               --> TajikCareerHub/pkg/controllers.AddFavorite (4 handlers)
+[GIN-debug] DELETE /favorites/               --> TajikCareerHub/pkg/controllers.RemoveFavorite (4 handlers)
+[GIN-debug] GET    /favorites/exists/user/:userID/job/:jobID --> TajikCareerHub/pkg/controllers.CheckFavoriteExists (4 handlers)
+[GIN-debug] GET    /jobcategories/           --> TajikCareerHub/pkg/controllers.GetAllJobCategories (4 handlers)
+[GIN-debug] GET    /jobcategories/:id        --> TajikCareerHub/pkg/controllers.GetJobCategoryByID (4 handlers)
+[GIN-debug] POST   /jobcategories/           --> TajikCareerHub/pkg/controllers.CreateJobCategory (4 handlers)
+[GIN-debug] PUT    /jobcategories/:id        --> TajikCareerHub/pkg/controllers.UpdateJobCategory (4 handlers)
+[GIN-debug] DELETE /jobcategories/:id        --> TajikCareerHub/pkg/controllers.DeleteJobCategory (4 handlers)
+[GIN-debug] [WARNING] You trusted all proxies, this is NOT safe. We recommend you to set a value.
+Please check https://pkg.go.dev/github.com/gin-gonic/gin#readme-don-t-trust-all-proxies for details.
+[GIN-debug] Listening and serving HTTP on :8181
+[GIN] 2024/08/24 - 22:16:05 | 201 |      4.4334ms |             ::1 | POST     "/auth/sign-up"
+[GIN] 2024/08/24 - 22:17:05 | 500 |      3.2413ms |             ::1 | POST     "/auth/sign-up"
+[GIN] 2024/08/24 - 22:17:27 | 500 |            0s |             ::1 | POST     "/auth/sign-up"
+[GIN] 2024/08/24 - 22:18:08 | 500 |      1.8619ms |             ::1 | POST     "/auth/sign-up"
+2024/08/24 22:20:15.351304 Database migration completed successfully
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /ping                     --> TajikCareerHub/pkg/controllers.PingPong (3 handlers)
+[GIN-debug] POST   /auth/sign-up             --> TajikCareerHub/pkg/controllers.SignUp (3 handlers)
+[GIN-debug] POST   /auth/sign-in             --> TajikCareerHub/pkg/controllers.SignIn (3 handlers)
+[GIN-debug] GET    /users/                   --> TajikCareerHub/pkg/controllers.GetAllUsers (4 handlers)
+[GIN-debug] GET    /users/:id                --> TajikCareerHub/pkg/controllers.GetUserByID (4 handlers)
+[GIN-debug] POST   /users/                   --> TajikCareerHub/pkg/controllers.CreateUser (4 handlers)
+[GIN-debug] PUT    /users/:id                --> TajikCareerHub/pkg/controllers.UpdateUser (4 handlers)
+[GIN-debug] DELETE /users/:id                --> TajikCareerHub/pkg/controllers.DeleteUser (4 handlers)
+[GIN-debug] PUT    /users/:id/password/      --> TajikCareerHub/pkg/controllers.UpdateUserPassword (4 handlers)
+[GIN-debug] GET    /users/existence/         --> TajikCareerHub/pkg/controllers.CheckUserExists (3 handlers)
+[GIN-debug] GET    /jobs/                    --> TajikCareerHub/pkg/controllers.GetAllJobs (4 handlers)
+[GIN-debug] GET    /jobs/:id                 --> TajikCareerHub/pkg/controllers.GetJobByID (4 handlers)
+[GIN-debug] POST   /jobs/                    --> TajikCareerHub/pkg/controllers.AddJob (4 handlers)
+[GIN-debug] PUT    /jobs/:id                 --> TajikCareerHub/pkg/controllers.UpdateJob (4 handlers)
+[GIN-debug] DELETE /jobs/:id                 --> TajikCareerHub/pkg/controllers.DeleteJob (4 handlers)
+[GIN-debug] GET    /jobs/filter              --> TajikCareerHub/pkg/controllers.FilterJobs (4 handlers)
+[GIN-debug] GET    /jobs/salary-range        --> TajikCareerHub/pkg/controllers.GetJobsBySalaryRange (4 handlers)
+[GIN-debug] PUT    /jobs/:id/salary          --> TajikCareerHub/pkg/controllers.UpdateJobSalary (4 handlers)
+[GIN-debug] GET    /applications/            --> TajikCareerHub/pkg/controllers.GetAllApplications (4 handlers)
+[GIN-debug] GET    /applications/:id         --> TajikCareerHub/pkg/controllers.GetApplicationByID (4 handlers)
+[GIN-debug] POST   /applications/            --> TajikCareerHub/pkg/controllers.AddApplication (4 handlers)
+[GIN-debug] PUT    /applications/:id         --> TajikCareerHub/pkg/controllers.UpdateApplication (4 handlers)
+[GIN-debug] DELETE /applications/:id         --> TajikCareerHub/pkg/controllers.DeleteApplication (4 handlers)
+[GIN-debug] GET    /applications/user/:userID --> TajikCareerHub/pkg/controllers.GetApplicationsByUserID (4 handlers)
+[GIN-debug] GET    /applications/job/:jobID  --> TajikCareerHub/pkg/controllers.GetApplicationsByJobID (4 handlers)
+[GIN-debug] GET    /companies/               --> TajikCareerHub/pkg/controllers.GetAllCompanies (4 handlers)
+[GIN-debug] GET    /companies/:id            --> TajikCareerHub/pkg/controllers.GetCompanyByID (4 handlers)
+[GIN-debug] POST   /companies/               --> TajikCareerHub/pkg/controllers.AddCompany (4 handlers)
+[GIN-debug] PUT    /companies/:id            --> TajikCareerHub/pkg/controllers.UpdateCompany (4 handlers)
+[GIN-debug] DELETE /companies/:id            --> TajikCareerHub/pkg/controllers.DeleteCompany (4 handlers)
+[GIN-debug] GET    /favorites/user/:userID   --> TajikCareerHub/pkg/controllers.GetFavoritesByUserID (4 handlers)
+[GIN-debug] GET    /favorites/user/:userID/job/:jobID --> TajikCareerHub/pkg/controllers.GetFavoriteByUserIDAndJobID (4 handlers)
+[GIN-debug] POST   /favorites/               --> TajikCareerHub/pkg/controllers.AddFavorite (4 handlers)
+[GIN-debug] DELETE /favorites/               --> TajikCareerHub/pkg/controllers.RemoveFavorite (4 handlers)
+[GIN-debug] GET    /favorites/exists/user/:userID/job/:jobID --> TajikCareerHub/pkg/controllers.CheckFavoriteExists (4 handlers)
+[GIN-debug] GET    /job-categories/           --> TajikCareerHub/pkg/controllers.GetAllJobCategories (4 handlers)
+[GIN-debug] GET    /job-categories/:id        --> TajikCareerHub/pkg/controllers.GetJobCategoryByID (4 handlers)
+[GIN-debug] POST   /job-categories/           --> TajikCareerHub/pkg/controllers.CreateJobCategory (4 handlers)
+[GIN-debug] PUT    /job-categories/:id        --> TajikCareerHub/pkg/controllers.UpdateJobCategory (4 handlers)
+[GIN-debug] DELETE /job-categories/:id        --> TajikCareerHub/pkg/controllers.DeleteJobCategory (4 handlers)
+[GIN-debug] [WARNING] You trusted all proxies, this is NOT safe. We recommend you to set a value.
+Please check https://pkg.go.dev/github.com/gin-gonic/gin#readme-don-t-trust-all-proxies for details.
+[GIN-debug] Listening and serving HTTP on :8181
+[GIN] 2024/08/24 - 22:28:14 | 500 |            0s |             ::1 | POST     "/auth/sign-up"
+[GIN] 2024/08/24 - 22:28:20 | 500 |      5.2958ms |             ::1 | POST     "/auth/sign-up"
+[GIN] 2024/08/24 - 22:28:42 | 201 |      2.5389ms |             ::1 | POST     "/auth/sign-up"
+[GIN] 2024/08/24 - 22:29:54 | 200 |      1.4253ms |             ::1 | POST     "/auth/sign-in"
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN] 2024/08/30 - 12:51:13 | 201 |     12.0001ms |       127.0.0.1 | POST     "/auth/sign-up"
+[GIN] 2024/08/30 - 12:51:35 | 200 |       726.9µs |       127.0.0.1 | POST     "/auth/sign-in"
+[GIN] 2024/08/30 - 12:52:48 | 401 |            0s |       127.0.0.1 | GET      "/users/"
+[GIN] 2024/08/30 - 12:53:02 | 200 |       355.2µs |       127.0.0.1 | POST     "/auth/sign-in"
+[GIN] 2024/08/30 - 12:53:15 | 401 |       289.3µs |       127.0.0.1 | GET      "/users/"
+[GIN] 2024/08/30 - 12:58:51 | 201 |       1.703ms |       127.0.0.1 | POST     "/auth/sign-up"
+[GIN] 2024/08/30 - 12:59:00 | 200 |       677.4µs |       127.0.0.1 | POST     "/auth/sign-in"
+[GIN] 2024/08/30 - 12:59:19 | 401 |       819.4µs |       127.0.0.1 | GET      "/users/"
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN] 2024/08/30 - 13:02:51 | 201 |      4.7071ms |       127.0.0.1 | POST     "/auth/sign-up"
+[GIN] 2024/08/30 - 13:02:59 | 200 |      1.7498ms |       127.0.0.1 | POST     "/auth/sign-in"
+[GIN] 2024/08/30 - 13:03:16 | 401 |       697.5µs |       127.0.0.1 | GET      "/users/"
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+

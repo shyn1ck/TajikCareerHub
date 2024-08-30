@@ -14,13 +14,13 @@ func GetJobCategoryByID(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.ParseUint(idStr, 10, 32)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid job category ID"})
+		handleError(c, err)
 		return
 	}
 
 	category, err := service.GetJobCategoryByID(uint(id))
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Job category not found"})
+		handleError(c, err)
 		return
 	}
 
@@ -34,7 +34,7 @@ func GetAllJobCategories(c *gin.Context) {
 
 	categories, err := service.GetAllJobCategories()
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve job categories"})
+		handleError(c, err)
 		return
 	}
 
@@ -46,12 +46,12 @@ func CreateJobCategory(c *gin.Context) {
 	ip := c.ClientIP()
 	var category models.JobCategory
 	if err := c.ShouldBindJSON(&category); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
+		handleError(c, err)
 		return
 	}
 
 	if err := service.CreateJobCategory(category); err != nil {
-		c.JSON(http.StatusConflict, gin.H{"error": err.Error()})
+		handleError(c, err)
 		return
 	}
 
@@ -65,18 +65,18 @@ func UpdateJobCategory(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.ParseUint(idStr, 10, 32)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid job category ID"})
+		handleError(c, err)
 		return
 	}
 	category.ID = uint(id)
 
 	if err := c.ShouldBindJSON(&category); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
+		handleError(c, err)
 		return
 	}
 
 	if err := service.UpdateJobCategory(category); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update job category"})
+		handleError(c, err)
 		return
 	}
 
@@ -89,12 +89,12 @@ func DeleteJobCategory(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.ParseUint(idStr, 10, 32)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid job category ID"})
+		handleError(c, err)
 		return
 	}
 
 	if err := service.DeleteJobCategory(uint(id)); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete job category"})
+		handleError(c, err)
 		return
 	}
 

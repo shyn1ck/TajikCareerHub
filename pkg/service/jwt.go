@@ -1,13 +1,12 @@
 package service
 
 import (
+	"TajikCareerHub/configs"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
+	"os"
 	"time"
 )
-
-// Секретный ключ для подписания токенов
-var secretKey = []byte("your_secret_key")
 
 // CustomClaims определяет кастомные поля токена
 type CustomClaims struct {
@@ -22,13 +21,13 @@ func GenerateToken(userID uint, username string) (string, error) {
 		UserID:   userID,
 		Username: username,
 		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(time.Hour * 1).Unix(), // токен истекает через 1 час
-			Issuer:    "your_app_name",
+			ExpiresAt: time.Now().Add(time.Minute * time.Duration(configs.AppSettings.AuthParams.JwtTtlMinutes)).Unix(),
+			Issuer:    configs.AppSettings.AppParams.ServerName,
 		},
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString(secretKey)
+	return token.SignedString([]byte(os.Getenv("JWT_SECRET_KEY")))
 }
 
 // ParseToken парсит JWT токен и возвращает кастомные поля
@@ -38,7 +37,7 @@ func ParseToken(tokenString string) (*CustomClaims, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
-		return secretKey, nil
+		return []byte(os.Getenv("JWT_SECRET_KEY")), nil
 	})
 
 	if err != nil {
