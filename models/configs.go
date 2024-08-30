@@ -1,10 +1,14 @@
 package models
 
-type Configs struct {
+type AppConfig struct {
+	AuthParams     AuthParams     `json:"auth"`
 	LogParams      LogParams      `json:"log_params"`
 	AppParams      AppParams      `json:"app_params"`
 	PostgresParams PostgresParams `json:"postgres_params"`
-	AuthParams     AuthParams     `json:"auth_params"`
+}
+
+type AuthParams struct {
+	JwtTtlMinutes int `json:"jwt_ttl_minutes"`
 }
 
 type LogParams struct {
@@ -21,21 +25,15 @@ type LogParams struct {
 }
 
 type AppParams struct {
+	GinMode    string `json:"gin_mode"`
+	PortRun    string `json:"port_run"`
 	ServerURL  string `json:"server_url"`
 	ServerName string `json:"server_name"`
-	AppVersion string `json:"app_version"`
-	PortRun    string `json:"port_run"`
-	GinMode    string `json:"gin_mode"`
 }
 
 type PostgresParams struct {
-	User     string `json:"user"`
 	Host     string `json:"host"`
 	Port     string `json:"port"`
+	User     string `json:"user"`
 	Database string `json:"database"`
-}
-
-type AuthParams struct {
-	JwtSecretKey  string `json:"my_jwt_secret_key"`
-	JwtTtlMinutes int    `json:"jwt_ttl_minutes"`
 }

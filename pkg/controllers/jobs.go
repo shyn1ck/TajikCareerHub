@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"TajikCareerHub/errs"
 	"TajikCareerHub/logger"
 	"TajikCareerHub/models"
 	"TajikCareerHub/pkg/service"
@@ -15,7 +14,7 @@ func GetAllJobs(c *gin.Context) {
 	logger.Info.Printf("[controllers.GetAllJobs] Client IP: %s - Request to get all jobs.\n", ip)
 	jobs, err := service.GetAllJobs()
 	if err != nil {
-		handleError(c, errs.ErrSomethingWentWrong)
+		handleError(c, err)
 		return
 	}
 	logger.Info.Printf("[controllers.GetAllJobs] Client IP: %s - Successfully retrieved all jobs.\n", ip)
@@ -28,7 +27,7 @@ func GetJobByID(c *gin.Context) {
 	logger.Info.Printf("[controllers.GetJobByID] Client IP: %s - Request to get job by ID: %s\n", ip, idStr)
 	id, err := strconv.ParseUint(idStr, 10, 32)
 	if err != nil {
-		handleError(c, errs.ErrInvalidID)
+		handleError(c, err)
 		return
 	}
 
@@ -45,7 +44,7 @@ func AddJob(c *gin.Context) {
 	ip := c.ClientIP()
 	var job models.Job
 	if err := c.BindJSON(&job); err != nil {
-		handleError(c, errs.ErrFailedToBindJSON)
+		handleError(c, err)
 		return
 	}
 
@@ -65,13 +64,13 @@ func UpdateJob(c *gin.Context) {
 	logger.Info.Printf("[controllers.UpdateJob] Client IP: %s - Request to update job with ID: %s\n", ip, idStr)
 	id, err := strconv.ParseUint(idStr, 10, 32)
 	if err != nil {
-		handleError(c, errs.ErrInvalidID)
+		handleError(c, err)
 		return
 	}
 
 	var updatedJob models.Job
 	if err := c.BindJSON(&updatedJob); err != nil {
-		handleError(c, errs.ErrFailedToBindJSON)
+		handleError(c, err)
 		return
 	}
 
@@ -90,7 +89,7 @@ func DeleteJob(c *gin.Context) {
 	logger.Info.Printf("[controllers.DeleteJob] Client IP: %s - Request to delete job with ID: %s\n", ip, idStr)
 	id, err := strconv.ParseUint(idStr, 10, 32)
 	if err != nil {
-		handleError(c, errs.ErrInvalidID)
+		handleError(c, err)
 		return
 	}
 
@@ -111,7 +110,7 @@ func FilterJobs(c *gin.Context) {
 
 	jobs, err := service.FilterJobs(location, category)
 	if err != nil {
-		handleError(c, errs.ErrSomethingWentWrong)
+		handleError(c, err)
 		return
 	}
 	logger.Info.Printf("[controllers.FilterJobs] Client IP: %s - Jobs filtered by location %s and category %s successfully.\n", ip, location, category)
@@ -141,7 +140,7 @@ func UpdateJobSalary(c *gin.Context) {
 
 	id, err := strconv.ParseUint(idStr, 10, 32)
 	if err != nil {
-		handleError(c, errs.ErrInvalidID)
+		handleError(c, err)
 		return
 	}
 

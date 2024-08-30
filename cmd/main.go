@@ -5,22 +5,14 @@ import (
 	"TajikCareerHub/db"
 	"TajikCareerHub/logger"
 	"TajikCareerHub/pkg/controllers"
-	"errors"
-	"fmt"
 	"github.com/joho/godotenv"
-	"os"
 )
 
 func main() {
-	fmt.Println("JWT Secret Key:", os.Getenv("JWT_SECRET_KEY"))
-	fmt.Println("JWT TTL Minutes:", configs.AppSettings.AuthParams.JwtTtlMinutes)
-
-	err := godotenv.Load(".env")
-	if err != nil {
-		panic(errors.New(fmt.Sprintf("error loading .env file. Error is %s", err)))
+	if err := godotenv.Load(); err != nil {
+		logger.Error.Fatalf("Ошибка загрузки .env файла: %s", err)
 	}
-
-	err = configs.ReadSettings()
+	err := configs.ReadSettings()
 	if err != nil {
 		panic(err)
 	}

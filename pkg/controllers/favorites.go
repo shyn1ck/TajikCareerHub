@@ -14,7 +14,7 @@ func GetFavoritesByUserID(c *gin.Context) {
 	userIDStr := c.Param("userID")
 	userID, err := strconv.ParseUint(userIDStr, 10, 32)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
+		handleError(c, err)
 		return
 	}
 
@@ -34,19 +34,19 @@ func GetFavoriteByUserIDAndJobID(c *gin.Context) {
 	jobIDStr := c.Param("jobID")
 	userID, err := strconv.ParseUint(userIDStr, 10, 32)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
+		handleError(c, err)
 		return
 	}
 	jobID, err := strconv.ParseUint(jobIDStr, 10, 32)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid job ID"})
+		handleError(c, err)
 		return
 	}
 
 	favorite, err := service.GetFavoriteByUserIDAndJobID(uint(userID), uint(jobID))
 	if err != nil {
 		logger.Info.Printf("[controllers.GetFavoriteByUserIDAndJobID] Client IP: %s - Client requested favorite for user ID %v and job ID %v. Error retrieving favorite.\n", ip, userID, jobID)
-		c.JSON(http.StatusNotFound, gin.H{"error": "Favorite not found"})
+		handleError(c, err)
 		return
 	}
 	logger.Info.Printf("[controllers.GetFavoriteByUserIDAndJobID] Client IP: %s - Successfully retrieved favorite for user ID %v and job ID %v\n", ip, userID, jobID)
@@ -57,13 +57,13 @@ func AddFavorite(c *gin.Context) {
 	ip := c.ClientIP()
 	var favorite models.Favorite
 	if err := c.ShouldBindJSON(&favorite); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
+		handleError(c, err)
 		return
 	}
 
 	if err := service.AddFavorite(favorite); err != nil {
 		logger.Info.Printf("[controllers.AddFavorite] Client IP: %s - Client attempted to add favorite with data %v. Error adding favorite.\n", ip, favorite)
-		c.JSON(http.StatusConflict, gin.H{"error": "Failed to add favorite"})
+		handleError(c, err)
 		return
 	}
 
@@ -77,18 +77,18 @@ func RemoveFavorite(c *gin.Context) {
 	jobIDStr := c.Param("jobID")
 	userID, err := strconv.ParseUint(userIDStr, 10, 32)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
+		handleError(c, err)
 		return
 	}
 	jobID, err := strconv.ParseUint(jobIDStr, 10, 32)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid job ID"})
+		handleError(c, err)
 		return
 	}
 
 	if err := service.RemoveFavorite(uint(userID), uint(jobID)); err != nil {
 		logger.Info.Printf("[controllers.RemoveFavorite] Client IP: %s - Client attempted to remove favorite for user ID %v and job ID %v. Error removing favorite.\n", ip, userID, jobID)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to remove favorite"})
+		handleError(c, err)
 		return
 	}
 	logger.Info.Printf("[controllers.RemoveFavorite] Client IP: %s - Successfully removed favorite for user ID %v and job ID %v\n", ip, userID, jobID)
@@ -102,19 +102,19 @@ func CheckFavoriteExists(c *gin.Context) {
 
 	userID, err := strconv.ParseUint(userIDStr, 10, 32)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
+		handleError(c, err)
 		return
 	}
 	jobID, err := strconv.ParseUint(jobIDStr, 10, 32)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid job ID"})
+		handleError(c, err)
 		return
 	}
 
 	exists, err := service.CheckFavoriteExists(uint(userID), uint(jobID))
 	if err != nil {
 		logger.Info.Printf("[controllers.CheckFavoriteExists] Client IP: %s - Client checked if job ID %v is in favorites for user ID %v. Error checking favorite.\n", ip, jobID, userID)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to check if favorite exists"})
+		handleError(c, err)
 		return
 	}
 

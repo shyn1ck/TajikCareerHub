@@ -9,7 +9,7 @@ import (
 	"os"
 )
 
-var AppSettings models.Configs
+var AppSettings models.AppConfig
 
 func ReadSettings() error {
 	fmt.Println("Starting reading settings file")
@@ -31,4 +31,5 @@ func ReadSettings() error {
 	}
 
 	return nil
+
 }

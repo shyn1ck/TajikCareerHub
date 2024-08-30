@@ -13,8 +13,8 @@ func GetAllApplications(c *gin.Context) {
 	ip := c.ClientIP()
 	applications, err := service.GetAllApplications()
 	if err != nil {
-		logger.Info.Printf("[controllers.GetAllApplications] Client IP: %s - Client requested all applications. Successfully retrieved all applications.\n", ip)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve applications"})
+		logger.Info.Printf("[controllers.GetAllApplications] Client IP: %s - Client requested all applications.\n", ip)
+		handleError(c, err)
 		return
 	}
 
@@ -28,14 +28,14 @@ func GetApplicationByID(c *gin.Context) {
 	id, err := strconv.ParseUint(idStr, 10, 32)
 	if err != nil {
 		logger.Info.Printf("[controllers.GetApplicationByID] Client IP: %s - Client requested application with ID %s. Error: Invalid application ID\n", ip, idStr)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid application ID"})
+		handleError(c, err)
 		return
 	}
 
 	application, err := service.GetApplicationByID(uint(id))
 	if err != nil {
 		logger.Info.Printf("[controllers.GetApplicationByID] Client IP: %s - Client requested application with ID %v. Error retrieving application\n", ip, id)
-		c.JSON(http.StatusNotFound, gin.H{"error": "Application not found"})
+		handleError(c, err)
 		return
 	}
 
@@ -49,14 +49,14 @@ func GetApplicationsByUserID(c *gin.Context) {
 	userID, err := strconv.ParseUint(userIDStr, 10, 32)
 	if err != nil {
 		logger.Info.Printf("[controllers.GetApplicationsByUserID] Client IP: %s - Client requested applications for user ID %s. Error: Invalid user ID\n", ip, userIDStr)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
+		handleError(c, err)
 		return
 	}
 
 	applications, err := service.GetApplicationsByUserID(uint(userID))
 	if err != nil {
 		logger.Info.Printf("[controllers.GetApplicationsByUserID] Client IP: %s - Client requested applications for user ID %v. Error retrieving applications\n", ip, userID)
-		c.JSON(http.StatusNotFound, gin.H{"error": "No applications found for user"})
+		handleError(c, err)
 		return
 	}
 
@@ -70,14 +70,14 @@ func GetApplicationsByJobID(c *gin.Context) {
 	jobID, err := strconv.ParseUint(jobIDStr, 10, 32)
 	if err != nil {
 		logger.Info.Printf("[controllers.GetApplicationsByJobID] Client IP: %s - Client requested applications for job ID %s. Error: Invalid job ID\n", ip, jobIDStr)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid job ID"})
+		handleError(c, err)
 		return
 	}
 
 	applications, err := service.GetApplicationsByJobID(uint(jobID))
 	if err != nil {
 		logger.Info.Printf("[controllers.GetApplicationsByJobID] Client IP: %s - Client requested applications for job ID %v. Error retrieving applications\n", ip, jobID)
-		c.JSON(http.StatusNotFound, gin.H{"error": "No applications found for job"})
+		handleError(c, err)
 		return
 	}
 
@@ -90,13 +90,13 @@ func AddApplication(c *gin.Context) {
 	var application models.Application
 	if err := c.ShouldBindJSON(&application); err != nil {
 		logger.Info.Printf("[controllers.AddApplication] Client IP: %s - Client attempted to add application with data %v. Error: Invalid input\n", ip, application)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
+		handleError(c, err)
 		return
 	}
 
 	if err := service.AddApplication(application); err != nil {
 		logger.Info.Printf("[controllers.AddApplication] Client IP: %s - Client attempted to add application with data %v. Error adding application\n", ip, application)
-		c.JSON(http.StatusConflict, gin.H{"error": "Failed to add application"})
+		handleError(c, err)
 		return
 	}
 
@@ -111,20 +111,20 @@ func UpdateApplication(c *gin.Context) {
 	id, err := strconv.ParseUint(idStr, 10, 32)
 	if err != nil {
 		logger.Info.Printf("[controllers.UpdateApplication] Client IP: %s - Client attempted to update application with ID %s. Error: Invalid application ID\n", ip, idStr)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid application ID"})
+		handleError(c, err)
 		return
 	}
 	application.ID = uint(id)
 
 	if err := c.ShouldBindJSON(&application); err != nil {
 		logger.Info.Printf("[controllers.UpdateApplication] Client IP: %s - Client attempted to update application with ID %v using data %v. Error: Invalid input\n", ip, id, application)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
+		handleError(c, err)
 		return
 	}
 
 	if err := service.UpdateApplication(application); err != nil {
 		logger.Info.Printf("[controllers.UpdateApplication] Client IP: %s - Client attempted to update application with ID %v using data %v. Error updating application\n", ip, id, application)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update application"})
+		handleError(c, err)
 		return
 	}
 
@@ -138,13 +138,13 @@ func DeleteApplication(c *gin.Context) {
 	id, err := strconv.ParseUint(idStr, 10, 32)
 	if err != nil {
 		logger.Info.Printf("[controllers.DeleteApplication] Client IP: %s - Client attempted to delete application with ID %s. Error: Invalid application ID\n", ip, idStr)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid application ID"})
+		handleError(c, err)
 		return
 	}
 
 	if err := service.DeleteApplication(uint(id)); err != nil {
 		logger.Info.Printf("[controllers.DeleteApplication] Client IP: %s - Client attempted to delete application with ID %v. Error soft deleting application\n", ip, id)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete application"})
+		handleError(c, err)
 		return
 	}
 

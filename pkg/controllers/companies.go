@@ -14,7 +14,7 @@ func GetAllCompanies(c *gin.Context) {
 	logger.Info.Printf("[controllers.GetAllCompanies] Client IP: %s - Client requested all companies\n", ip)
 	companies, err := service.GetAllCompanies()
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve companies"})
+		handleError(c, err)
 		return
 	}
 	logger.Info.Printf("[controllers.GetAllCompanies] Client IP: %s - Successfully retrieved all companies\n", ip)
@@ -27,13 +27,13 @@ func GetCompanyByID(c *gin.Context) {
 	id, err := strconv.ParseUint(idStr, 10, 32)
 	if err != nil {
 		logger.Info.Printf("[controllers.GetCompanyByID] Client IP: %s - Client requested company with ID %s. Error: Invalid company ID\n", ip, idStr)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid company ID"})
+		handleError(c, err)
 		return
 	}
 	company, err := service.GetCompanyByID(uint(id))
 	if err != nil {
 		logger.Info.Printf("[controllers.GetCompanyByID] Client IP: %s - Client requested company with ID %v. Error retrieving company\n", ip, id)
-		c.JSON(http.StatusNotFound, gin.H{"error": "Company not found"})
+		handleError(c, err)
 		return
 	}
 	logger.Info.Printf("[controllers.GetCompanyByID] Client IP: %s - Successfully retrieved company with ID %v\n", ip, id)
@@ -45,11 +45,11 @@ func AddCompany(c *gin.Context) {
 	var company models.Company
 	if err := c.ShouldBindJSON(&company); err != nil {
 		logger.Info.Printf("[controllers.AddCompany] Client IP: %s - Client attempted to add company with data %v. Error: Invalid input\n", ip, company)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
+		handleError(c, err)
 		return
 	}
 	if err := service.AddCompany(company); err != nil {
-		c.JSON(http.StatusConflict, gin.H{"error": "Failed to add company"})
+		handleError(c, err)
 		return
 	}
 	logger.Info.Printf("[controllers.AddCompany] Client IP: %s - Successfully added company with data %v\n", ip, company)
@@ -63,18 +63,18 @@ func UpdateCompany(c *gin.Context) {
 	id, err := strconv.ParseUint(idStr, 10, 32)
 	if err != nil {
 		logger.Info.Printf("[controllers.UpdateCompany] Client IP: %s - Client attempted to update company with ID %s. Error: Invalid company ID\n", ip, idStr)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid company ID"})
+		handleError(c, err)
 		return
 	}
 	company.ID = uint(id)
 	if err := c.ShouldBindJSON(&company); err != nil {
 		logger.Info.Printf("[controllers.UpdateCompany] Client IP: %s - Client attempted to update company with ID %v using data %v. Error: Invalid input\n", ip, id, company)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
+		handleError(c, err)
 		return
 	}
 	if err := service.UpdateCompany(company); err != nil {
 		logger.Info.Printf("[controllers.UpdateCompany] Client IP: %s - Client attempted to update company with ID %v using data %v. Error updating company\n", ip, id, company)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update company"})
+		handleError(c, err)
 		return
 	}
 	logger.Info.Printf("[controllers.UpdateCompany] Client IP: %s - Successfully updated company with ID %v\n", ip, id)
@@ -87,13 +87,13 @@ func DeleteCompany(c *gin.Context) {
 	id, err := strconv.ParseUint(idStr, 10, 32)
 	if err != nil {
 		logger.Info.Printf("[controllers.DeleteCompany] Client IP: %s - Client attempted to delete company with ID %s. Error: Invalid company ID\n", ip, idStr)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid company ID"})
+		handleError(c, err)
 		return
 	}
 
 	if err := service.DeleteCompany(uint(id)); err != nil {
 		logger.Info.Printf("[controllers.DeleteCompany] Client IP: %s - Client attempted to delete company with ID %v. Error soft deleting company\n", ip, id)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete company"})
+		handleError(c, err)
 		return
 	}
 	logger.Info.Printf("[controllers.DeleteCompany] Client IP: %s - Successfully soft deleted company with ID %v\n", ip, id)
