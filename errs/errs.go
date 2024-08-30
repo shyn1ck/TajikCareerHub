@@ -19,4 +19,7 @@ var (
 	ErrInvalidEmailFormat          = errors.New("ErrInvalidEmailFormat")
 	ErrWeakPassword                = errors.New("ErrWeakPassword")
 	ErrEmailNotFound               = errors.New("ErrEmailNotFound")
+	ErrDuplicateEntry              = errors.New("ErrDuplicateEntry")
+	ErrInvalidData                 = errors.New("ErrInvalidData")
+	ErrConnectionFailed            = errors.New("ErrConnectionFailed")
 )
