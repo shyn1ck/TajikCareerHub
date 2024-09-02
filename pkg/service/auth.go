@@ -11,8 +11,7 @@ func SignIn(username, password string) (accessToken string, err error) {
 	if err != nil {
 		return "", err
 	}
-
-	accessToken, err = GenerateToken(user.ID, user.UserName)
+	accessToken, err = GenerateToken(user.ID, user.UserName, user.Role)
 	if err != nil {
 		return "", err
 	}
