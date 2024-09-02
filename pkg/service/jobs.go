@@ -34,8 +34,6 @@ func UpdateJob(jobID uint, updatedJob models.Job) error {
 	if err != nil {
 		return err
 	}
-
-	// Обновляем только изменённые поля
 	if updatedJob.Title != "" {
 		job.Title = updatedJob.Title
 	}
@@ -107,6 +105,10 @@ func UpdateJobSalary(jobID uint, newSalary string) error {
 	}
 
 	return nil
+}
+
+func SearchJobsByKeyword(keyword string) ([]models.Job, error) {
+	return repository.SearchJobsByKeyword(keyword)
 }
 
 func GetJobsBySalary(minSalary, maxSalary string) ([]models.Job, error) {

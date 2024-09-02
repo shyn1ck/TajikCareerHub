@@ -102,3 +102,13 @@ func FilterJobsBySalaryRange(minSalary, maxSalary string) (jobs []models.Job, er
 	}
 	return jobs, nil
 }
+
+func SearchJobsByKeyword(keyword string) ([]models.Job, error) {
+	var jobs []models.Job
+	searchPattern := "%" + keyword + "%"
+	err := db.GetDBConn().Where("title ILIKE ? OR description ILIKE ?", searchPattern, searchPattern).Find(&jobs).Error
+	if err != nil {
+		return nil, err
+	}
+	return jobs, nil
+}
