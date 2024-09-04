@@ -5,7 +5,6 @@ import (
 	"TajikCareerHub/db"
 	"TajikCareerHub/logger"
 	"TajikCareerHub/pkg/controllers"
-	"fmt"
 	"github.com/joho/godotenv"
 )
 
@@ -17,7 +16,6 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Print("New commit for chevrons ")
 	err = logger.Init()
 	if err != nil {
 		return
