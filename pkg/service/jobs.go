@@ -62,10 +62,6 @@ func DeleteJob(jobID uint) error {
 	return repository.DeleteJob(jobID)
 }
 
-func FilterJobs(location string, category string) ([]models.Job, error) {
-	return repository.FilterJobs(location, category)
-}
-
 func UpdateJobSalary(jobID uint, newSalary string) error {
 	if _, err := strconv.ParseFloat(newSalary, 64); err != nil {
 		return errors.New("invalid salary format")

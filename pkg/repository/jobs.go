@@ -74,23 +74,6 @@ func DeleteJob(jobID uint) error {
 	return nil
 }
 
-func FilterJobs(location string, category string) (jobs []models.Job, err error) {
-	query := db.GetDBConn()
-	if location != "" {
-		query = query.Where("location = ?", location)
-	}
-	if category != "" {
-		query = query.Joins("JOIN job_categories ON jobs.job_category_id = job_categories.id").
-			Where("job_categories.name = ?", category)
-	}
-	err = query.Find(&jobs).Error
-	if err != nil {
-		logger.Error.Printf("[repository.FilterJobs]: Failed to filter jobs. Error: %v\n", err)
-		return nil, err
-	}
-	return jobs, nil
-}
-
 func UpdateJobSalary(jobID uint, newSalary string) error {
 	err := db.GetDBConn().Model(&models.Job{}).Where("id = ?", jobID).Update("salary", newSalary).Error
 	if err != nil {

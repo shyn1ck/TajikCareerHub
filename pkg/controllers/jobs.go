@@ -110,21 +110,6 @@ func DeleteJob(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Job deleted successfully"})
 }
 
-func FilterJobs(c *gin.Context) {
-	ip := c.ClientIP()
-	location := c.Query("location")
-	category := c.Query("category")
-	logger.Info.Printf("[controllers.FilterJobs] Client IP: %s - Request to filter jobs by location: %s and category: %s\n", ip, location, category)
-
-	jobs, err := service.FilterJobs(location, category)
-	if err != nil {
-		handleError(c, err)
-		return
-	}
-	logger.Info.Printf("[controllers.FilterJobs] Client IP: %s - Jobs filtered by location %s and category %s successfully.\n", ip, location, category)
-	c.JSON(http.StatusOK, jobs)
-}
-
 func UpdateJobSalary(c *gin.Context) {
 	ip := c.ClientIP()
 	idStr := c.Param("id")
