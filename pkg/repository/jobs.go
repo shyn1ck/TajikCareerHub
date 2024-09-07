@@ -33,8 +33,13 @@ func GetAllJobs(keyword, minSalary, maxSalary, location, category string) ([]mod
 	return jobs, nil
 }
 
-func GetJobByID(id uint) (job models.Job, err error) {
-	err = db.GetDBConn().Where("id = ?", id).First(&job).Error
+func GetJobByID(id uint) (models.Job, error) {
+	var job models.Job
+	err := db.GetDBConn().
+		Preload("Company").
+		Preload("JobCategory").
+		Where("id = ?", id).
+		First(&job).Error
 	if err != nil {
 		logger.Error.Printf("[repository.GetJobByID]: Error retrieving job with ID %v. Error: %v\n", id, err)
 		return models.Job{}, err
