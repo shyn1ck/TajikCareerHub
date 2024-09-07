@@ -6,16 +6,22 @@ import (
 	"TajikCareerHub/models"
 )
 
-func GetAllJobs(keyword, salary, location, category string) ([]models.Job, error) {
+func GetAllJobs(keyword, minSalary, maxSalary, location, category string) ([]models.Job, error) {
 	var jobs []models.Job
 	query := db.GetDBConn()
 
 	if keyword != "" {
 		query = query.Where("title ILIKE ?", "%"+keyword+"%")
 	}
-	if salary != "" {
-		query = query.Where("salary = ?", salary)
+
+	if minSalary != "" && maxSalary != "" {
+		query = query.Where("salary BETWEEN ? AND ?", minSalary, maxSalary)
+	} else if minSalary != "" {
+		query = query.Where("salary >= ?", minSalary)
+	} else if maxSalary != "" {
+		query = query.Where("salary <= ?", maxSalary)
 	}
+
 	if location != "" {
 		query = query.Where("location = ?", location)
 	}
@@ -23,6 +29,7 @@ func GetAllJobs(keyword, salary, location, category string) ([]models.Job, error
 		query = query.Joins("JOIN job_categories ON job_categories.id = jobs.job_category_id").
 			Where("job_categories.name = ?", category)
 	}
+
 	query = query.Debug()
 
 	err := query.Preload("Company").Preload("JobCategory").Find(&jobs).Error
