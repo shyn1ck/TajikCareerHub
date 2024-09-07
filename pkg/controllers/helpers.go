@@ -8,29 +8,18 @@ import (
 )
 
 func handleError(c *gin.Context, err error) {
-	switch {
-	case errors.Is(err, errs.ErrUsernameUniquenessFailed),
-		errors.Is(err, errs.ErrDuplicateEntry),
-		errors.Is(err, errs.ErrIncorrectUsernameOrPassword),
-		errors.Is(err, errs.ErrInvalidID),
-		errors.Is(err, errs.ErrFailedToBindJSON),
-		errors.Is(err, errs.ErrPasswordUpdateFailed),
-		errors.Is(err, errs.ErrUserCreationFailed),
-		errors.Is(err, errs.ErrUserUpdateFailed),
-		errors.Is(err, errs.ErrUserDeletionFailed),
-		errors.Is(err, errs.ErrUserExistsCheckFailed),
-		errors.Is(err, errs.ErrEmailAlreadyExists),
-		errors.Is(err, errs.ErrInvalidEmailFormat),
-		errors.Is(err, errs.ErrWeakPassword):
+	if errors.Is(err, errs.ErrUsernameUniquenessFailed) ||
+		errors.Is(err, errs.ErrIncorrectUsernameorPassword) ||
+		errors.Is(err, errs.ErrValidationFailed) ||
+		errors.Is(err, errs.ErrDuplicateEntry) ||
+		errors.Is(err, errs.ErrInvalidField) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-
-	case errors.Is(err, errs.ErrRecordNotFound),
-		errors.Is(err, errs.ErrOperationNotFound),
-		errors.Is(err, errs.ErrEmailNotFound),
-		errors.Is(err, errs.ErrNotFound):
+	} else if errors.Is(err, errs.ErrPermissionDenied) {
+		c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
+	} else if errors.Is(err, errs.ErrRecordNotFound) ||
+		errors.Is(err, errs.ErrRoutesNotFound) {
 		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
-
-	default:
+	} else {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": errs.ErrSomethingWentWrong.Error()})
 	}
 }
