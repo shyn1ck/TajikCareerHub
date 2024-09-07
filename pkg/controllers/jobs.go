@@ -9,6 +9,7 @@ import (
 	"strconv"
 )
 
+// new feach
 func GetAllJobs(c *gin.Context) {
 	ip := c.ClientIP()
 	keyword := c.Query("keyword")
