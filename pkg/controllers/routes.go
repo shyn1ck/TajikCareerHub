@@ -28,7 +28,7 @@ func InitRoutes() *gin.Engine {
 		userGroup.DELETE("/:id", adminOnly, DeleteUser)
 	}
 
-	passwordGroup := r.Group("/users/:id/password").Use(checkUserAuthenticlation)
+	passwordGroup := r.Group("/users/:id/password").Use(checkUserAuthentication)
 	{
 		passwordGroup.PATCH("/", UpdateUserPassword)
 	}
@@ -46,7 +46,6 @@ func InitRoutes() *gin.Engine {
 		jobGroup.PUT("/:id", employerOnly, UpdateJob)              // Employer only
 		jobGroup.DELETE("/:id", employerOnly, DeleteJob)           // Employer only
 		jobGroup.PUT("/:id/salary", employerOnly, UpdateJobSalary) // Employer only
-		jobGroup.GET("/", employerOnly, FilterJobs)                // Employer only
 	}
 
 	applicationGroup := r.Group("/applications").Use(checkUserAuthentication)

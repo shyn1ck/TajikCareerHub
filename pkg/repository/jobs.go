@@ -6,24 +6,30 @@ import (
 	"TajikCareerHub/models"
 )
 
-func GetAllJobs(keyword, location, category string) (jobs []models.Job, err error) {
+func GetAllJobs(keyword, salary, location, category string) ([]models.Job, error) {
+	var jobs []models.Job
+	query := db.GetDBConn()
 
-	query := db.GetDBConn().Model(&models.Job{}).Where("deleted_at IS NULL")
 	if keyword != "" {
-		query = query.Where("title ILIKE ? OR description ILIKE ?", "%"+keyword+"%", "%"+keyword+"%")
+		query = query.Where("title ILIKE ?", "%"+keyword+"%")
+	}
+	if salary != "" {
+		query = query.Where("salary = ?", salary)
 	}
 	if location != "" {
 		query = query.Where("location = ?", location)
 	}
 	if category != "" {
-		query = query.Joins("JOIN job_categories ON jobs.job_category_id = job_categories.id").Where("job_categories.name = ?", category)
+		query = query.Joins("JOIN job_categories ON job_categories.id = jobs.job_category_id").
+			Where("job_categories.name = ?", category)
 	}
+	query = query.Debug()
 
-	err = query.Find(&jobs).Error
+	err := query.Preload("Company").Preload("JobCategory").Find(&jobs).Error
 	if err != nil {
-		logger.Error.Printf("[repository.GetAllJobs]: Error retrieving jobs. Error: %v\n", err)
 		return nil, err
 	}
+
 	return jobs, nil
 }
 

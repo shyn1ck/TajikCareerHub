@@ -9,7 +9,7 @@ import (
 )
 
 func GetAllJobs(keyword, salary, location, category string) (jobs []models.Job, err error) {
-	jobs, err = repository.GetAllJobs(keyword, location, category)
+	jobs, err = repository.GetAllJobs(keyword, salary, location, category)
 	if err != nil {
 		return nil, err
 	}
