@@ -15,7 +15,7 @@
     "local_time": true
   },
   "app_params": {
-    "gin_mode": "release",
+    "gin_mode": "debug",
     "port_run": "8181",
     "server_url": "localhost",
     "server_name": "tajikcareerhub_service"
@@ -24,6 +24,6 @@
     "host": "localhost",
     "port": "5432",
     "user": "postgres",
-    "database": "postgres"
+    "database": "tajik_career_hub_db"
   }
 }

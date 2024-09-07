@@ -45,6 +45,5 @@ func ParseToken(tokenString string) (*CustomClaims, error) {
 	if claims, ok := token.Claims.(*CustomClaims); ok && token.Valid {
 		return claims, nil
 	}
-
 	return nil, fmt.Errorf("invalid token")
 }

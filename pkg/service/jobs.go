@@ -8,8 +8,13 @@ import (
 	"strconv"
 )
 
-func GetAllJobs() ([]models.Job, error) {
-	return repository.GetAllJobs()
+func GetAllJobs(keyword, salary, location, category string) (jobs []models.Job, err error) {
+	jobs, err = repository.GetAllJobs(keyword, location, category)
+	if err != nil {
+		return nil, err
+	}
+
+	return jobs, nil
 }
 
 func GetJobByID(id uint) (models.Job, error) {
@@ -61,40 +66,6 @@ func FilterJobs(location string, category string) ([]models.Job, error) {
 	return repository.FilterJobs(location, category)
 }
 
-func validateSalaryRange(minSalary, maxSalary string) error {
-	if minSalary == "" || maxSalary == "" {
-		return errors.New("salary range must not be empty")
-	}
-	min, err := strconv.ParseFloat(minSalary, 64)
-	if err != nil {
-		return errors.New("invalid format for minSalary")
-	}
-
-	max, err := strconv.ParseFloat(maxSalary, 64)
-	if err != nil {
-		return errors.New("invalid format for maxSalary")
-	}
-
-	if min > max {
-		return errors.New("minSalary cannot be greater than maxSalary")
-	}
-
-	return nil
-}
-
-func GetJobsBySalaryRange(minSalary, maxSalary string) ([]models.Job, error) {
-	if err := validateSalaryRange(minSalary, maxSalary); err != nil {
-		return nil, err
-	}
-
-	jobs, err := repository.FilterJobsBySalaryRange(minSalary, maxSalary)
-	if err != nil {
-		return nil, err
-	}
-
-	return jobs, nil
-}
-
 func UpdateJobSalary(jobID uint, newSalary string) error {
 	if _, err := strconv.ParseFloat(newSalary, 64); err != nil {
 		return errors.New("invalid salary format")
@@ -105,19 +76,4 @@ func UpdateJobSalary(jobID uint, newSalary string) error {
 	}
 
 	return nil
-}
-
-func SearchJobsByKeyword(keyword string) ([]models.Job, error) {
-	return repository.SearchJobsByKeyword(keyword)
-}
-
-func GetJobsBySalary(minSalary, maxSalary string) ([]models.Job, error) {
-	if err := validateSalaryRange(minSalary, maxSalary); err != nil {
-		return nil, err
-	}
-	jobs, err := repository.FilterJobsBySalary(minSalary, maxSalary)
-	if err != nil {
-		return nil, err
-	}
-	return jobs, nil
 }

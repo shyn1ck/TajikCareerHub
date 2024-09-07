@@ -5,7 +5,13 @@ import (
 	"TajikCareerHub/db"
 	"TajikCareerHub/logger"
 	"TajikCareerHub/pkg/controllers"
+	"TajikCareerHub/server"
+	"context"
 	"github.com/joho/godotenv"
+	"log"
+	"os"
+	"os/signal"
+	"syscall"
 )
 
 func main() {
@@ -31,9 +37,27 @@ func main() {
 	if err := db.Migrate(); err != nil {
 		logger.Error.Fatalf("Failed to run database migrations: %v", err)
 	}
-	err = controllers.RunRoutes()
-	if err != nil {
-		logger.Error.Fatalf("Failed to run routes: %v", err)
+
+	mainServer := new(server.Server)
+	go func() {
+		if err = mainServer.Run(configs.AppSettings.AppParams.PortRun, controllers.InitRoutes()); err != nil {
+			log.Fatalf("Ошибка при запуске HTTP сервера: %s", err)
+		}
+	}()
+
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT)
+	<-quit
+
+	if sqlDB, err := db.GetDBConn().DB(); err == nil {
+		if err := sqlDB.Close(); err != nil {
+			logger.Error.Fatalf("Ошибка при закрытии соединения с БД: %s", err)
+		}
+	} else {
+		logger.Error.Fatalf("Ошибка при получении *sql.DB из GORM: %s", err)
 	}
 
+	if err = mainServer.Shutdown(context.Background()); err != nil {
+		logger.Error.Fatalf("Ошибка при завершении работы сервера: %s", err)
+	}
 }

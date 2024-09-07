@@ -6,10 +6,22 @@ import (
 	"TajikCareerHub/models"
 )
 
-func GetAllJobs() (jobs []models.Job, err error) {
-	err = db.GetDBConn().Where("deleted_at IS NULL").Find(&jobs).Error
+func GetAllJobs(keyword, location, category string) (jobs []models.Job, err error) {
+
+	query := db.GetDBConn().Model(&models.Job{}).Where("deleted_at IS NULL")
+	if keyword != "" {
+		query = query.Where("title ILIKE ? OR description ILIKE ?", "%"+keyword+"%", "%"+keyword+"%")
+	}
+	if location != "" {
+		query = query.Where("location = ?", location)
+	}
+	if category != "" {
+		query = query.Joins("JOIN job_categories ON jobs.job_category_id = job_categories.id").Where("job_categories.name = ?", category)
+	}
+
+	err = query.Find(&jobs).Error
 	if err != nil {
-		logger.Error.Printf("[repository.GetAllJobs]: Error retrieving all jobs. Error: %v\n", err)
+		logger.Error.Printf("[repository.GetAllJobs]: Error retrieving jobs. Error: %v\n", err)
 		return nil, err
 	}
 	return jobs, nil
@@ -68,19 +80,6 @@ func FilterJobs(location string, category string) (jobs []models.Job, err error)
 	return jobs, nil
 }
 
-func FilterJobsBySalary(minSalary, maxSalary string) (jobs []models.Job, err error) {
-	query := db.GetDBConn()
-	if minSalary != "" && maxSalary != "" {
-		query = query.Where("salary BETWEEN ? AND ?", minSalary, maxSalary)
-	}
-	err = query.Find(&jobs).Error
-	if err != nil {
-		logger.Error.Printf("[repository.FilterJobsBySalary]: Failed to filter jobs by salary. Error: %v\n", err)
-		return nil, err
-	}
-	return jobs, nil
-}
-
 func UpdateJobSalary(jobID uint, newSalary string) error {
 	err := db.GetDBConn().Model(&models.Job{}).Where("id = ?", jobID).Update("salary", newSalary).Error
 	if err != nil {
@@ -88,27 +87,4 @@ func UpdateJobSalary(jobID uint, newSalary string) error {
 		return err
 	}
 	return nil
-}
-
-func FilterJobsBySalaryRange(minSalary, maxSalary string) (jobs []models.Job, err error) {
-	query := db.GetDBConn()
-	if minSalary != "" && maxSalary != "" {
-		query = query.Where("salary >= ? AND salary <= ?", minSalary, maxSalary)
-	}
-	err = query.Find(&jobs).Error
-	if err != nil {
-		logger.Error.Printf("[repository.FilterJobsBySalaryRange]: Failed to filter jobs by salary range. Error: %v\n", err)
-		return nil, err
-	}
-	return jobs, nil
-}
-
-func SearchJobsByKeyword(keyword string) ([]models.Job, error) {
-	var jobs []models.Job
-	searchPattern := "%" + keyword + "%"
-	err := db.GetDBConn().Where("title ILIKE ? OR description ILIKE ?", searchPattern, searchPattern).Find(&jobs).Error
-	if err != nil {
-		return nil, err
-	}
-	return jobs, nil
 }

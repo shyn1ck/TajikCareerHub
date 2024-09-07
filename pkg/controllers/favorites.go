@@ -17,13 +17,11 @@ func GetFavoritesByUserID(c *gin.Context) {
 		handleError(c, err)
 		return
 	}
-
 	favorites, err := service.GetFavoritesByUserID(uint(userID))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve favorites"})
 		return
 	}
-
 	logger.Info.Printf("[controllers.GetFavoritesByUserID] Client IP: %s - Successfully retrieved favorites for user ID %v\n", ip, userID)
 	c.JSON(http.StatusOK, favorites)
 }
@@ -60,13 +58,11 @@ func AddFavorite(c *gin.Context) {
 		handleError(c, err)
 		return
 	}
-
 	if err := service.AddFavorite(favorite); err != nil {
 		logger.Info.Printf("[controllers.AddFavorite] Client IP: %s - Client attempted to add favorite with data %v. Error adding favorite.\n", ip, favorite)
 		handleError(c, err)
 		return
 	}
-
 	logger.Info.Printf("[controllers.AddFavorite] Client IP: %s - Successfully added favorite with data %v\n", ip, favorite)
 	c.JSON(http.StatusCreated, gin.H{"message": "Favorite added successfully"})
 }

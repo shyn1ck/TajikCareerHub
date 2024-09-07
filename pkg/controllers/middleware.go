@@ -46,6 +46,7 @@ func checkUserAuthentication(c *gin.Context) {
 	c.Set(userRoleCtx, claims.Role)
 	c.Next()
 }
+
 func adminOnly(c *gin.Context) {
 	role, exists := c.Get(userRoleCtx)
 	if !exists || role != "admin" {
@@ -56,6 +57,7 @@ func adminOnly(c *gin.Context) {
 	}
 	c.Next()
 }
+
 func employerOnly(c *gin.Context) {
 	role, exists := c.Get(userRoleCtx)
 	if !exists || role != "Employer" {
@@ -66,6 +68,7 @@ func employerOnly(c *gin.Context) {
 	}
 	c.Next()
 }
+
 func specialistOnly(c *gin.Context) {
 	role, exists := c.Get(userRoleCtx)
 	if !exists || role != "Specialist" {

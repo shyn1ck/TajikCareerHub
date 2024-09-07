@@ -11,14 +11,20 @@ import (
 
 func GetAllJobs(c *gin.Context) {
 	ip := c.ClientIP()
-	logger.Info.Printf("[controllers.GetAllJobs] Client IP: %s - Request to get all jobs.\n", ip)
-	jobs, err := service.GetAllJobs()
+	keyword := c.Query("keyword")
+	salary := c.Query("salary")
+	location := c.Query("location")
+	category := c.Query("category")
+	logger.Info.Printf("[controllers.GetAllJobs] Client IP: %s - Request to get jobs with keyword: %s, salary %s, location: %s, category: %s\n", ip, keyword, salary, location, category)
+	jobs, err := service.GetAllJobs(keyword, salary, location, category)
 	if err != nil {
 		handleError(c, err)
 		return
 	}
-	logger.Info.Printf("[controllers.GetAllJobs] Client IP: %s - Successfully retrieved all jobs.\n", ip)
-	c.JSON(http.StatusOK, jobs)
+	logger.Info.Printf("[controllers.GetAllJobs] Client IP: %s - Successfully retrieved jobs with keyword: %s, salary %s, location: %s, category: %s\n", ip, keyword, salary, location, category)
+	c.JSON(http.StatusOK, gin.H{
+		"jobs": jobs,
+	})
 }
 
 func GetJobByID(c *gin.Context) {
@@ -114,21 +120,6 @@ func FilterJobs(c *gin.Context) {
 		return
 	}
 	logger.Info.Printf("[controllers.FilterJobs] Client IP: %s - Jobs filtered by location %s and category %s successfully.\n", ip, location, category)
-	c.JSON(http.StatusOK, jobs)
-}
-
-func GetJobsBySalaryRange(c *gin.Context) {
-	ip := c.ClientIP()
-	minSalary := c.Query("minSalary")
-	maxSalary := c.Query("maxSalary")
-	logger.Info.Printf("[controllers.GetJobsBySalaryRange] Client IP: %s - Request to get jobs by salary range: %s to %s\n", ip, minSalary, maxSalary)
-
-	jobs, err := service.GetJobsBySalaryRange(minSalary, maxSalary)
-	if err != nil {
-		handleError(c, err)
-		return
-	}
-	logger.Info.Printf("[controllers.GetJobsBySalaryRange] Client IP: %s - Successfully retrieved jobs by salary range %s to %s.\n", ip, minSalary, maxSalary)
 	c.JSON(http.StatusOK, jobs)
 }
 
