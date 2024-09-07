@@ -42,7 +42,7 @@ func GetJobByID(id uint) (models.Job, error) {
 		First(&job).Error
 	if err != nil {
 		logger.Error.Printf("[repository.GetJobByID]: Error retrieving job with ID %v. Error: %v\n", id, err)
-		return models.Job{}, err
+		return models.Job{}, translateError(err)
 	}
 	return job, nil
 }

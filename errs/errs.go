@@ -22,4 +22,5 @@ var (
 	ErrDuplicateEntry              = errors.New("ErrDuplicateEntry")
 	ErrInvalidData                 = errors.New("ErrInvalidData")
 	ErrConnectionFailed            = errors.New("ErrConnectionFailed")
+	ErrNotFound                    = errors.New(`ErrNotFound`)
 )

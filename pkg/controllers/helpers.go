@@ -25,7 +25,8 @@ func handleError(c *gin.Context, err error) {
 
 	case errors.Is(err, errs.ErrRecordNotFound),
 		errors.Is(err, errs.ErrOperationNotFound),
-		errors.Is(err, errs.ErrEmailNotFound):
+		errors.Is(err, errs.ErrEmailNotFound),
+		errors.Is(err, errs.ErrNotFound):
 		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 
 	default:
