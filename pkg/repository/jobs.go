@@ -30,13 +30,6 @@ func GetAllJobs(keyword, minSalary, maxSalary, location, category string) ([]mod
 			Where("job_categories.name = ?", category)
 	}
 
-	query = query.Debug()
-
-	err := query.Preload("Company").Preload("JobCategory").Find(&jobs).Error
-	if err != nil {
-		return nil, err
-	}
-
 	return jobs, nil
 }
 

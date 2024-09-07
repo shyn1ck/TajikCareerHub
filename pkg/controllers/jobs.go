@@ -15,8 +15,10 @@ func GetAllJobs(c *gin.Context) {
 	salary := c.Query("salary")
 	location := c.Query("location")
 	category := c.Query("category")
+	minSalary := c.Query("min-salary")
+	maxSalary := c.Query("max-salary")
 	logger.Info.Printf("[controllers.GetAllJobs] Client IP: %s - Request to get jobs with keyword: %s, salary %s, location: %s, category: %s\n", ip, keyword, salary, location, category)
-	jobs, err := service.GetAllJobs(keyword, salary, location, category)
+	jobs, err := service.GetAllJobs(keyword, minSalary, maxSalary, location, category)
 	if err != nil {
 		handleError(c, err)
 		return

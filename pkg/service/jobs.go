@@ -8,8 +8,8 @@ import (
 	"strconv"
 )
 
-func GetAllJobs(keyword, salary, location, category string) (jobs []models.Job, err error) {
-	jobs, err = repository.GetAllJobs(keyword, salary, location, category)
+func GetAllJobs(keyword, minSalary, maxSalary, location, category string) (jobs []models.Job, err error) {
+	jobs, err = repository.GetAllJobs(keyword, minSalary, maxSalary, location, category)
 	if err != nil {
 		return nil, err
 	}
