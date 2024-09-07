@@ -42,7 +42,7 @@ func InitRoutes() *gin.Engine {
 	{
 		jobGroup.GET("/", GetAllJobs)
 		jobGroup.GET("/:id", GetJobByID)
-		jobGroup.POST("/", employerOnly, AddJob)                   // Employer only
+		jobGroup.POST("/", adminOnly, AddJob)                      // Employer only
 		jobGroup.PUT("/:id", employerOnly, UpdateJob)              // Employer only
 		jobGroup.DELETE("/:id", employerOnly, DeleteJob)           // Employer only
 		jobGroup.PUT("/:id/salary", employerOnly, UpdateJobSalary) // Employer only

@@ -48,10 +48,9 @@ func GetJobByID(id uint) (models.Job, error) {
 }
 
 func AddJob(job models.Job) error {
-	result := db.GetDBConn().Create(&job)
-	if result.Error != nil {
-		logger.Error.Printf("[repository.AddJob]: Failed to add job, error: %v\n", result.Error)
-		return result.Error
+	if err := db.GetDBConn().Create(&job).Error; err != nil {
+		logger.Error.Printf("[repository.AddJob]: Failed to add job, error: %v\n", err)
+		return translateError(err)
 	}
 	return nil
 }

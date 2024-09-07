@@ -11,12 +11,24 @@ func translateError(err error) error {
 		return errs.ErrRecordNotFound
 	}
 
-	if err != nil && errors.Is(err, gorm.ErrDuplicatedKey) {
+	if errors.Is(err, gorm.ErrDuplicatedKey) {
 		return errs.ErrDuplicateEntry
 	}
 
-	if err != nil && errors.Is(err, gorm.ErrInvalidData) {
+	if errors.Is(err, gorm.ErrInvalidField) {
+		return errs.ErrInvalidField
+	}
+
+	if errors.Is(err, gorm.ErrInvalidData) {
 		return errs.ErrInvalidData
+	}
+
+	if errors.Is(err, gorm.ErrUnsupportedDriver) {
+		return errs.ErrUnsupportedDriver
+	}
+
+	if errors.Is(err, gorm.ErrNotImplemented) {
+		return errs.ErrNotImplemented
 	}
 
 	return err

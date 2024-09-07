@@ -10,6 +10,7 @@ import (
 func handleError(c *gin.Context, err error) {
 	switch {
 	case errors.Is(err, errs.ErrUsernameUniquenessFailed),
+		errors.Is(err, errs.ErrDuplicateEntry),
 		errors.Is(err, errs.ErrIncorrectUsernameOrPassword),
 		errors.Is(err, errs.ErrInvalidID),
 		errors.Is(err, errs.ErrFailedToBindJSON),

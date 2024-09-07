@@ -4,7 +4,6 @@ import (
 	"TajikCareerHub/models"
 	"TajikCareerHub/pkg/repository"
 	"errors"
-	"gorm.io/gorm"
 	"strconv"
 )
 
@@ -22,16 +21,11 @@ func GetJobByID(id uint) (models.Job, error) {
 }
 
 func AddJob(job models.Job) error {
-	_, err := repository.GetJobByID(job.ID)
-	if err == nil {
-		return errors.New("job with the same ID already exists")
-	}
-
-	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+	err := repository.AddJob(job)
+	if err != nil {
 		return err
 	}
-
-	return repository.AddJob(job)
+	return nil
 }
 
 func UpdateJob(jobID uint, updatedJob models.Job) error {
