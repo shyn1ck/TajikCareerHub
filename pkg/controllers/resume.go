@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"TajikCareerHub/logger"
 	"TajikCareerHub/models"
 	"TajikCareerHub/pkg/service"
 	"github.com/gin-gonic/gin"
@@ -9,25 +10,28 @@ import (
 )
 
 func GetAllResumes(c *gin.Context) {
-	keyword := c.Query("keyword")
+	ip := c.ClientIP()
+	search := c.Query("search")
 	location := c.Query("location")
 	category := c.Query("category")
-
-	minExperienceYears, err := strconv.ParseUint(c.Query("min_experience_years"), 10, 32)
-	if err != nil {
-		minExperienceYears = 0
+	minExperienceYearsStr := c.Query("min_experience_years")
+	logger.Info.Printf("[controllers.GetAllResumes] Client IP: %s - Request to get resumes with search: %s, minExperienceYearsStr: %s, location: %s, category: %s\n", ip, search, minExperienceYearsStr, location, category)
+	var minExperienceYears int
+	var err error
+	if minExperienceYearsStr != "" {
+		minExperienceYears, err = strconv.Atoi(minExperienceYearsStr)
+		if err != nil {
+			handleError(c, err)
+			return
+		}
 	}
 
-	maxExperienceYears, err := strconv.ParseUint(c.Query("max_experience_years"), 10, 32)
+	resumes, err := service.GetAllResume(search, minExperienceYears, location, category)
 	if err != nil {
-		maxExperienceYears = 0
-	}
-
-	resumes, err := service.GetAllResume(keyword, location, category, uint(minExperienceYears), uint(maxExperienceYears))
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch resumes"})
+		handleError(c, err)
 		return
 	}
+
 	c.JSON(http.StatusOK, resumes)
 }
 

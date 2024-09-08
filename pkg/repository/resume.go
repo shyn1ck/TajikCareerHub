@@ -7,17 +7,15 @@ import (
 	"TajikCareerHub/models"
 )
 
-func GetAllResumes(keyword, location, category string, minExperienceYears, maxExperienceYears uint) ([]models.Resume, error) {
+func GetAllResumes(search string, minExperienceYears int, location string, category string) ([]models.Resume, error) {
 	var resumes []models.Resume
-	query := db.GetDBConn().Model(&models.Resume{})
-	if keyword != "" {
-		query = query.Where("full_name ILIKE ? OR summary ILIKE ? OR skills ILIKE ? OR education ILIKE ? OR certifications ILIKE ?",
-			"%"+keyword+"%", "%"+keyword+"%", "%"+keyword+"%", "%"+keyword+"%", "%"+keyword+"%")
+	query := db.GetDBConn().Preload("JobCategory").Model(&models.Resume{})
+	if search != "" {
+		query = query.Where("summary ILIKE ?", "%"+search+"%")
 	}
 	if location != "" {
 		query = query.Where("location = ?", location)
 	}
-
 	if category != "" {
 		query = query.Joins("JOIN job_categories ON job_categories.id = resumes.job_category_id").
 			Where("job_categories.name = ?", category)
@@ -26,13 +24,11 @@ func GetAllResumes(keyword, location, category string, minExperienceYears, maxEx
 	if minExperienceYears > 0 {
 		query = query.Where("experience_years >= ?", minExperienceYears)
 	}
-	if maxExperienceYears > 0 {
-		query = query.Where("experience_years <= ?", maxExperienceYears)
-	}
 
-	if err := query.Find(&resumes).Error; err != nil {
-		logger.Error.Printf("[repository.GetAllResumes] error getting resumes: %v\n", err)
-		return nil, errs.TranslateError(err)
+	err := query.Find(&resumes).Error
+	if err != nil {
+		logger.Error.Printf("[repository.GetAllResumes] Error fetching resumes: %v", err)
+		return nil, err
 	}
 
 	return resumes, nil

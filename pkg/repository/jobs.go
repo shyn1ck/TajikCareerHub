@@ -31,7 +31,6 @@ func GetAllJobs(search string, minSalary int, maxSalary int, location string, ca
 			Where("job_categories.name = ?", category)
 	}
 
-	// Добавляем сортировку
 	if sort == "asc" {
 		query = query.Order("salary ASC")
 	} else if sort == "desc" {
