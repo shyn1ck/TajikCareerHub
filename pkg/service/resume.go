@@ -1,19 +1,15 @@
 package service
 
 import (
-	"TajikCareerHub/errs"
-	"TajikCareerHub/logger"
 	"TajikCareerHub/models"
 	"TajikCareerHub/pkg/repository"
 )
 
 func GetAllResume(search string, minExperienceYears int, location string, category string) (resumes []models.Resume, err error) {
-
 	resumes, err = repository.GetAllResumes(search, minExperienceYears, location, category)
 	if err != nil {
 		return nil, err
 	}
-
 	return resumes, nil
 }
 
@@ -25,44 +21,40 @@ func AddResume(resume models.Resume) error {
 	return repository.AddResume(resume)
 }
 
-func UpdateResume(resume models.Resume) error {
-	existingResume, err := repository.GetResumeByID(resume.ID)
+func UpdateResume(resumeID uint, updatedResume models.Resume) error {
+	// Получаем существующее резюме по ID
+	resume, err := repository.GetResumeByID(resumeID)
 	if err != nil {
-		logger.Error.Printf("[service.UpdateResume] Failed to get existing resume with ID %v: %v\n", resume.ID, err)
 		return err
 	}
 
-	if resume.FullName != "" {
-		existingResume.FullName = resume.FullName
+	// Обновляем поля резюме, если они были переданы
+	if updatedResume.FullName != "" {
+		resume.FullName = updatedResume.FullName
 	}
-	if resume.Summary != "" {
-		existingResume.Summary = resume.Summary
+	if updatedResume.Summary != "" {
+		resume.Summary = updatedResume.Summary
 	}
-	if resume.Skills != "" {
-		existingResume.Skills = resume.Skills
+	if updatedResume.Skills != "" {
+		resume.Skills = updatedResume.Skills
 	}
-	if resume.ExperienceYears > 0 {
-		existingResume.ExperienceYears = resume.ExperienceYears
+	if updatedResume.ExperienceYears != 0 {
+		resume.ExperienceYears = updatedResume.ExperienceYears
 	}
-	if resume.Education != "" {
-		existingResume.Education = resume.Education
+	if updatedResume.Education != "" {
+		resume.Education = updatedResume.Education
 	}
-	if resume.Certifications != "" {
-		existingResume.Certifications = resume.Certifications
+	if updatedResume.Certifications != "" {
+		resume.Certifications = updatedResume.Certifications
 	}
-	if resume.Location != "" {
-		existingResume.Location = resume.Location
+	if updatedResume.Location != "" {
+		resume.Location = updatedResume.Location
 	}
-	if resume.JobCategoryID > 0 {
-		existingResume.JobCategoryID = resume.JobCategoryID
+	if updatedResume.JobCategoryID != 0 {
+		resume.JobCategoryID = updatedResume.JobCategoryID
 	}
 
-	err = repository.UpdateResume(existingResume)
-	if err != nil {
-		logger.Error.Printf("[service.UpdateResume] Failed to update resume with ID %v: %v\n", resume.ID, err)
-		return errs.TranslateError(err)
-	}
-	return nil
+	return repository.UpdateResume(resumeID, resume)
 }
 
 func DeleteResume(id uint) error {

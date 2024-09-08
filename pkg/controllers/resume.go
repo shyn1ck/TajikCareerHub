@@ -14,7 +14,7 @@ func GetAllResumes(c *gin.Context) {
 	search := c.Query("search")
 	location := c.Query("location")
 	category := c.Query("category")
-	minExperienceYearsStr := c.Query("min_experience_years")
+	minExperienceYearsStr := c.Query("min-experience-years")
 	logger.Info.Printf("[controllers.GetAllResumes] Client IP: %s - Request to get resumes with search: %s, minExperienceYearsStr: %s, location: %s, category: %s\n", ip, search, minExperienceYearsStr, location, category)
 	var minExperienceYears int
 	var err error
@@ -39,13 +39,13 @@ func GetResumeByID(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.ParseUint(idStr, 10, 32)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID"})
+		handleError(c, err)
 		return
 	}
 
 	resume, err := service.GetResumeByID(uint(id))
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Resume not found"})
+		handleError(c, err)
 		return
 	}
 	c.JSON(http.StatusOK, resume)
@@ -66,16 +66,35 @@ func AddResume(c *gin.Context) {
 }
 
 func UpdateResume(c *gin.Context) {
-	var resume models.Resume
-	if err := c.ShouldBindJSON(&resume); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
+	ip := c.ClientIP()
+	idStr := c.Param("id")
+	logger.Info.Printf("[controllers.UpdateResume] Client IP: %s - Request to update resume with ID: %s\n", ip, idStr)
+
+	// Преобразуем строковый ID в целое число
+	id, err := strconv.ParseUint(idStr, 10, 32)
+	if err != nil {
+		handleError(c, err)
 		return
 	}
 
-	if err := service.UpdateResume(resume); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update resume"})
+	// Создаем структуру для обновленного резюме
+	var updatedResume models.Resume
+	if err := c.BindJSON(&updatedResume); err != nil {
+		handleError(c, err)
 		return
 	}
+
+	// Обновляем резюме в сервисе
+	err = service.UpdateResume(uint(id), updatedResume)
+	if err != nil {
+		handleError(c, err)
+		return
+	}
+
+	// Логируем успешное обновление
+	logger.Info.Printf("[controllers.UpdateResume] Client IP: %s - Resume with ID %v updated successfully.\n", ip, id)
+
+	// Отправляем успешный ответ
 	c.JSON(http.StatusOK, gin.H{"message": "Resume updated successfully"})
 }
 

@@ -88,14 +88,13 @@ func InitRoutes() *gin.Engine {
 		jobCategoryGroup.DELETE("/:id", adminOnly, DeleteJobCategory) // Admin only
 	}
 
-	// Роуты для резюме
 	resumeGroup := r.Group("/resumes").Use(checkUserAuthentication)
 	{
 		resumeGroup.GET("/", GetAllResumes)
 		resumeGroup.GET("/:id", GetResumeByID)
-		resumeGroup.POST("/", AddResume)                         // Specialist only
-		resumeGroup.PUT("/:id", specialistOnly, UpdateResume)    // Specialist only
-		resumeGroup.DELETE("/:id", specialistOnly, DeleteResume) // Specialist only
+		resumeGroup.POST("/", AddResume)
+		resumeGroup.PUT("/:id", UpdateResume)
+		resumeGroup.DELETE("/:id", specialistOnly, DeleteResume)
 	}
 
 	err := r.Run(fmt.Sprintf("%s:%s", configs.AppSettings.AppParams.ServerURL, configs.AppSettings.AppParams.PortRun))

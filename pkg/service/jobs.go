@@ -3,8 +3,6 @@ package service
 import (
 	"TajikCareerHub/models"
 	"TajikCareerHub/pkg/repository"
-	"errors"
-	"strconv"
 )
 
 func GetAllJobs(search string, minSalary int, maxSalary int, location string, category string, sort string) (jobs []models.Job, err error) {
@@ -54,16 +52,4 @@ func UpdateJob(jobID uint, updatedJob models.Job) error {
 
 func DeleteJob(jobID uint) error {
 	return repository.DeleteJob(jobID)
-}
-
-func UpdateJobSalary(jobID uint, newSalary string) error {
-	if _, err := strconv.ParseFloat(newSalary, 64); err != nil {
-		return errors.New("invalid salary format")
-	}
-	err := repository.UpdateJobSalary(jobID, newSalary)
-	if err != nil {
-		return err
-	}
-
-	return nil
 }

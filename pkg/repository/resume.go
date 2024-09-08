@@ -54,10 +54,10 @@ func AddResume(resume models.Resume) error {
 	return nil
 }
 
-func UpdateResume(resume models.Resume) error {
-	err := db.GetDBConn().Save(&resume).Error
+func UpdateResume(resumeID uint, resume models.Resume) error {
+	err := db.GetDBConn().Model(&models.Resume{}).Where("id = ?", resumeID).Updates(resume).Error
 	if err != nil {
-		logger.Error.Printf("[repository.UpdateResume]: Failed to update resume: %v\n", err)
+		logger.Error.Printf("[repository.UpdateResume]: Failed to update resume with ID %v. Error: %v\n", resumeID, err)
 		return errs.TranslateError(err)
 	}
 	return nil
