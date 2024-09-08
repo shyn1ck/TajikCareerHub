@@ -22,13 +22,11 @@ func AddResume(resume models.Resume) error {
 }
 
 func UpdateResume(resumeID uint, updatedResume models.Resume) error {
-	// Получаем существующее резюме по ID
 	resume, err := repository.GetResumeByID(resumeID)
 	if err != nil {
 		return err
 	}
 
-	// Обновляем поля резюме, если они были переданы
 	if updatedResume.FullName != "" {
 		resume.FullName = updatedResume.FullName
 	}

@@ -64,7 +64,8 @@ func UpdateResume(resumeID uint, resume models.Resume) error {
 }
 
 func DeleteResume(id uint) error {
-	if err := db.GetDBConn().Where("id = ?", id).Delete(&models.Resume{}).Error; err != nil {
+	err := db.GetDBConn().Model(&models.Resume{}).Where("id = ?", id).Update("deleted_at", true).Error
+	if err != nil {
 		logger.Error.Printf("[repository.DeleteResume] Failed to delete resume with ID %v: %v\n", id, err)
 		return errs.TranslateError(err)
 	}

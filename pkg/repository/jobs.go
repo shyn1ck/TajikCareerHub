@@ -85,12 +85,3 @@ func DeleteJob(jobID uint) error {
 	}
 	return nil
 }
-
-func UpdateJobSalary(jobID uint, newSalary string) error {
-	err := db.GetDBConn().Model(&models.Job{}).Where("id = ?", jobID).Update("salary", newSalary).Error
-	if err != nil {
-		logger.Error.Printf("[repository.UpdateJobSalary]: Failed to update salary for job with ID %v. Error: %v\n", jobID, err)
-		return errs.TranslateError(err)
-	}
-	return nil
-}

@@ -94,7 +94,7 @@ func InitRoutes() *gin.Engine {
 		resumeGroup.GET("/:id", GetResumeByID)
 		resumeGroup.POST("/", AddResume)
 		resumeGroup.PUT("/:id", UpdateResume)
-		resumeGroup.DELETE("/:id", specialistOnly, DeleteResume)
+		resumeGroup.DELETE("/:id", DeleteResume)
 	}
 
 	err := r.Run(fmt.Sprintf("%s:%s", configs.AppSettings.AppParams.ServerURL, configs.AppSettings.AppParams.PortRun))
