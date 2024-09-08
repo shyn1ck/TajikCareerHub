@@ -28,7 +28,7 @@ func GetUserByID(id uint) (user models.User, err error) {
 
 func GetUserByUsername(username string) (*models.User, error) {
 	var user models.User
-	err := db.GetDBConn().Where("username = ?", username).First(&user).Error
+	err := db.GetDBConn().Where("user_name = ?", username).First(&user).Error
 
 	if err != nil {
 		if err == errs.ErrRecordNotFound {
@@ -67,7 +67,7 @@ func CreateUser(user models.User) (id uint, err error) {
 }
 
 func GetUserByUsernameAndPassword(username string, password string) (user models.User, err error) {
-	err = db.GetDBConn().Where("username = ? AND hash_password = ?", username, password).First(&user).Error
+	err = db.GetDBConn().Where("user_name = ? AND password = ?", username, password).First(&user).Error
 	if err != nil {
 		logger.Error.Printf("[repository.GetUserByUsernameAndPassword] error getting user by username and password: %v\n", err)
 		return user, errs.TranslateError(err)
@@ -77,7 +77,22 @@ func GetUserByUsernameAndPassword(username string, password string) (user models
 }
 
 func UpdateUser(user models.User) error {
-	err := db.GetDBConn().Save(&user).Error
+	updateData := map[string]interface{}{
+		"full_name":  user.FullName,
+		"user_name":  user.UserName,
+		"birth_date": user.BirthDate,
+		"email":      user.Email,
+		"password":   user.Password,
+	}
+	for k, v := range updateData {
+		if v == "" {
+			delete(updateData, k)
+		}
+	}
+	if len(updateData) == 0 {
+		return nil
+	}
+	err := db.GetDBConn().Model(&user).Where("id = ?", user.ID).Updates(updateData).Error
 	if err != nil {
 		logger.Error.Printf("[repository.UpdateUser] Failed to update user with ID %v: %v\n", user.ID, err)
 		return errs.TranslateError(err)

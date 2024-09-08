@@ -72,12 +72,31 @@ func CreateUser(user models.User) (uint, error) {
 }
 
 func UpdateUser(user models.User) error {
-	if err := validateUserCredentials(user.UserName, user.Email, user.Password); err != nil {
-		logger.Error.Printf("[service.UpdateUser] validation error: %v\n", err)
+	existingUser, err := repository.GetUserByID(user.ID)
+	if err != nil {
+		logger.Error.Printf("[service.UpdateUser] Failed to get existing user with ID %v: %v\n", user.ID, err)
 		return err
 	}
 
-	return repository.UpdateUser(user)
+	if user.FullName != "" {
+		existingUser.FullName = user.FullName
+	}
+	if user.UserName != "" {
+		existingUser.UserName = user.UserName
+	}
+	if !user.BirthDate.IsZero() {
+		existingUser.BirthDate = user.BirthDate
+	}
+	if user.Email != "" {
+		existingUser.Email = user.Email
+	}
+
+	err = repository.UpdateUser(existingUser)
+	if err != nil {
+		logger.Error.Printf("[service.UpdateUser] Failed to update user with ID %v: %v\n", user.ID, err)
+		return err
+	}
+	return nil
 }
 
 func DeleteUser(id uint) error {

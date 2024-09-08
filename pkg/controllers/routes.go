@@ -21,13 +21,15 @@ func InitRoutes() *gin.Engine {
 
 	userGroup := r.Group("/users").Use(checkUserAuthentication)
 	{
-		userGroup.GET("/", adminOnly, GetAllUsers)
-		userGroup.GET("/", GetUserByUsername, employerOnly)
-		userGroup.GET("/:id", GetUserByID)
-		userGroup.POST("/", adminOnly, CreateUser)
+		userGroup.GET("/", GetAllUsers)
+		userGroup.POST("/", CreateUser)
 		userGroup.PUT("/:id", UpdateUser)
-		userGroup.DELETE("/:id", adminOnly, DeleteUser)
+		userGroup.DELETE("/:id", DeleteUser)
 	}
+
+	// Specific routes for username and id should be placed before general routes to avoid conflicts
+	r.GET("/users/username/:username", GetUserByUsername)
+	r.GET("/users/:id", GetUserByID)
 
 	passwordGroup := r.Group("/users/:id/password").Use(checkUserAuthentication)
 	{

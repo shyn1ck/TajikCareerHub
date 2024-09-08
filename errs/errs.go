@@ -4,6 +4,10 @@ import "errors"
 
 // Authentication Errors
 var (
+	ErrRoutesNotFound              = errors.New("ErrRoutesNotFound")
+	ErrInvalidField                = errors.New("ErrInvalidField")
+	ErrDuplicateEntry              = errors.New("ErrDuplicateEntry")
+	ErrInCorrectUsernameOrPassword = errors.New("ErrInCorrectUsernameOrPassword")
 	ErrIncorrectUsernameOrPassword = errors.New("ErrIncorrectUsernameOrPassword")
 	ErrPasswordIsEmpty             = errors.New("ErrPasswordIsEmpty")
 	ErrPasswordIncorrect           = errors.New("ErrPasswordIncorrect")
@@ -22,7 +26,6 @@ var (
 	ErrPathParametrized = errors.New("ErrPathParametrized")
 )
 
-// Uniqueness Errors
 var (
 	ErrUsernameUniquenessFailed        = errors.New("ErrUsernameUniquenessFailed")
 	ErrEmailUniquenessFailed           = errors.New("ErrEmailUniquenessFailed")

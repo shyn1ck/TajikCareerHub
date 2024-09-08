@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 func GetAllUsers(c *gin.Context) {
@@ -83,9 +84,9 @@ func CreateUser(c *gin.Context) {
 
 func UpdateUser(c *gin.Context) {
 	ip := c.ClientIP()
-	var user models.User
 	id := c.Param("id")
 	logger.Info.Printf("[controllers.UpdateUser] Client IP: %s - Request to update user with ID: %s\n", ip, id)
+
 	if id == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "UserIDIsRequired"})
 		return
@@ -95,10 +96,41 @@ func UpdateUser(c *gin.Context) {
 		handleError(c, err)
 		return
 	}
-	user.ID = uint(userID)
-	if err := c.ShouldBindJSON(&user); err != nil {
+
+	var userInput struct {
+		FullName  *string `json:"full_name"`
+		Username  *string `json:"username"`
+		BirthDate *string `json:"birth_date"`
+		Email     *string `json:"email"`
+		Password  *string `json:"password"`
+		Role      *string `json:"role"`
+	}
+
+	if err := c.ShouldBindJSON(&userInput); err != nil {
 		handleError(c, err)
 		return
+	}
+
+	user := models.User{
+		ID: uint(userID),
+	}
+
+	if userInput.FullName != nil {
+		user.FullName = *userInput.FullName
+	}
+	if userInput.Username != nil {
+		user.UserName = *userInput.Username
+	}
+	if userInput.BirthDate != nil {
+		parsedDate, err := time.Parse(time.RFC3339, *userInput.BirthDate)
+		if err != nil {
+			handleError(c, err)
+			return
+		}
+		user.BirthDate = parsedDate
+	}
+	if userInput.Email != nil {
+		user.Email = *userInput.Email
 	}
 
 	if err := service.UpdateUser(user); err != nil {
