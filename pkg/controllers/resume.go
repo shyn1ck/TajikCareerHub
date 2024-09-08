@@ -52,16 +52,21 @@ func GetResumeByID(c *gin.Context) {
 }
 
 func AddResume(c *gin.Context) {
+	ip := c.ClientIP()
 	var resume models.Resume
-	if err := c.ShouldBindJSON(&resume); err != nil {
+	if err := c.BindJSON(&resume); err != nil {
 		handleError(c, err)
 		return
 	}
-	if err := service.AddResume(resume); err != nil {
+
+	logger.Info.Printf("[controllers.AddResume] Client IP: %s - Request to add resume: %v\n", ip, resume)
+	err := service.AddResume(resume)
+	if err != nil {
 		handleError(c, err)
 		return
 	}
-	c.JSON(http.StatusCreated, gin.H{"message": "Resume added successfully"})
+	logger.Info.Printf("[controllers.AddResume] Client IP: %s - Resume added successfully: %v\n", ip, resume)
+	c.JSON(http.StatusCreated, gin.H{"message": "Job added successfully"})
 }
 
 func UpdateResume(c *gin.Context) {

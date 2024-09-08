@@ -18,9 +18,12 @@ func GetResumeByID(id uint) (models.Resume, error) {
 }
 
 func AddResume(resume models.Resume) error {
-	return repository.AddResume(resume)
+	err := repository.AddResume(resume)
+	if err != nil {
+		return err
+	}
+	return nil
 }
-
 func UpdateResume(resumeID uint, updatedResume models.Resume) error {
 	resume, err := repository.GetResumeByID(resumeID)
 	if err != nil {
