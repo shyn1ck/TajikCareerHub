@@ -2,6 +2,7 @@ package repository
 
 import (
 	"TajikCareerHub/db"
+	"TajikCareerHub/errs"
 	"TajikCareerHub/logger"
 	"TajikCareerHub/models"
 )
@@ -42,7 +43,7 @@ func GetJobByID(id uint) (models.Job, error) {
 		First(&job).Error
 	if err != nil {
 		logger.Error.Printf("[repository.GetJobByID]: Error retrieving job with ID %v. Error: %v\n", id, err)
-		return models.Job{}, translateError(err)
+		return models.Job{}, errs.TranslateError(err)
 	}
 	return job, nil
 }
@@ -50,7 +51,7 @@ func GetJobByID(id uint) (models.Job, error) {
 func AddJob(job models.Job) error {
 	if err := db.GetDBConn().Create(&job).Error; err != nil {
 		logger.Error.Printf("[repository.AddJob]: Failed to add job, error: %v\n", err)
-		return translateError(err)
+		return errs.TranslateError(err)
 	}
 	return nil
 }
@@ -59,7 +60,7 @@ func UpdateJob(jobID uint, job models.Job) error {
 	err := db.GetDBConn().Model(&models.Job{}).Where("id = ?", jobID).Updates(job).Error
 	if err != nil {
 		logger.Error.Printf("[repository.UpdateJob]: Failed to update job with ID %v. Error: %v\n", jobID, err)
-		return translateError(err)
+		return errs.TranslateError(err)
 	}
 	return nil
 }
@@ -68,7 +69,7 @@ func DeleteJob(jobID uint) error {
 	err := db.GetDBConn().Model(&models.Job{}).Where("id = ?", jobID).Update("deleted_at", true).Error
 	if err != nil {
 		logger.Error.Printf("[repository.DeleteJob]: Failed to soft delete job with ID %v. Error: %v\n", jobID, err)
-		return err
+		return errs.TranslateError(err)
 	}
 	return nil
 }
@@ -77,7 +78,7 @@ func UpdateJobSalary(jobID uint, newSalary string) error {
 	err := db.GetDBConn().Model(&models.Job{}).Where("id = ?", jobID).Update("salary", newSalary).Error
 	if err != nil {
 		logger.Error.Printf("[repository.UpdateJobSalary]: Failed to update salary for job with ID %v. Error: %v\n", jobID, err)
-		return err
+		return errs.TranslateError(err)
 	}
 	return nil
 }

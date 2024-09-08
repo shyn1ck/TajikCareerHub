@@ -39,6 +39,32 @@ func GetUserByID(c *gin.Context) {
 	c.JSON(http.StatusOK, user)
 }
 
+func GetUserByUsername(c *gin.Context) {
+	ip := c.ClientIP()
+	username := c.Query("username")
+	logger.Info.Printf("[controllers.GetUserByUsername] Client IP: %s - Request to get user by username: %s\n", ip, username)
+
+	if username == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Username is required"})
+		return
+	}
+
+	user, err := service.GetUserByUsername(username)
+	if err != nil {
+		handleError(c, err)
+		return
+	}
+
+	if user == nil {
+		logger.Info.Printf("[controllers.GetUserByUsername] Client IP: %s - No user found with username: %s\n", ip, username)
+		c.JSON(http.StatusNotFound, gin.H{"message": "User not found"})
+		return
+	}
+
+	logger.Info.Printf("[controllers.GetUserByUsername] Client IP: %s - Successfully retrieved user with username: %s\n", ip, username)
+	c.JSON(http.StatusOK, user)
+}
+
 func CreateUser(c *gin.Context) {
 	ip := c.ClientIP()
 	var user models.User
@@ -47,7 +73,7 @@ func CreateUser(c *gin.Context) {
 		return
 	}
 	logger.Info.Printf("[controllers.CreateUser] Client IP: %s - Request to create user: %v\n", ip, user)
-	if err := service.CreateUser(user); err != nil {
+	if _, err := service.CreateUser(user); err != nil {
 		handleError(c, err)
 		return
 	}
@@ -130,11 +156,11 @@ func CheckUserExists(c *gin.Context) {
 	username := c.Query("username")
 	email := c.Query("email")
 	logger.Info.Printf("[controllers.CheckUserExists] Client IP: %s - Request to check user existence with username: %s and email: %s\n", ip, username, email)
-	exists, err := service.CheckUserExists(username, email)
+	usernameExists, emailExists, err := service.CheckUserExists(username, email)
 	if err != nil {
 		handleError(c, err)
 		return
 	}
-	logger.Info.Printf("[controllers.CheckUserExists] Client IP: %s - User existence check complete for username %v and email %v. Exists: %v\n", ip, username, email, exists)
-	c.JSON(http.StatusOK, gin.H{"exists": exists})
+	logger.Info.Printf("[controllers.CheckUserExists] Client IP: %s - User existence check complete for username %v and email %v. Username Exists: %v, Email Exists: %v\n", ip, username, email, usernameExists, emailExists)
+	c.JSON(http.StatusOK, gin.H{"username_exists": usernameExists, "email_exists": emailExists})
 }

@@ -13,14 +13,16 @@ func SignUp(c *gin.Context) {
 		handleError(c, err)
 		return
 	}
-
-	err := service.CreateUser(user)
+	id, err := service.CreateUser(user)
 	if err != nil {
 		handleError(c, err)
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"message": "user created successfully"})
+	c.JSON(http.StatusCreated, gin.H{
+		"message": "user created successfully",
+		"user_id": id,
+	})
 }
 
 func SignIn(c *gin.Context) {
@@ -31,8 +33,11 @@ func SignIn(c *gin.Context) {
 	}
 	accessToken, err := service.SignIn(user.UserName, user.Password)
 	if err != nil {
+		handleError(c, err)
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"access_token": accessToken})
+	c.JSON(http.StatusOK, gin.H{
+		"access_token": accessToken,
+	})
 }

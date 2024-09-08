@@ -22,6 +22,7 @@ func InitRoutes() *gin.Engine {
 	userGroup := r.Group("/users").Use(checkUserAuthentication)
 	{
 		userGroup.GET("/", adminOnly, GetAllUsers)
+		userGroup.GET("/", GetUserByUsername, employerOnly)
 		userGroup.GET("/:id", GetUserByID)
 		userGroup.POST("/", adminOnly, CreateUser)
 		userGroup.PUT("/:id", UpdateUser)
