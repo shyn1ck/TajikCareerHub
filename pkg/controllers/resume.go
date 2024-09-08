@@ -31,7 +31,7 @@ func GetAllResumes(c *gin.Context) {
 		handleError(c, err)
 		return
 	}
-
+	logger.Info.Printf("[controllers.GetAllResumes] Client IP: %s - Successufuly to get resumes with search: %s, minExperienceYearsStr: %s, location: %s, category: %s\n", ip, search, minExperienceYearsStr, location, category)
 	c.JSON(http.StatusOK, resumes)
 }
 

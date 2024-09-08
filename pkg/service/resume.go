@@ -8,10 +8,12 @@ import (
 )
 
 func GetAllResume(search string, minExperienceYears int, location string, category string) (resumes []models.Resume, err error) {
+
 	resumes, err = repository.GetAllResumes(search, minExperienceYears, location, category)
 	if err != nil {
 		return nil, err
 	}
+
 	return resumes, nil
 }
 

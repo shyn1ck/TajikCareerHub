@@ -9,13 +9,16 @@ import (
 
 func GetAllResumes(search string, minExperienceYears int, location string, category string) ([]models.Resume, error) {
 	var resumes []models.Resume
+
 	query := db.GetDBConn().Preload("JobCategory").Model(&models.Resume{})
 	if search != "" {
 		query = query.Where("summary ILIKE ?", "%"+search+"%")
 	}
+
 	if location != "" {
 		query = query.Where("location = ?", location)
 	}
+
 	if category != "" {
 		query = query.Joins("JOIN job_categories ON job_categories.id = resumes.job_category_id").
 			Where("job_categories.name = ?", category)
@@ -30,7 +33,6 @@ func GetAllResumes(search string, minExperienceYears int, location string, categ
 		logger.Error.Printf("[repository.GetAllResumes] Error fetching resumes: %v", err)
 		return nil, err
 	}
-
 	return resumes, nil
 }
 
