@@ -18,6 +18,7 @@ func Migrate() error {
 		&models.Company{},
 		&models.Favorite{},
 		&models.JobCategory{},
+		&models.Resume{},
 	)
 	if err != nil {
 		return errors.New("failed to migrate database schema: " + err.Error())

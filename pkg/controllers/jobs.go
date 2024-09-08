@@ -11,22 +11,41 @@ import (
 
 func GetAllJobs(c *gin.Context) {
 	ip := c.ClientIP()
-	keyword := c.Query("keyword")
-	salary := c.Query("salary")
+	search := c.Query("search")
 	location := c.Query("location")
 	category := c.Query("category")
-	minSalary := c.Query("min-salary")
-	maxSalary := c.Query("max-salary")
-	logger.Info.Printf("[controllers.GetAllJobs] Client IP: %s - Request to get jobs with keyword: %s, salary %s, location: %s, category: %s\n", ip, keyword, salary, location, category)
-	jobs, err := service.GetAllJobs(keyword, minSalary, maxSalary, location, category)
+	minSalaryStr := c.Query("min-salary")
+	maxSalaryStr := c.Query("max-salary")
+	sort := c.Query("sort")
+
+	logger.Info.Printf("[controllers.GetAllJobs] Client IP: %s - Request to get jobs with keyword: %s, minSalary: %s, maxSalary: %s, location: %s, category: %s, sort: %s\n", ip, search, minSalaryStr, maxSalaryStr, location, category, sort)
+
+	var minSalary, maxSalary int
+	var err error
+	if minSalaryStr != "" {
+		minSalary, err = strconv.Atoi(minSalaryStr)
+		if err != nil {
+			handleError(c, err)
+			return
+		}
+	}
+
+	if maxSalaryStr != "" {
+		maxSalary, err = strconv.Atoi(maxSalaryStr)
+		if err != nil {
+			handleError(c, err)
+			return
+		}
+	}
+
+	jobs, err := service.GetAllJobs(search, minSalary, maxSalary, location, category, sort)
 	if err != nil {
 		handleError(c, err)
 		return
 	}
-	logger.Info.Printf("[controllers.GetAllJobs] Client IP: %s - Successfully retrieved jobs with keyword: %s, salary %s, location: %s, category: %s\n", ip, keyword, salary, location, category)
-	c.JSON(http.StatusOK, gin.H{
-		"jobs": jobs,
-	})
+
+	logger.Info.Printf("[controllers.GetAllJobs] Client IP: %s - Successfully retrieved jobs with keyword: %s, minSalary: %d, maxSalary: %d, location: %s, category: %s, sort: %s\n", ip, search, minSalary, maxSalary, location, category, sort)
+	c.JSON(http.StatusOK, gin.H{"jobs": jobs})
 }
 
 func GetJobByID(c *gin.Context) {
@@ -108,25 +127,4 @@ func DeleteJob(c *gin.Context) {
 	}
 	logger.Info.Printf("[controllers.DeleteJob] Client IP: %s - Job with ID %v deleted successfully.\n", ip, id)
 	c.JSON(http.StatusOK, gin.H{"message": "Job deleted successfully"})
-}
-
-func UpdateJobSalary(c *gin.Context) {
-	ip := c.ClientIP()
-	idStr := c.Param("id")
-	newSalary := c.Query("newSalary")
-	logger.Info.Printf("[controllers.UpdateJobSalary] Client IP: %s - Request to update salary for job with ID: %s to new salary: %s\n", ip, idStr, newSalary)
-
-	id, err := strconv.ParseUint(idStr, 10, 32)
-	if err != nil {
-		handleError(c, err)
-		return
-	}
-
-	err = service.UpdateJobSalary(uint(id), newSalary)
-	if err != nil {
-		handleError(c, err)
-		return
-	}
-	logger.Info.Printf("[controllers.UpdateJobSalary] Client IP: %s - Job salary for ID %v updated to %s successfully.\n", ip, id, newSalary)
-	c.JSON(http.StatusOK, gin.H{"message": "Job salary updated successfully"})
 }

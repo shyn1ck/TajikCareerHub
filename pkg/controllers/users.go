@@ -42,7 +42,7 @@ func GetUserByID(c *gin.Context) {
 
 func GetUserByUsername(c *gin.Context) {
 	ip := c.ClientIP()
-	username := c.Query("username")
+	username := c.Param("username")
 	logger.Info.Printf("[controllers.GetUserByUsername] Client IP: %s - Request to get user by username: %s\n", ip, username)
 
 	if username == "" {

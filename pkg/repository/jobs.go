@@ -7,19 +7,19 @@ import (
 	"TajikCareerHub/models"
 )
 
-func GetAllJobs(keyword, minSalary, maxSalary, location, category string) ([]models.Job, error) {
+func GetAllJobs(search string, minSalary int, maxSalary int, location string, category string, sort string) ([]models.Job, error) {
 	var jobs []models.Job
-	query := db.GetDBConn()
+	query := db.GetDBConn().Preload("Company").Preload("JobCategory").Model(&models.Job{})
 
-	if keyword != "" {
-		query = query.Where("title ILIKE ?", "%"+keyword+"%")
+	if search != "" {
+		query = query.Where("title ILIKE ?", "%"+search+"%")
 	}
 
-	if minSalary != "" && maxSalary != "" {
+	if minSalary > 0 && maxSalary > 0 {
 		query = query.Where("salary BETWEEN ? AND ?", minSalary, maxSalary)
-	} else if minSalary != "" {
+	} else if minSalary > 0 {
 		query = query.Where("salary >= ?", minSalary)
-	} else if maxSalary != "" {
+	} else if maxSalary > 0 {
 		query = query.Where("salary <= ?", maxSalary)
 	}
 
@@ -29,6 +29,19 @@ func GetAllJobs(keyword, minSalary, maxSalary, location, category string) ([]mod
 	if category != "" {
 		query = query.Joins("JOIN job_categories ON job_categories.id = jobs.job_category_id").
 			Where("job_categories.name = ?", category)
+	}
+
+	// Добавляем сортировку
+	if sort == "asc" {
+		query = query.Order("salary ASC")
+	} else if sort == "desc" {
+		query = query.Order("salary DESC")
+	}
+
+	err := query.Find(&jobs).Error
+	if err != nil {
+		logger.Error.Printf("[repository.GetAllJobs] Error fetching jobs: %v", err)
+		return nil, err
 	}
 
 	return jobs, nil

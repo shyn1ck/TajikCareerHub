@@ -110,6 +110,7 @@ func DeleteUser(id uint) error {
 }
 
 func UpdateUserPassword(id uint, newPassword string) error {
+	logger.Info.Printf("[repository.UpdateUserPassword] Updating password for user ID: %d with new hashed password\n", id)
 	err := db.GetDBConn().Model(&models.User{}).Where("id = ?", id).Update("password", newPassword).Error
 	if err != nil {
 		logger.Error.Printf("[repository.UpdateUserPassword] Failed to update password for user with ID %v: %v\n", id, err)

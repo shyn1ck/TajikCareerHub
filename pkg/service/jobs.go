@@ -7,8 +7,8 @@ import (
 	"strconv"
 )
 
-func GetAllJobs(keyword, minSalary, maxSalary, location, category string) (jobs []models.Job, err error) {
-	jobs, err = repository.GetAllJobs(keyword, minSalary, maxSalary, location, category)
+func GetAllJobs(search string, minSalary int, maxSalary int, location string, category string, sort string) (jobs []models.Job, err error) {
+	jobs, err = repository.GetAllJobs(search, minSalary, maxSalary, location, category, sort)
 	if err != nil {
 		return nil, err
 	}
@@ -45,7 +45,7 @@ func UpdateJob(jobID uint, updatedJob models.Job) error {
 	if updatedJob.JobCategory.ID != 0 {
 		job.JobCategory = updatedJob.JobCategory
 	}
-	if updatedJob.Salary != "" {
+	if updatedJob.Salary != 0 {
 		job.Salary = updatedJob.Salary
 	}
 

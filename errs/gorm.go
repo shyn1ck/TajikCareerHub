@@ -10,6 +10,15 @@ func TranslateError(err error) error {
 		return ErrRecordNotFound
 	}
 
+	if gorm.ErrDuplicatedKey != nil && errors.Is(err, gorm.ErrDuplicatedKey) {
+		if err.Error() == "username already exists" {
+			return ErrUsernameUniquenessFailed
+		}
+		if err.Error() == "email already exists" {
+			return ErrEmailUniquenessFailed
+		}
+	}
+
 	return err
 }
 

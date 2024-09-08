@@ -27,7 +27,7 @@ func InitRoutes() *gin.Engine {
 		userGroup.DELETE("/:id", DeleteUser)
 	}
 
-	// Specific routes for username and id should be placed before general routes to avoid conflicts
+	// Изменение маршрута для имени пользователя
 	r.GET("/users/username/:username", GetUserByUsername)
 	r.GET("/users/:id", GetUserByID)
 
@@ -45,10 +45,9 @@ func InitRoutes() *gin.Engine {
 	{
 		jobGroup.GET("/", GetAllJobs)
 		jobGroup.GET("/:id", GetJobByID)
-		jobGroup.POST("/", adminOnly, AddJob)                      // Employer only
-		jobGroup.PUT("/:id", employerOnly, UpdateJob)              // Employer only
-		jobGroup.DELETE("/:id", employerOnly, DeleteJob)           // Employer only
-		jobGroup.PUT("/:id/salary", employerOnly, UpdateJobSalary) // Employer only
+		jobGroup.POST("/", adminOnly, AddJob)
+		jobGroup.PUT("/:id", UpdateJob)
+		jobGroup.DELETE("/:id", DeleteJob)
 	}
 
 	applicationGroup := r.Group("/applications").Use(checkUserAuthentication)
@@ -89,6 +88,16 @@ func InitRoutes() *gin.Engine {
 		jobCategoryGroup.DELETE("/:id", adminOnly, DeleteJobCategory) // Admin only
 	}
 
+	// Роуты для резюме
+	resumeGroup := r.Group("/resumes").Use(checkUserAuthentication)
+	{
+		resumeGroup.GET("/", GetAllResumes)
+		resumeGroup.GET("/:id", GetResumeByID)
+		resumeGroup.POST("/", AddResume)                         // Specialist only
+		resumeGroup.PUT("/:id", specialistOnly, UpdateResume)    // Specialist only
+		resumeGroup.DELETE("/:id", specialistOnly, DeleteResume) // Specialist only
+	}
+
 	err := r.Run(fmt.Sprintf("%s:%s", configs.AppSettings.AppParams.ServerURL, configs.AppSettings.AppParams.PortRun))
 	if err != nil {
 		return r
@@ -101,11 +110,4 @@ func PingPong(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"message": "pong",
 	})
-}
-
-func checkUserRole(c *gin.Context, role string) bool {
-	// Retrieve user role from context or JWT token
-	// This is a placeholder, replace with your actual role check logic
-	userRole, exists := c.Get("role")
-	return exists && userRole == role
 }

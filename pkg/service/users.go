@@ -25,7 +25,6 @@ func validateUserCredentials(username, email, password string) error {
 func GetAllUsers() ([]models.User, error) {
 	users, err := repository.GetAllUsers()
 	if err != nil {
-		logger.Error.Printf("[service.GetAllUsers] error retrieving users: %v\n", err)
 		return nil, err
 	}
 	return users, nil
