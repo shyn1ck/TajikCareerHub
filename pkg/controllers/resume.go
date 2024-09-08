@@ -54,12 +54,11 @@ func GetResumeByID(c *gin.Context) {
 func AddResume(c *gin.Context) {
 	var resume models.Resume
 	if err := c.ShouldBindJSON(&resume); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
+		handleError(c, err)
 		return
 	}
-
 	if err := service.AddResume(resume); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to add resume"})
+		handleError(c, err)
 		return
 	}
 	c.JSON(http.StatusCreated, gin.H{"message": "Resume added successfully"})
@@ -69,32 +68,22 @@ func UpdateResume(c *gin.Context) {
 	ip := c.ClientIP()
 	idStr := c.Param("id")
 	logger.Info.Printf("[controllers.UpdateResume] Client IP: %s - Request to update resume with ID: %s\n", ip, idStr)
-
-	// Преобразуем строковый ID в целое число
 	id, err := strconv.ParseUint(idStr, 10, 32)
 	if err != nil {
 		handleError(c, err)
 		return
 	}
-
-	// Создаем структуру для обновленного резюме
 	var updatedResume models.Resume
 	if err := c.BindJSON(&updatedResume); err != nil {
 		handleError(c, err)
 		return
 	}
-
-	// Обновляем резюме в сервисе
 	err = service.UpdateResume(uint(id), updatedResume)
 	if err != nil {
 		handleError(c, err)
 		return
 	}
-
-	// Логируем успешное обновление
 	logger.Info.Printf("[controllers.UpdateResume] Client IP: %s - Resume with ID %v updated successfully.\n", ip, id)
-
-	// Отправляем успешный ответ
 	c.JSON(http.StatusOK, gin.H{"message": "Resume updated successfully"})
 }
 

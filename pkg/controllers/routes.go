@@ -27,7 +27,6 @@ func InitRoutes() *gin.Engine {
 		userGroup.DELETE("/:id", DeleteUser)
 	}
 
-	// Изменение маршрута для имени пользователя
 	r.GET("/users/username/:username", GetUserByUsername)
 	r.GET("/users/:id", GetUserByID)
 
@@ -52,30 +51,30 @@ func InitRoutes() *gin.Engine {
 
 	applicationGroup := r.Group("/applications").Use(checkUserAuthentication)
 	{
-		applicationGroup.GET("/", adminOnly, GetAllApplications) // Admin only
+		applicationGroup.GET("/", GetAllApplications)
 		applicationGroup.GET("/:id", GetApplicationByID)
-		applicationGroup.POST("/", specialistOnly, AddApplication)         // Specialist only
-		applicationGroup.PUT("/:id", specialistOnly, UpdateApplication)    // Specialist only
-		applicationGroup.DELETE("/:id", specialistOnly, DeleteApplication) // Specialist only
+		applicationGroup.POST("/", AddApplication)
+		applicationGroup.PUT("/:id", UpdateApplication)
+		applicationGroup.DELETE("/:id", DeleteApplication)
 		applicationGroup.GET("/user/:userID", GetApplicationsByUserID)
-		applicationGroup.GET("/job/:jobID", employerOnly, GetApplicationsByJobID) // Employer only
+		applicationGroup.GET("/job/:jobID", GetApplicationsByJobID)
 	}
 
 	companyGroup := r.Group("/companies").Use(checkUserAuthentication)
 	{
-		companyGroup.GET("/", adminOnly, GetAllCompanies) // Admin only
+		companyGroup.GET("/", GetAllCompanies)
 		companyGroup.GET("/:id", GetCompanyByID)
-		companyGroup.POST("/", employerOnly, AddCompany)      // Employer only
-		companyGroup.PUT("/:id", employerOnly, UpdateCompany) // Employer only
-		companyGroup.DELETE("/:id", adminOnly, DeleteCompany) // Admin only
+		companyGroup.POST("/", AddCompany)
+		companyGroup.PUT("/:id", UpdateCompany)
+		companyGroup.DELETE("/:id", DeleteCompany)
 	}
 
 	favoriteGroup := r.Group("/favorites").Use(checkUserAuthentication)
 	{
 		favoriteGroup.GET("/user/:userID", GetFavoritesByUserID)
 		favoriteGroup.GET("/user/:userID/job/:jobID", GetFavoriteByUserIDAndJobID)
-		favoriteGroup.POST("/", specialistOnly, AddFavorite)      // Specialist only
-		favoriteGroup.DELETE("/", specialistOnly, RemoveFavorite) // Specialist only
+		favoriteGroup.POST("/", AddFavorite)
+		favoriteGroup.DELETE("/", RemoveFavorite)
 		favoriteGroup.GET("/exists/user/:userID/job/:jobID", CheckFavoriteExists)
 	}
 
@@ -83,9 +82,9 @@ func InitRoutes() *gin.Engine {
 	{
 		jobCategoryGroup.GET("/", GetAllJobCategories)
 		jobCategoryGroup.GET("/:id", GetJobCategoryByID)
-		jobCategoryGroup.POST("/", adminOnly, CreateJobCategory)      // Admin only
-		jobCategoryGroup.PUT("/:id", adminOnly, UpdateJobCategory)    // Admin only
-		jobCategoryGroup.DELETE("/:id", adminOnly, DeleteJobCategory) // Admin only
+		jobCategoryGroup.POST("/", CreateJobCategory)
+		jobCategoryGroup.PUT("/:id", UpdateJobCategory)
+		jobCategoryGroup.DELETE("/:id", DeleteJobCategory)
 	}
 
 	resumeGroup := r.Group("/resumes").Use(checkUserAuthentication)

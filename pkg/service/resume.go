@@ -26,7 +26,6 @@ func UpdateResume(resumeID uint, updatedResume models.Resume) error {
 	if err != nil {
 		return err
 	}
-
 	if updatedResume.FullName != "" {
 		resume.FullName = updatedResume.FullName
 	}
