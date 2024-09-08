@@ -9,7 +9,7 @@ import (
 
 func handleError(c *gin.Context, err error) {
 	if errors.Is(err, errs.ErrUsernameUniquenessFailed) ||
-		errors.Is(err, errs.ErrIncorrectUsernameorPassword) ||
+		errors.Is(err, errs.ErrInCorrectUsernameOrPassword) ||
 		errors.Is(err, errs.ErrValidationFailed) ||
 		errors.Is(err, errs.ErrDuplicateEntry) ||
 		errors.Is(err, errs.ErrInvalidField) {

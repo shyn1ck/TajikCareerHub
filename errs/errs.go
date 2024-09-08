@@ -7,7 +7,7 @@ var (
 	ErrPermissionDenied            = errors.New("ErrPermissionDenied")
 	ErrUsernameUniquenessFailed    = errors.New("ErrUsernameUniquenessFailed")
 	ErrRoutesNotFound              = errors.New("ErrRoutesNotFound")
-	ErrIncorrectUsernameorPassword = errors.New("ErrIncorrectUsernameorPassword")
+	ErrInCorrectUsernameOrPassword = errors.New("ErrInCorrectUsernameOrPassword")
 	ErrRecordNotFound              = errors.New("ErrRecordNotFound")
 	ErrSomethingWentWrong          = errors.New("ErrSomethingWentWrong")
 	ErrNotImplemented              = errors.New("ErrNotImplemented")

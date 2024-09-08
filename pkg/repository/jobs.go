@@ -59,7 +59,7 @@ func UpdateJob(jobID uint, job models.Job) error {
 	err := db.GetDBConn().Model(&models.Job{}).Where("id = ?", jobID).Updates(job).Error
 	if err != nil {
 		logger.Error.Printf("[repository.UpdateJob]: Failed to update job with ID %v. Error: %v\n", jobID, err)
-		return err
+		return translateError(err)
 	}
 	return nil
 }
