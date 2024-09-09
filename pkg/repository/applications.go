@@ -65,7 +65,7 @@ func GetApplicationsByJobID(jobID uint) (applications []models.Application, err 
 func AddApplication(application models.Application) error {
 	err := db.GetDBConn().Create(&application).Error
 	if err != nil {
-		logger.Error.Printf("[repository.AddApplication]: Failed to add application. Error: %v\n", err)
+		logger.Error.Printf("[repository.AddApplication]: Error adding application. Error: %v\n", err)
 		return err
 	}
 	return nil

@@ -12,11 +12,11 @@ func Migrate() error {
 	}
 
 	err := dbConn.AutoMigrate(
-		&models.Job{},
+		&models.Vacancy{},
 		&models.User{},
 		&models.Application{},
 		&models.Company{},
-		&models.JobCategory{},
+		&models.VacancyCategory{},
 		&models.Resume{},
 	)
 	if err != nil {

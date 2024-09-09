@@ -85,23 +85,35 @@ func GetApplicationsByJobID(c *gin.Context) {
 	c.JSON(http.StatusOK, applications)
 }
 
-func AddApplication(c *gin.Context) {
+func ApplyForJob(c *gin.Context) {
 	ip := c.ClientIP()
-	var application models.Application
-	if err := c.ShouldBindJSON(&application); err != nil {
-		logger.Info.Printf("[controllers.AddApplication] Client IP: %s - Client attempted to add application with data %v. Error: Invalid input\n", ip, application)
+	userIDStr := c.Param("user_id")
+	jobIDStr := c.Param("job_id")
+	resumeIDStr := c.Param("resume_id")
+	logger.Info.Printf("[controllers.ApplyForJob] Client IP: %s - Request to apply for job with user ID: %s, job ID: %s, resume ID: %s\n", ip, userIDStr, jobIDStr, resumeIDStr)
+	userID, err := strconv.ParseUint(userIDStr, 10, 32)
+	if err != nil {
+		handleError(c, err)
+		return
+	}
+	jobID, err := strconv.ParseUint(jobIDStr, 10, 32)
+	if err != nil {
+		handleError(c, err)
+		return
+	}
+	resumeID, err := strconv.ParseUint(resumeIDStr, 10, 32)
+	if err != nil {
+		handleError(c, err)
+		return
+	}
+	err = service.ApplyForVacancy(uint(userID), uint(jobID), uint(resumeID))
+	if err != nil {
 		handleError(c, err)
 		return
 	}
 
-	if err := service.AddApplication(application); err != nil {
-		logger.Info.Printf("[controllers.AddApplication] Client IP: %s - Client attempted to add application with data %v. Error adding application\n", ip, application)
-		handleError(c, err)
-		return
-	}
-
-	logger.Info.Printf("[controllers.AddApplication] Client IP: %s - Successfully added application with data %v\n", ip, application)
-	c.JSON(http.StatusCreated, gin.H{"message": "Application added successfully"})
+	logger.Info.Printf("[controllers.ApplyForJob] Client IP: %s - Successfully applied for job %v by user %v.\n", ip, jobID, userID)
+	c.JSON(http.StatusOK, gin.H{"message": "Successfully applied for job"})
 }
 
 func UpdateApplication(c *gin.Context) {
@@ -150,4 +162,20 @@ func DeleteApplication(c *gin.Context) {
 
 	logger.Info.Printf("[controllers.DeleteApplication] Client IP: %s - Successfully soft deleted application with ID %v\n", ip, id)
 	c.JSON(http.StatusOK, gin.H{"message": "Application deleted successfully"})
+}
+
+func GetUserApplicationActivity(c *gin.Context) {
+
+}
+
+func GetJobApplications(c *gin.Context) {
+
+}
+
+func UpdateApplicationStatus(c *gin.Context) {
+
+}
+
+func GetJobReport(c *gin.Context) {
+
 }

@@ -40,24 +40,28 @@ func InitRoutes() *gin.Engine {
 		existenceGroup.GET("/", CheckUserExists)
 	}
 
-	jobGroup := r.Group("/jobs").Use(checkUserAuthentication)
+	vacancyGroup := r.Group("/vacancy").Use(checkUserAuthentication)
 	{
-		jobGroup.GET("/", GetAllJobs)
-		jobGroup.GET("/:id", GetJobByID)
-		jobGroup.POST("/", adminOnly, AddJob)
-		jobGroup.PUT("/:id", UpdateJob)
-		jobGroup.DELETE("/:id", DeleteJob)
+		vacancyGroup.GET("/", GetAllVacancies)
+		vacancyGroup.GET("/:id", GetVacancyByID)
+		vacancyGroup.POST("/", AddVacancy)
+		vacancyGroup.PUT("/:id", UpdateVacancy)
+		vacancyGroup.DELETE("/:id", DeleteVacancy)
 	}
 
 	applicationGroup := r.Group("/applications").Use(checkUserAuthentication)
 	{
 		applicationGroup.GET("/", GetAllApplications)
 		applicationGroup.GET("/:id", GetApplicationByID)
-		applicationGroup.POST("/", AddApplication)
+		applicationGroup.POST("/users/:user_id/jobs/:job_id/apply/:resume_id", ApplyForJob)
 		applicationGroup.PUT("/:id", UpdateApplication)
 		applicationGroup.DELETE("/:id", DeleteApplication)
 		applicationGroup.GET("/user/:userID", GetApplicationsByUserID)
 		applicationGroup.GET("/job/:jobID", GetApplicationsByJobID)
+		applicationGroup.GET("/user/:userID/activity", GetUserApplicationActivity)
+		applicationGroup.GET("/job/:jobID/applications", GetJobApplications)
+		applicationGroup.PUT("/:id/status", UpdateApplicationStatus)
+		applicationGroup.GET("/job/:jobID/report", GetJobReport)
 	}
 
 	companyGroup := r.Group("/companies").Use(checkUserAuthentication)
@@ -68,14 +72,14 @@ func InitRoutes() *gin.Engine {
 		companyGroup.PUT("/:id", UpdateCompany)
 		companyGroup.DELETE("/:id", DeleteCompany)
 	}
-	
-	jobCategoryGroup := r.Group("/job-categories").Use(checkUserAuthentication)
+
+	VacancyCategoryGroup := r.Group("/vacancy-category").Use(checkUserAuthentication)
 	{
-		jobCategoryGroup.GET("/", GetAllJobCategories)
-		jobCategoryGroup.GET("/:id", GetJobCategoryByID)
-		jobCategoryGroup.POST("/", CreateJobCategory)
-		jobCategoryGroup.PUT("/:id", UpdateJobCategory)
-		jobCategoryGroup.DELETE("/:id", DeleteJobCategory)
+		VacancyCategoryGroup.GET("/", GetAllVacancyCategories)
+		VacancyCategoryGroup.GET("/:id", GetVacancyCategoryByID)
+		VacancyCategoryGroup.POST("/", CreateVacancyCategory)
+		VacancyCategoryGroup.PUT("/:id", UpdateVacancyCategory)
+		VacancyCategoryGroup.DELETE("/:id", DeleteVacancyCategory)
 	}
 
 	resumeGroup := r.Group("/resumes").Use(checkUserAuthentication)

@@ -37,8 +37,22 @@ func GetApplicationsByJobID(jobID uint) ([]models.Application, error) {
 	return applications, nil
 }
 
-func AddApplication(application models.Application) error {
-	err := repository.AddApplication(application)
+func ApplyForVacancy(userID uint, vacancyID uint, resumeID uint) error {
+	_, err := repository.GetVacancyByID(vacancyID)
+	if err != nil {
+		return err
+	}
+	resume, err := repository.GetResumeByID(resumeID)
+	if err != nil {
+		return err
+	}
+	application := models.Application{
+		UserID:    userID,
+		VacancyID: vacancyID,
+		Resume:    resume,
+		Status:    "pending",
+	}
+	err = repository.AddApplication(application)
 	if err != nil {
 		return err
 	}

@@ -47,8 +47,8 @@ func UpdateResume(resumeID uint, updatedResume models.Resume) error {
 	if updatedResume.Location != "" {
 		resume.Location = updatedResume.Location
 	}
-	if updatedResume.JobCategoryID != 0 {
-		resume.JobCategoryID = updatedResume.JobCategoryID
+	if updatedResume.VacancyCategoryID != 0 {
+		resume.VacancyCategoryID = updatedResume.VacancyCategoryID
 	}
 
 	return repository.UpdateResume(resumeID, resume)
