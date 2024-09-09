@@ -16,7 +16,6 @@ func Migrate() error {
 		&models.User{},
 		&models.Application{},
 		&models.Company{},
-		&models.Favorite{},
 		&models.JobCategory{},
 		&models.Resume{},
 	)

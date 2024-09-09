@@ -36,6 +36,7 @@ func GetUserByID(c *gin.Context) {
 		handleError(c, err)
 		return
 	}
+
 	logger.Info.Printf("[controllers.GetUserByID] Client IP: %s - Successfully retrieved user with ID %v.\n", ip, id)
 	c.JSON(http.StatusOK, user)
 }

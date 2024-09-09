@@ -2,7 +2,6 @@ package repository
 
 import (
 	"TajikCareerHub/db"
-	"TajikCareerHub/errs"
 	"TajikCareerHub/logger"
 	"TajikCareerHub/models"
 )
@@ -41,7 +40,7 @@ func GetResumeByID(id uint) (models.Resume, error) {
 	err := db.GetDBConn().Where("id = ?", id).First(&resume).Error
 	if err != nil {
 		logger.Error.Printf("[repository.GetResumeByID] error getting resume by ID %v: %v\n", id, err)
-		return resume, errs.TranslateError(err)
+		return resume, TranslateError(err)
 	}
 	return resume, nil
 }
@@ -49,7 +48,7 @@ func GetResumeByID(id uint) (models.Resume, error) {
 func AddResume(resume models.Resume) error {
 	if err := db.GetDBConn().Create(&resume).Error; err != nil {
 		logger.Error.Printf("[repository.AddResume]: Failed to add resume, error: %v\n", err)
-		return errs.TranslateError(err)
+		return TranslateError(err)
 	}
 	return nil
 }
@@ -58,7 +57,7 @@ func UpdateResume(resumeID uint, resume models.Resume) error {
 	err := db.GetDBConn().Model(&models.Resume{}).Where("id = ?", resumeID).Updates(resume).Error
 	if err != nil {
 		logger.Error.Printf("[repository.UpdateResume]: Failed to update resume with ID %v. Error: %v\n", resumeID, err)
-		return errs.TranslateError(err)
+		return TranslateError(err)
 	}
 	return nil
 }
@@ -67,7 +66,7 @@ func DeleteResume(id uint) error {
 	err := db.GetDBConn().Model(&models.Resume{}).Where("id = ?", id).Update("deleted_at", true).Error
 	if err != nil {
 		logger.Error.Printf("[repository.DeleteResume] Failed to delete resume with ID %v: %v\n", id, err)
-		return errs.TranslateError(err)
+		return TranslateError(err)
 	}
 	return nil
 }

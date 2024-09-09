@@ -3,39 +3,10 @@ package errs
 import "errors"
 
 var (
-	ErrRoutesNotFound              = errors.New("ErrRoutesNotFound")
-	ErrInvalidField                = errors.New("ErrInvalidField")
-	ErrDuplicateEntry              = errors.New("ErrDuplicateEntry")
-	ErrInCorrectUsernameOrPassword = errors.New("ErrInCorrectUsernameOrPassword")
-	ErrIncorrectUsernameOrPassword = errors.New("ErrIncorrectUsernameOrPassword")
-	ErrPasswordIsEmpty             = errors.New("ErrPasswordIsEmpty")
-	ErrPasswordIncorrect           = errors.New("ErrPasswordIncorrect")
-	ErrUsernameIsEmpty             = errors.New("ErrUsernameIsEmpty")
-	ErrEmailIsEmpty                = errors.New("ErrUsernameIsEmpty")
-	ErrUsernameOrEmailIsEmpty      = errors.New("ErrUsernameOrEmailIsEmpty")
-	ErrUsernameOrPasswordIsEmpty   = errors.New("ErrUsernameOrPasswordIsEmpty")
-	ErrEmailOrPasswordIsEmpty      = errors.New("ErrEmailOrPasswordIsEmpty")
+	ErrValidationFailed            = errors.New("ErrValidationFailed")
 	ErrPermissionDenied            = errors.New("ErrPermissionDenied")
-)
-
-// Validation Errors
-var (
-	ErrInvalidData      = errors.New("ErrInvalidData")
-	ErrValidationFailed = errors.New("ErrValidationFailed")
-	ErrPathParametrized = errors.New("ErrPathParametrized")
-)
-
-var (
-	ErrUsernameUniquenessFailed        = errors.New("ErrUsernameUniquenessFailed")
-	ErrEmailUniquenessFailed           = errors.New("ErrEmailUniquenessFailed")
-	ErrCategoryNameUniquenessFailed    = errors.New("ErrCategoryNameUniquenessFailed")
-	ErrOrderStatusNameUniquenessFailed = errors.New("ErrOrderStatusNameUniquenessFailed")
-)
-
-// General Errors
-var (
-	ErrRecordNotFound      = errors.New("ErrRecordNotFound")
-	ErrCategoryNotFound    = errors.New("ErrCategoryNotFound")
-	ErrOrderStatusNotFound = errors.New("ErrOrderStatusNotFound")
-	ErrSomethingWentWrong  = errors.New("ErrSomethingWentWrong")
+	ErrUsernameUniquenessFailed    = errors.New("ErrUsernameUniquenessFailed")
+	ErrIncorrectUserNameOrPassword = errors.New("ErrIncorrectUsernameorPassword")
+	ErrRecordNotFound              = errors.New("ErrRecordNotFound")
+	ErrSomethingWentWrong          = errors.New("ErrSomethingWentWrong")
 )

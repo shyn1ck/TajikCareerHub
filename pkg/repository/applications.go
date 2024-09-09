@@ -4,10 +4,15 @@ import (
 	"TajikCareerHub/db"
 	"TajikCareerHub/logger"
 	"TajikCareerHub/models"
+	"gorm.io/gorm"
 )
 
 func GetAllApplications() (applications []models.Application, err error) {
-	err = db.GetDBConn().Where("deleted_at = ?", false).Find(&applications).Error
+	err = db.GetDBConn().
+		Preload("User").
+		Preload("Job").
+		Preload("Resume").
+		Where("deleted_at is NULL").Find(&applications).Error
 	if err != nil {
 		logger.Error.Printf("[repository.GetAllApplications]: Error retrieving all applications. Error: %v\n", err)
 		return nil, err
@@ -16,7 +21,12 @@ func GetAllApplications() (applications []models.Application, err error) {
 }
 
 func GetApplicationByID(id uint) (application models.Application, err error) {
-	err = db.GetDBConn().Where("id = ?", id).First(&application).Error
+	err = db.GetDBConn().
+		Preload("User").
+		Preload("Job").
+		Preload("Resume").
+		Where("id = ? AND deleted_at IS NULL", id).
+		First(&application).Error
 	if err != nil {
 		logger.Error.Printf("[repository.GetApplicationByID]: Error retrieving application with ID %v. Error: %v\n", id, err)
 		return application, err
@@ -25,7 +35,12 @@ func GetApplicationByID(id uint) (application models.Application, err error) {
 }
 
 func GetApplicationsByUserID(userID uint) (applications []models.Application, err error) {
-	err = db.GetDBConn().Where("user_id = ? AND deleted_at = ?", userID, false).Find(&applications).Error
+	err = db.GetDBConn().
+		Preload("User").
+		Preload("Job").
+		Preload("Resume").
+		Where("user_id = ? AND deleted_at IS NULL", userID).
+		Find(&applications).Error
 	if err != nil {
 		logger.Error.Printf("[repository.GetApplicationsByUserID]: Error retrieving applications for user ID %v. Error: %v\n", userID, err)
 		return nil, err
@@ -34,7 +49,12 @@ func GetApplicationsByUserID(userID uint) (applications []models.Application, er
 }
 
 func GetApplicationsByJobID(jobID uint) (applications []models.Application, err error) {
-	err = db.GetDBConn().Where("job_id = ? AND deleted_at = ?", jobID, false).Find(&applications).Error
+	err = db.GetDBConn().
+		Preload("User").
+		Preload("Job").
+		Preload("Resume").
+		Where("job_id = ? AND deleted_at IS NULL", jobID).
+		Find(&applications).Error
 	if err != nil {
 		logger.Error.Printf("[repository.GetApplicationsByJobID]: Error retrieving applications for job ID %v. Error: %v\n", jobID, err)
 		return nil, err
@@ -61,7 +81,10 @@ func UpdateApplication(application models.Application) error {
 }
 
 func DeleteApplication(id uint) error {
-	err := db.GetDBConn().Model(&models.Application{}).Where("id = ?", id).Update("deleted_at", true).Error
+	err := db.GetDBConn().
+		Model(&models.Application{}).
+		Where("id = ?", id).
+		Update("deleted_at", gorm.Expr("NOW()")).Error
 	if err != nil {
 		logger.Error.Printf("[repository.DeleteApplication]: Failed to soft delete application with ID %v. Error: %v\n", id, err)
 		return err

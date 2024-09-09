@@ -68,16 +68,7 @@ func InitRoutes() *gin.Engine {
 		companyGroup.PUT("/:id", UpdateCompany)
 		companyGroup.DELETE("/:id", DeleteCompany)
 	}
-
-	favoriteGroup := r.Group("/favorites").Use(checkUserAuthentication)
-	{
-		favoriteGroup.GET("/user/:userID", GetFavoritesByUserID)
-		favoriteGroup.GET("/user/:userID/job/:jobID", GetFavoriteByUserIDAndJobID)
-		favoriteGroup.POST("/", AddFavorite)
-		favoriteGroup.DELETE("/", RemoveFavorite)
-		favoriteGroup.GET("/exists/user/:userID/job/:jobID", CheckFavoriteExists)
-	}
-
+	
 	jobCategoryGroup := r.Group("/job-categories").Use(checkUserAuthentication)
 	{
 		jobCategoryGroup.GET("/", GetAllJobCategories)
