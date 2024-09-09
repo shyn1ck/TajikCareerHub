@@ -4,11 +4,19 @@ import (
 	"TajikCareerHub/db"
 	"TajikCareerHub/logger"
 	"TajikCareerHub/models"
+	"errors"
+	"gorm.io/gorm"
 )
 
 func GetAllVacancies(search string, minSalary int, maxSalary int, location string, category string, sort string) ([]models.Vacancy, error) {
 	var vacancies []models.Vacancy
-	query := db.GetDBConn().Preload("Company").Preload("VacancyCategory").Model(&models.Vacancy{})
+	query := db.GetDBConn().
+		Preload("Company").
+		Preload("VacancyCategory").
+		Preload("User", func(db *gorm.DB) *gorm.DB {
+			return db.Select("id", "full_name", "email")
+		}).
+		Model(&models.Vacancy{})
 
 	if search != "" {
 		query = query.Where("title ILIKE ?", "%"+search+"%")
@@ -51,6 +59,9 @@ func GetVacancyByID(id uint) (models.Vacancy, error) {
 	err := db.GetDBConn().
 		Preload("Company").
 		Preload("VacancyCategory").
+		Preload("User", func(db *gorm.DB) *gorm.DB {
+			return db.Select("id", "full_name", "email") // Загружаем только нужные поля
+		}).
 		Where("id = ?", id).
 		First(&vacancy).Error
 	if err != nil {
@@ -61,6 +72,10 @@ func GetVacancyByID(id uint) (models.Vacancy, error) {
 }
 
 func AddVacancy(vacancy models.Vacancy) error {
+	if vacancy.UserID == 0 {
+		return errors.New("user_id must be provided")
+	}
+
 	if err := db.GetDBConn().Create(&vacancy).Error; err != nil {
 		logger.Error.Printf("[repository.AddVacancy]: Failed to add vacancy, error: %v\n", err)
 		return TranslateError(err)

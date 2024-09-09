@@ -2,9 +2,12 @@ package service
 
 import (
 	"TajikCareerHub/configs"
+	"errors"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
+	"github.com/gin-gonic/gin"
 	"os"
+	"strings"
 	"time"
 )
 
@@ -46,4 +49,17 @@ func ParseToken(tokenString string) (*CustomClaims, error) {
 		return claims, nil
 	}
 	return nil, fmt.Errorf("invalid token")
+}
+
+func GetUserIDFromToken(c *gin.Context) (uint, error) {
+	tokenString := c.GetHeader("Authorization")
+	if tokenString == "" {
+		return 0, errors.New("Authorization header is missing")
+	}
+	tokenString = strings.TrimPrefix(tokenString, "Bearer ")
+	claims, err := ParseToken(tokenString)
+	if err != nil {
+		return 0, err
+	}
+	return claims.UserID, nil
 }

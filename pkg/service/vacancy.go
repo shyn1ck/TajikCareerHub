@@ -3,6 +3,7 @@ package service
 import (
 	"TajikCareerHub/models"
 	"TajikCareerHub/pkg/repository"
+	"errors"
 )
 
 func GetAllVacancies(search string, minSalary int, maxSalary int, location string, category string, sort string) (vacancies []models.Vacancy, err error) {
@@ -19,6 +20,9 @@ func GetVacancyByID(id uint) (models.Vacancy, error) {
 }
 
 func AddVacancy(vacancy models.Vacancy) error {
+	if vacancy.UserID == 0 {
+		return errors.New("user_id must be provided")
+	}
 	err := repository.AddVacancy(vacancy)
 	if err != nil {
 		return err
@@ -40,8 +44,8 @@ func UpdateVacancy(vacancyID uint, updatedVacancy models.Vacancy) error {
 	if updatedVacancy.Location != "" {
 		vacancy.Location = updatedVacancy.Location
 	}
-	if updatedVacancy.VacancyCategory.ID != 0 {
-		vacancy.VacancyCategory = updatedVacancy.VacancyCategory
+	if updatedVacancy.VacancyCategoryID != 0 {
+		vacancy.VacancyCategoryID = updatedVacancy.VacancyCategoryID
 	}
 	if updatedVacancy.Salary != 0 {
 		vacancy.Salary = updatedVacancy.Salary

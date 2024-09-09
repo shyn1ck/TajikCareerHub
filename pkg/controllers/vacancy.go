@@ -68,21 +68,27 @@ func GetVacancyByID(c *gin.Context) {
 }
 
 func AddVacancy(c *gin.Context) {
-	ip := c.ClientIP()
+	userID, err := service.GetUserIDFromToken(c)
+	if err != nil {
+		handleError(c, err)
+		return
+	}
+
 	var vacancy models.Vacancy
 	if err := c.BindJSON(&vacancy); err != nil {
 		handleError(c, err)
 		return
 	}
 
-	logger.Info.Printf("[controllers.AddVacancy] Client IP: %s - Request to add vacancy: %v\n", ip, vacancy)
-	err := service.AddVacancy(vacancy)
+	vacancy.UserID = userID
+
+	err = service.AddVacancy(vacancy)
 	if err != nil {
 		handleError(c, err)
 		return
 	}
-	logger.Info.Printf("[controllers.AddVacancy] Client IP: %s - Vacancy added successfully: %v\n", ip, vacancy)
-	c.JSON(http.StatusCreated, gin.H{"message": "Vacancy added successfully"})
+
+	c.JSON(http.StatusOK, gin.H{"message": "Vacancy added successfully"})
 }
 
 func UpdateVacancy(c *gin.Context) {
