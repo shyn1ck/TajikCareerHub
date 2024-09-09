@@ -11,10 +11,10 @@ import (
 )
 
 var (
-	Info  *log.Logger
-	Error *log.Logger
-	Warn  *log.Logger
-	Debug *log.Logger
+	Info    *log.Logger
+	Error   *log.Logger
+	Warning *log.Logger
+	Debug   *log.Logger
 )
 
 func Init() error {
@@ -27,50 +27,50 @@ func Init() error {
 		}
 	}
 
-	// Инициализация логгеров lumberjack
+	// Инициализация логгеров lumberjack...
 	lumberLogInfo := &lumberjack.Logger{
 		Filename:   fmt.Sprintf("%s/%s", logParams.LogDirectory, logParams.LogInfo),
-		MaxSize:    logParams.MaxSizeMegabytes, // мегабайты
+		MaxSize:    logParams.MaxSizeMegabytes, // megabytes
 		MaxBackups: logParams.MaxBackups,
-		MaxAge:     logParams.MaxAge,   // дни
-		Compress:   logParams.Compress, // отключено по умолчанию
+		MaxAge:     logParams.MaxAge,   // Days.
+		Compress:   logParams.Compress, // Disabled by default.
 		LocalTime:  logParams.LocalTime,
 	}
 
 	lumberLogError := &lumberjack.Logger{
 		Filename:   fmt.Sprintf("%s/%s", logParams.LogDirectory, logParams.LogError),
-		MaxSize:    logParams.MaxSizeMegabytes, // мегабайты
+		MaxSize:    logParams.MaxSizeMegabytes,
 		MaxBackups: logParams.MaxBackups,
-		MaxAge:     logParams.MaxAge,   // дни
-		Compress:   logParams.Compress, // отключено по умолчанию
+		MaxAge:     logParams.MaxAge,
+		Compress:   logParams.Compress,
 		LocalTime:  logParams.LocalTime,
 	}
 
-	lumberLogWarn := &lumberjack.Logger{
+	lumberLogWarning := &lumberjack.Logger{
 		Filename:   fmt.Sprintf("%s/%s", logParams.LogDirectory, logParams.LogWarn),
-		MaxSize:    logParams.MaxSizeMegabytes, // мегабайты
+		MaxSize:    logParams.MaxSizeMegabytes,
 		MaxBackups: logParams.MaxBackups,
-		MaxAge:     logParams.MaxAge,   // дни
-		Compress:   logParams.Compress, // отключено по умолчанию
+		MaxAge:     logParams.MaxAge,
+		Compress:   logParams.Compress,
 		LocalTime:  logParams.LocalTime,
 	}
 
 	lumberLogDebug := &lumberjack.Logger{
 		Filename:   fmt.Sprintf("%s/%s", logParams.LogDirectory, logParams.LogDebug),
-		MaxSize:    logParams.MaxSizeMegabytes, // мегабайты
+		MaxSize:    logParams.MaxSizeMegabytes,
 		MaxBackups: logParams.MaxBackups,
-		MaxAge:     logParams.MaxAge,   // дни
-		Compress:   logParams.Compress, // отключено по умолчанию
+		MaxAge:     logParams.MaxAge,
+		Compress:   logParams.Compress,
 		LocalTime:  logParams.LocalTime,
 	}
 
-	// Инициализация глобальных логгеров
+	gin.DefaultWriter = io.MultiWriter(os.Stdout, lumberLogInfo)
+
+	// Инициализация глобальных логгеров...
 	Info = log.New(gin.DefaultWriter, "INFO: ", log.Ldate|log.Ltime|log.Lshortfile)
 	Error = log.New(lumberLogError, "ERROR: ", log.Ldate|log.Ltime|log.Lshortfile)
-	Warn = log.New(lumberLogWarn, "WARN: ", log.Ldate|log.Ltime|log.Lshortfile)
+	Warning = log.New(lumberLogWarning, "WARNING: ", log.Ldate|log.Ltime|log.Lshortfile)
 	Debug = log.New(lumberLogDebug, "DEBUG: ", log.Ldate|log.Ltime|log.Lshortfile)
-
-	gin.DefaultWriter = io.MultiWriter(os.Stdout, lumberLogInfo)
 
 	return nil
 }
