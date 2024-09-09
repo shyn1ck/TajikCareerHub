@@ -15,7 +15,9 @@ func GetAllResumes(c *gin.Context) {
 	location := c.Query("location")
 	category := c.Query("category")
 	minExperienceYearsStr := c.Query("min-experience-years")
-	logger.Info.Printf("[controllers.GetAllResumes] Client IP: %s - Request to get resumes with search: %s, minExperienceYearsStr: %s, location: %s, category: %s\n", ip, search, minExperienceYearsStr, location, category)
+
+	logger.Info.Printf("[controllers.GetAllResumes] Client IP: %s - Request to get resumes with search: %s, minExperienceYears: %s, location: %s, category: %s\n", ip, search, minExperienceYearsStr, location, category)
+
 	var minExperienceYears int
 	var err error
 	if minExperienceYearsStr != "" {
@@ -26,12 +28,19 @@ func GetAllResumes(c *gin.Context) {
 		}
 	}
 
-	resumes, err := service.GetAllResume(search, minExperienceYears, location, category)
+	userID, err := service.GetUserIDFromToken(c)
 	if err != nil {
 		handleError(c, err)
 		return
 	}
-	logger.Info.Printf("[controllers.GetAllResumes] Client IP: %s - Successufuly to get resumes with search: %s, minExperienceYearsStr: %s, location: %s, category: %s\n", ip, search, minExperienceYearsStr, location, category)
+
+	resumes, err := service.GetAllResumes(search, minExperienceYears, location, category, userID)
+	if err != nil {
+		handleError(c, err)
+		return
+	}
+
+	logger.Info.Printf("[controllers.GetAllResumes] Client IP: %s - Successfully retrieved resumes with search: %s, minExperienceYears: %d, location: %s, category: %s\n", ip, search, minExperienceYears, location, category)
 	c.JSON(http.StatusOK, resumes)
 }
 
@@ -43,11 +52,18 @@ func GetResumeByID(c *gin.Context) {
 		return
 	}
 
-	resume, err := service.GetResumeByID(uint(id))
+	userID, err := service.GetUserIDFromToken(c)
 	if err != nil {
 		handleError(c, err)
 		return
 	}
+
+	resume, err := service.GetResumeByID(uint(id), userID)
+	if err != nil {
+		handleError(c, err)
+		return
+	}
+
 	c.JSON(http.StatusOK, resume)
 }
 
@@ -58,41 +74,55 @@ func AddResume(c *gin.Context) {
 		handleError(c, err)
 		return
 	}
+
 	var resume models.Resume
 	if err := c.BindJSON(&resume); err != nil {
 		handleError(c, err)
 		return
 	}
+
 	logger.Info.Printf("[controllers.AddResume] Client IP: %s - Request to add resume: %v\n", ip, resume)
 	resume.UserID = userID
-	err = service.AddResume(resume)
+
+	err = service.AddResume(resume, userID)
 	if err != nil {
 		handleError(c, err)
 		return
 	}
+
 	logger.Info.Printf("[controllers.AddResume] Client IP: %s - Resume added successfully: %v\n", ip, resume)
-	c.JSON(http.StatusCreated, gin.H{"message": "Job added successfully"})
+	c.JSON(http.StatusCreated, gin.H{"message": "Resume added successfully"})
 }
 
 func UpdateResume(c *gin.Context) {
 	ip := c.ClientIP()
 	idStr := c.Param("id")
 	logger.Info.Printf("[controllers.UpdateResume] Client IP: %s - Request to update resume with ID: %s\n", ip, idStr)
+
 	id, err := strconv.ParseUint(idStr, 10, 32)
 	if err != nil {
 		handleError(c, err)
 		return
 	}
+
+	userID, err := service.GetUserIDFromToken(c)
+	if err != nil {
+		handleError(c, err)
+		return
+	}
+
 	var updatedResume models.Resume
 	if err := c.BindJSON(&updatedResume); err != nil {
 		handleError(c, err)
 		return
 	}
-	err = service.UpdateResume(uint(id), updatedResume)
+
+	err = service.UpdateResume(uint(id), updatedResume, userID)
 	if err != nil {
 		handleError(c, err)
 		return
 	}
+
 	logger.Info.Printf("[controllers.UpdateResume] Client IP: %s - Resume with ID %v updated successfully.\n", ip, id)
 	c.JSON(http.StatusOK, gin.H{"message": "Resume updated successfully"})
 }
@@ -104,10 +134,16 @@ func DeleteResume(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID"})
 		return
 	}
+	userID, err := service.GetUserIDFromToken(c)
+	if err != nil {
+		handleError(c, err)
+		return
+	}
 
-	if err := service.DeleteResume(uint(id)); err != nil {
+	if err := service.DeleteResume(uint(id), userID); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete resume"})
 		return
 	}
+
 	c.JSON(http.StatusOK, gin.H{"message": "Resume deleted successfully"})
 }

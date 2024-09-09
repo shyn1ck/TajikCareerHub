@@ -64,7 +64,7 @@ func InitRoutes() *gin.Engine {
 		applicationGroup.GET("/job/:jobID/report", GetJobReport)
 	}
 
-	companyGroup := r.Group("/companies").Use(checkUserAuthentication)
+	companyGroup := r.Group("/company").Use(checkUserAuthentication)
 	{
 		companyGroup.GET("/", GetAllCompanies)
 		companyGroup.GET("/:id", GetCompanyByID)

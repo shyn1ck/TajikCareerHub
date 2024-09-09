@@ -2,6 +2,8 @@ package service
 
 import (
 	"TajikCareerHub/configs"
+	"TajikCareerHub/errs"
+	"TajikCareerHub/pkg/repository"
 	"errors"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
@@ -62,4 +64,15 @@ func GetUserIDFromToken(c *gin.Context) (uint, error) {
 		return 0, err
 	}
 	return claims.UserID, nil
+}
+
+func checkUserBlocked(userID uint) error {
+	user, err := repository.GetUserByID(userID)
+	if err != nil {
+		return err
+	}
+	if user.IsBlocked {
+		return errs.ErrUserBlocked
+	}
+	return nil
 }

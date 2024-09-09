@@ -3,34 +3,57 @@ package service
 import (
 	"TajikCareerHub/models"
 	"TajikCareerHub/pkg/repository"
-	"errors"
 )
 
-func GetAllVacancies(search string, minSalary int, maxSalary int, location string, category string, sort string) (vacancies []models.Vacancy, err error) {
-	vacancies, err = repository.GetAllVacancies(search, minSalary, maxSalary, location, category, sort)
+func GetAllVacancies(userID uint, search string, minSalary int, maxSalary int, location string, category string, sort string) ([]models.Vacancy, error) {
+	if err := checkUserBlocked(userID); err != nil {
+		return nil, err
+	}
+	vacancies, err := repository.GetAllVacancies(search, minSalary, maxSalary, location, category, sort)
 	if err != nil {
 		return nil, err
 	}
-
-	return vacancies, nil
-}
-
-func GetVacancyByID(id uint) (models.Vacancy, error) {
-	return repository.GetVacancyByID(id)
-}
-
-func AddVacancy(vacancy models.Vacancy) error {
-	if vacancy.UserID == 0 {
-		return errors.New("user_id must be provided")
+	var filteredVacancies []models.Vacancy
+	for _, vacancy := range vacancies {
+		if err := checkUserBlocked(vacancy.UserID); err != nil {
+			continue
+		}
+		filteredVacancies = append(filteredVacancies, vacancy)
 	}
+	return filteredVacancies, nil
+}
+
+func GetVacancyByID(userID uint, vacancyID uint) (models.Vacancy, error) {
+	if err := checkUserBlocked(userID); err != nil {
+		return models.Vacancy{}, err
+	}
+
+	vacancy, err := repository.GetVacancyByID(vacancyID)
+	if err != nil {
+		return models.Vacancy{}, err
+	}
+
+	return vacancy, nil
+}
+
+func AddVacancy(userID uint, vacancy models.Vacancy) error {
+	if err := checkUserBlocked(userID); err != nil {
+		return err
+	}
+	vacancy.UserID = userID
 	err := repository.AddVacancy(vacancy)
 	if err != nil {
 		return err
 	}
+
 	return nil
 }
 
-func UpdateVacancy(vacancyID uint, updatedVacancy models.Vacancy) error {
+func UpdateVacancy(userID uint, vacancyID uint, updatedVacancy models.Vacancy) error {
+	if err := checkUserBlocked(userID); err != nil {
+		return err
+	}
+
 	vacancy, err := repository.GetVacancyByID(vacancyID)
 	if err != nil {
 		return err
@@ -50,10 +73,12 @@ func UpdateVacancy(vacancyID uint, updatedVacancy models.Vacancy) error {
 	if updatedVacancy.Salary != 0 {
 		vacancy.Salary = updatedVacancy.Salary
 	}
-
 	return repository.UpdateVacancy(vacancyID, vacancy)
 }
 
-func DeleteVacancy(vacancyID uint) error {
+func DeleteVacancy(userID uint, vacancyID uint) error {
+	if err := checkUserBlocked(userID); err != nil {
+		return err
+	}
 	return repository.DeleteVacancy(vacancyID)
 }

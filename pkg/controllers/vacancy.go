@@ -17,11 +17,14 @@ func GetAllVacancies(c *gin.Context) {
 	minSalaryStr := c.Query("min-salary")
 	maxSalaryStr := c.Query("max-salary")
 	sort := c.Query("sort")
-
+	userID, err := service.GetUserIDFromToken(c)
+	if err != nil {
+		handleError(c, err)
+		return
+	}
 	logger.Info.Printf("[controllers.GetAllVacancies] Client IP: %s - Request to get vacancies with keyword: %s, minSalary: %s, maxSalary: %s, location: %s, category: %s, sort: %s\n", ip, search, minSalaryStr, maxSalaryStr, location, category, sort)
 
 	var minSalary, maxSalary int
-	var err error
 	if minSalaryStr != "" {
 		minSalary, err = strconv.Atoi(minSalaryStr)
 		if err != nil {
@@ -38,7 +41,7 @@ func GetAllVacancies(c *gin.Context) {
 		}
 	}
 
-	vacancies, err := service.GetAllVacancies(search, minSalary, maxSalary, location, category, sort)
+	vacancies, err := service.GetAllVacancies(userID, search, minSalary, maxSalary, location, category, sort)
 	if err != nil {
 		handleError(c, err)
 		return
@@ -57,12 +60,17 @@ func GetVacancyByID(c *gin.Context) {
 		handleError(c, err)
 		return
 	}
-
-	vacancy, err := service.GetVacancyByID(uint(id))
+	userID, err := service.GetUserIDFromToken(c)
 	if err != nil {
 		handleError(c, err)
 		return
 	}
+	vacancy, err := service.GetVacancyByID(userID, uint(id))
+	if err != nil {
+		handleError(c, err)
+		return
+	}
+
 	logger.Info.Printf("[controllers.GetVacancyByID] Client IP: %s - Successfully retrieved vacancy with ID %v.\n", ip, id)
 	c.JSON(http.StatusOK, vacancy)
 }
@@ -82,7 +90,7 @@ func AddVacancy(c *gin.Context) {
 
 	vacancy.UserID = userID
 
-	err = service.AddVacancy(vacancy)
+	err = service.AddVacancy(userID, vacancy)
 	if err != nil {
 		handleError(c, err)
 		return
@@ -107,7 +115,13 @@ func UpdateVacancy(c *gin.Context) {
 		return
 	}
 
-	err = service.UpdateVacancy(uint(id), updatedVacancy)
+	userID, err := service.GetUserIDFromToken(c)
+	if err != nil {
+		handleError(c, err)
+		return
+	}
+
+	err = service.UpdateVacancy(userID, uint(id), updatedVacancy)
 	if err != nil {
 		handleError(c, err)
 		return
@@ -126,7 +140,13 @@ func DeleteVacancy(c *gin.Context) {
 		return
 	}
 
-	err = service.DeleteVacancy(uint(id))
+	userID, err := service.GetUserIDFromToken(c)
+	if err != nil {
+		handleError(c, err)
+		return
+	}
+
+	err = service.DeleteVacancy(userID, uint(id))
 	if err != nil {
 		handleError(c, err)
 		return

@@ -9,4 +9,5 @@ var (
 	ErrIncorrectUserNameOrPassword = errors.New("ErrIncorrectUsernameorPassword")
 	ErrRecordNotFound              = errors.New("ErrRecordNotFound")
 	ErrSomethingWentWrong          = errors.New("ErrSomethingWentWrong")
+	ErrUserBlocked                 = errors.New("ErrUserBlocked")
 )
