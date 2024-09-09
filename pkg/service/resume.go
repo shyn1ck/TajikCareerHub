@@ -3,6 +3,7 @@ package service
 import (
 	"TajikCareerHub/models"
 	"TajikCareerHub/pkg/repository"
+	"errors"
 )
 
 func GetAllResume(search string, minExperienceYears int, location string, category string) (resumes []models.Resume, err error) {
@@ -18,7 +19,14 @@ func GetResumeByID(id uint) (models.Resume, error) {
 }
 
 func AddResume(resume models.Resume) error {
-	return repository.AddResume(resume)
+	if resume.UserID == 0 {
+		return errors.New("user_id must be provided")
+	}
+	err := repository.AddResume(resume)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func UpdateResume(resumeID uint, updatedResume models.Resume) error {

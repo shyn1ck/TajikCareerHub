@@ -9,7 +9,7 @@ import (
 func GetAllResumes(search string, minExperienceYears int, location string, category string) ([]models.Resume, error) {
 	var resumes []models.Resume
 
-	query := db.GetDBConn().Preload("JobCategory").Model(&models.Resume{})
+	query := db.GetDBConn().Preload("VacancyCategory").Model(&models.Resume{})
 	if search != "" {
 		query = query.Where("summary ILIKE ?", "%"+search+"%")
 	}
@@ -19,8 +19,8 @@ func GetAllResumes(search string, minExperienceYears int, location string, categ
 	}
 
 	if category != "" {
-		query = query.Joins("JOIN job_categories ON job_categories.id = resumes.job_category_id").
-			Where("job_categories.name = ?", category)
+		query = query.Joins("JOIN vacancy_categories ON vacancy_categories.id = resumes.vacancy_category_id").
+			Where("vacancy_categories.name = ?", category)
 	}
 
 	if minExperienceYears > 0 {

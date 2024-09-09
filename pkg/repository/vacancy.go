@@ -4,7 +4,6 @@ import (
 	"TajikCareerHub/db"
 	"TajikCareerHub/logger"
 	"TajikCareerHub/models"
-	"errors"
 	"gorm.io/gorm"
 )
 
@@ -72,10 +71,6 @@ func GetVacancyByID(id uint) (models.Vacancy, error) {
 }
 
 func AddVacancy(vacancy models.Vacancy) error {
-	if vacancy.UserID == 0 {
-		return errors.New("user_id must be provided")
-	}
-
 	if err := db.GetDBConn().Create(&vacancy).Error; err != nil {
 		logger.Error.Printf("[repository.AddVacancy]: Failed to add vacancy, error: %v\n", err)
 		return TranslateError(err)

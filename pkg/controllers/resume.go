@@ -53,14 +53,19 @@ func GetResumeByID(c *gin.Context) {
 
 func AddResume(c *gin.Context) {
 	ip := c.ClientIP()
+	userID, err := service.GetUserIDFromToken(c)
+	if err != nil {
+		handleError(c, err)
+		return
+	}
 	var resume models.Resume
 	if err := c.BindJSON(&resume); err != nil {
 		handleError(c, err)
 		return
 	}
-
 	logger.Info.Printf("[controllers.AddResume] Client IP: %s - Request to add resume: %v\n", ip, resume)
-	err := service.AddResume(resume)
+	resume.UserID = userID
+	err = service.AddResume(resume)
 	if err != nil {
 		handleError(c, err)
 		return
