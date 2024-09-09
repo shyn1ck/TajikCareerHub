@@ -73,13 +73,13 @@ func InitRoutes() *gin.Engine {
 		companyGroup.DELETE("/:id", DeleteCompany)
 	}
 
-	VacancyCategoryGroup := r.Group("/vacancy-category").Use(checkUserAuthentication)
+	VacancyCategoryGroup := r.Group("/category").Use(checkUserAuthentication)
 	{
-		VacancyCategoryGroup.GET("/", GetAllVacancyCategories)
-		VacancyCategoryGroup.GET("/:id", GetVacancyCategoryByID)
-		VacancyCategoryGroup.POST("/", CreateVacancyCategory)
-		VacancyCategoryGroup.PUT("/:id", UpdateVacancyCategory)
-		VacancyCategoryGroup.DELETE("/:id", DeleteVacancyCategory)
+		VacancyCategoryGroup.GET("/", GetAllCategories)
+		VacancyCategoryGroup.GET("/:id", GetCategoryByID)
+		VacancyCategoryGroup.POST("/", CreateCategory)
+		VacancyCategoryGroup.PUT("/:id", UpdateCategory)
+		VacancyCategoryGroup.DELETE("/:id", DeleteCategory)
 	}
 
 	resumeGroup := r.Group("/resumes").Use(checkUserAuthentication)

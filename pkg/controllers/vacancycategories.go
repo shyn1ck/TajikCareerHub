@@ -9,7 +9,7 @@ import (
 	"strconv"
 )
 
-func GetVacancyCategoryByID(c *gin.Context) {
+func GetCategoryByID(c *gin.Context) {
 	ip := c.ClientIP()
 	idStr := c.Param("id")
 	id, err := strconv.ParseUint(idStr, 10, 32)
@@ -18,31 +18,31 @@ func GetVacancyCategoryByID(c *gin.Context) {
 		return
 	}
 
-	category, err := service.GetVacancyCategoryByID(uint(id))
+	category, err := service.GetCategoryByID(uint(id))
 	if err != nil {
 		handleError(c, err)
 		return
 	}
 
-	logger.Info.Printf("[controllers.GetVacancyCategoryByID] Client IP: %s - Successfully retrieved vacancy category with ID %v\n", ip, id)
+	logger.Info.Printf("[controllers.GetCategoryByID] Client IP: %s - Successfully retrieved vacancy category with ID %v\n", ip, id)
 	c.JSON(http.StatusOK, category)
 }
 
-func GetAllVacancyCategories(c *gin.Context) {
+func GetAllCategories(c *gin.Context) {
 	ip := c.ClientIP()
 	logger.Info.Printf("[controllers.GetAllVacancyCategories] Client IP: %s - Client requested all vacancy categories\n", ip)
 
-	categories, err := service.GetAllVacancyCategories()
+	categories, err := service.GetAllCategories()
 	if err != nil {
 		handleError(c, err)
 		return
 	}
 
-	logger.Info.Printf("[controllers.GetAllVacancyCategories] Client IP: %s - Successfully retrieved all vacancy categories\n", ip)
+	logger.Info.Printf("[controllers.GetAllCategories] Client IP: %s - Successfully retrieved all vacancy categories\n", ip)
 	c.JSON(http.StatusOK, categories)
 }
 
-func CreateVacancyCategory(c *gin.Context) {
+func CreateCategory(c *gin.Context) {
 	ip := c.ClientIP()
 	var category models.VacancyCategory
 	if err := c.ShouldBindJSON(&category); err != nil {
@@ -50,7 +50,7 @@ func CreateVacancyCategory(c *gin.Context) {
 		return
 	}
 
-	if err := service.CreateVacancyCategory(category); err != nil {
+	if err := service.AddCategory(category); err != nil {
 		handleError(c, err)
 		return
 	}
@@ -59,7 +59,7 @@ func CreateVacancyCategory(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"message": "Vacancy category created successfully"})
 }
 
-func UpdateVacancyCategory(c *gin.Context) {
+func UpdateCategory(c *gin.Context) {
 	ip := c.ClientIP()
 	var category models.VacancyCategory
 	idStr := c.Param("id")
@@ -75,7 +75,7 @@ func UpdateVacancyCategory(c *gin.Context) {
 		return
 	}
 
-	if err := service.UpdateVacancyCategory(category); err != nil {
+	if err := service.UpdateCategory(category); err != nil {
 		handleError(c, err)
 		return
 	}
@@ -84,7 +84,7 @@ func UpdateVacancyCategory(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Vacancy category updated successfully"})
 }
 
-func DeleteVacancyCategory(c *gin.Context) {
+func DeleteCategory(c *gin.Context) {
 	ip := c.ClientIP()
 	idStr := c.Param("id")
 	id, err := strconv.ParseUint(idStr, 10, 32)
@@ -93,7 +93,7 @@ func DeleteVacancyCategory(c *gin.Context) {
 		return
 	}
 
-	if err := service.DeleteVacancyCategory(uint(id)); err != nil {
+	if err := service.DeleteCategory(uint(id)); err != nil {
 		handleError(c, err)
 		return
 	}

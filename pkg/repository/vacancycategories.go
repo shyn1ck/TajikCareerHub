@@ -6,47 +6,47 @@ import (
 	"TajikCareerHub/models"
 )
 
-func GetVacancyCategoryByID(id uint) (category models.VacancyCategory, err error) {
-	err = db.GetDBConn().Where("id = ?", id).First(&category).Error
+func GetAllCategories() (category []models.VacancyCategory, err error) {
+	err = db.GetDBConn().Where("deleted_at = ?", false).Find(&category).Error
 	if err != nil {
-		logger.Error.Printf("[repository.GetVacancyCategoryByID]: Error retrieving vacancy category with ID %v. Error: %v\n", id, err)
-		return category, err
+		logger.Error.Printf("[repository.GetAllCategories]: Error retrieving all Categories. Error: %v\n", err)
+		return nil, err
 	}
 	return category, nil
 }
 
-func GetAllVacancyCategories() (categories []models.VacancyCategory, err error) {
-	err = db.GetDBConn().Where("deleted_at = ?", false).Find(&categories).Error
+func GetCategoryByID(id uint) (category []models.VacancyCategory, err error) {
+	err = db.GetDBConn().Where("id = ?", id).First(&category).Error
 	if err != nil {
-		logger.Error.Printf("[repository.GetAllVacancyCategories]: Error retrieving all vacancy categories. Error: %v\n", err)
-		return nil, err
+		logger.Error.Printf("[repository.GetCategoryByID]: Error retrieving category with ID %v. Error: %v\n", id, err)
+		return nil, TranslateError(err)
 	}
-	return categories, nil
+	return category, nil
 }
 
-func CreateVacancyCategory(category models.VacancyCategory) error {
+func AddCategory(category models.VacancyCategory) error {
 	err := db.GetDBConn().Create(&category).Error
 	if err != nil {
-		logger.Error.Printf("[repository.CreateVacancyCategory]: Failed to create vacancy category. Error: %v\n", err)
-		return err
+		logger.Error.Printf("[repository.AddCategory]: Failed to add category. Error: %v\n", err)
+		return TranslateError(err)
 	}
 	return nil
 }
 
-func UpdateVacancyCategory(category models.VacancyCategory) error {
-	err := db.GetDBConn().Model(&models.VacancyCategory{}).Where("id = ?", category.ID).Updates(category).Error
+func UpdateCategory(category models.VacancyCategory) error {
+	err := db.GetDBConn().Save(&category).Error
 	if err != nil {
-		logger.Error.Printf("[repository.UpdateVacancyCategory]: Failed to update vacancy category with ID %v. Error: %v\n", category.ID, err)
-		return err
+		logger.Error.Printf("[repository.UpdateCategory]: Failed to update category with ID %v. Error: %v\n", category.ID, err)
+		return TranslateError(err)
 	}
 	return nil
 }
 
-func DeleteVacancyCategory(id uint) error {
+func DeleteCategory(id uint) error {
 	err := db.GetDBConn().Model(&models.VacancyCategory{}).Where("id = ?", id).Update("deleted_at", true).Error
 	if err != nil {
-		logger.Error.Printf("[repository.DeleteVacancyCategory]: Failed to soft delete vacancy category with ID %v. Error: %v\n", id, err)
-		return err
+		logger.Error.Printf("[repository.DeleteCategory]: Failed to soft delete category with ID %v. Error: %v\n", id, err)
+		return TranslateError(err)
 	}
 	return nil
 }
