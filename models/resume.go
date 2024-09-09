@@ -1,7 +1,7 @@
 package models
 
 type Resume struct {
-	ID              uint        `json:"id" gorm:"primaryKey"`
+	ID              uint        `json:"id" gorm:"primaryKey;autoIncrement"`
 	UserID          uint        `json:"user_id" gorm:"not null"`
 	FullName        string      `json:"full_name" gorm:"type:varchar(255);not null"`
 	Summary         string      `json:"summary" gorm:"type:text"`

@@ -2,7 +2,6 @@ package errs
 
 import "errors"
 
-// Authentication Errors
 var (
 	ErrRoutesNotFound              = errors.New("ErrRoutesNotFound")
 	ErrInvalidField                = errors.New("ErrInvalidField")

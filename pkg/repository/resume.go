@@ -68,7 +68,6 @@ func DeleteResume(id uint) error {
 	if err != nil {
 		logger.Error.Printf("[repository.DeleteResume] Failed to delete resume with ID %v: %v\n", id, err)
 		return errs.TranslateError(err)
-		//
 	}
 	return nil
 }
