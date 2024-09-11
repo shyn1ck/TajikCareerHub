@@ -141,3 +141,24 @@ func UpdateUserPassword(id uint, newPassword string) error {
 	}
 	return nil
 }
+
+func updateBlockStatus(id uint, isBlocked bool) error {
+	err := db.GetDBConn().Model(&models.User{}).Where("id = ?", id).Update("is_blocked", isBlocked).Error
+	if err != nil {
+		action := "block"
+		if !isBlocked {
+			action = "unblock"
+		}
+		logger.Error.Printf("[repository.updateBlockStatus] Failed to %s user with ID %v: %v\n", action, id, err)
+		return TranslateError(err)
+	}
+	return nil
+}
+
+func BlockUser(id uint) error {
+	return updateBlockStatus(id, true)
+}
+
+func UnBlockUser(id uint) error {
+	return updateBlockStatus(id, false)
+}

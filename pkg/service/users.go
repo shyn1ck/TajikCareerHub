@@ -1,6 +1,7 @@
 package service
 
 import (
+	"TajikCareerHub/errs"
 	"TajikCareerHub/logger"
 	"TajikCareerHub/models"
 	"TajikCareerHub/pkg/repository"
@@ -112,4 +113,28 @@ func UpdateUserPassword(id uint, newPassword string) error {
 	}
 	hashedPassword := utils.GenerateHash(newPassword)
 	return repository.UpdateUserPassword(id, hashedPassword)
+}
+
+func BlockUser(id uint) error {
+	if id == 0 {
+		logger.Error.Printf("[service.BlockUser] Invalid ID: %v", id)
+		return errs.ErrIDIsNotCorrect
+	}
+	err := repository.BlockUser(id)
+	if err != nil {
+		logger.Error.Printf("[service.BlockUser] Failed to block user with ID %v: %v", id, err)
+	}
+	return err
+}
+
+func UnblockUser(id uint) error {
+	if id == 0 {
+		logger.Error.Printf("[service.UnblockUser] Invalid ID: %v", id)
+		return errs.ErrIDIsNotCorrect
+	}
+	err := repository.UnBlockUser(id)
+	if err != nil {
+		logger.Error.Printf("[service.UnblockUser] Failed to unblock user with ID %v: %v", id, err)
+	}
+	return err
 }

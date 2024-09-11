@@ -197,3 +197,43 @@ func CheckUserExists(c *gin.Context) {
 	logger.Info.Printf("[controllers.CheckUserExists] Client IP: %s - User existence check complete for username %v and email %v. Username Exists: %v, Email Exists: %v\n", ip, username, email, usernameExists, emailExists)
 	c.JSON(http.StatusOK, gin.H{"username_exists": usernameExists, "email_exists": emailExists})
 }
+
+func BlockUser(c *gin.Context) {
+	ip := c.ClientIP()
+	idParam := c.Param("id")
+	logger.Info.Printf("[controllers.BlockUserController] Client IP: %s - Request to block user with ID %s.\n", ip, idParam)
+	id, err := strconv.ParseUint(idParam, 10, 32)
+	if err != nil || id == 0 {
+		logger.Error.Printf("[controllers.BlockUserController] Client IP: %s - Invalid user ID: %s.\n", ip, idParam)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
+		return
+	}
+	err = service.BlockUser(uint(id))
+	if err != nil {
+		logger.Error.Printf("[controllers.BlockUserController] Client IP: %s - Failed to block user with ID %d: %v.\n", ip, id, err)
+		handleError(c, err)
+		return
+	}
+	logger.Info.Printf("[controllers.BlockUserController] Client IP: %s - Successfully blocked user with ID %d.\n", ip, id)
+	c.JSON(http.StatusOK, gin.H{"message": "User blocked successfully"})
+}
+
+func UnblockUser(c *gin.Context) {
+	ip := c.ClientIP()
+	idParam := c.Param("id")
+	logger.Info.Printf("[controllers.UnblockUserController] Client IP: %s - Request to unblock user with ID %s.\n", ip, idParam)
+	id, err := strconv.ParseUint(idParam, 10, 32)
+	if err != nil || id == 0 {
+		logger.Error.Printf("[controllers.UnblockUserController] Client IP: %s - Invalid user ID: %s.\n", ip, idParam)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
+		return
+	}
+	err = service.UnblockUser(uint(id))
+	if err != nil {
+		logger.Error.Printf("[controllers.UnblockUserController] Client IP: %s - Failed to unblock user with ID %d: %v.\n", ip, id, err)
+		handleError(c, err)
+		return
+	}
+	logger.Info.Printf("[controllers.UnblockUserController] Client IP: %s - Successfully unblocked user with ID %d.\n", ip, id)
+	c.JSON(http.StatusOK, gin.H{"message": "User unblocked successfully"})
+}

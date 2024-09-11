@@ -15,14 +15,14 @@ func GetAllCompanies() ([]models.Company, error) {
 }
 
 func GetCompanyByID(id uint) (models.Company, error) {
-	companies, err := repository.GetCompanyByID(id)
+	company, err := repository.GetCompanyByID(id)
 	if err != nil {
 		return models.Company{}, err
 	}
-	if len(companies) == 0 {
+	if (company == models.Company{}) {
 		return models.Company{}, errors.New("company not found")
 	}
-	return companies[0], nil
+	return company, nil
 }
 
 func AddCompany(company models.Company) error {

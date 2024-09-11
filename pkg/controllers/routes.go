@@ -53,11 +53,11 @@ func InitRoutes() *gin.Engine {
 	{
 		applicationGroup.GET("/", GetAllApplications)
 		applicationGroup.GET("/:id", GetApplicationByID)
-		applicationGroup.POST("/users/:user_id/jobs/:job_id/apply/:resume_id", ApplyForJob)
+		applicationGroup.POST("/users/:user_id/jobs/:job_id/apply/:resume_id", ApplyForVacancy)
 		applicationGroup.PUT("/:id", UpdateApplication)
 		applicationGroup.DELETE("/:id", DeleteApplication)
 		applicationGroup.GET("/user/:userID", GetApplicationsByUserID)
-		applicationGroup.GET("/job/:jobID", GetApplicationsByJobID)
+		applicationGroup.GET("/job/:jobID", GetApplicationsByVacancyID)
 		applicationGroup.GET("/user/:userID/activity", GetUserApplicationActivity)
 		applicationGroup.GET("/job/:jobID/applications", GetJobApplications)
 		applicationGroup.PUT("/:id/status", UpdateApplicationStatus)
@@ -71,6 +71,12 @@ func InitRoutes() *gin.Engine {
 		companyGroup.POST("/", AddCompany)
 		companyGroup.PUT("/:id", UpdateCompany)
 		companyGroup.DELETE("/:id", DeleteCompany)
+	}
+
+	adminGroup := r.Group("/admin").Use(checkUserAuthentication)
+	{
+		adminGroup.PUT("/user/:id/block", BlockUser)
+		adminGroup.PUT("/user/:id/unblock", UnblockUser)
 	}
 
 	VacancyCategoryGroup := r.Group("/category").Use(checkUserAuthentication)

@@ -16,28 +16,27 @@ func GetAllCategories() ([]models.VacancyCategory, error) {
 }
 
 func GetCategoryByID(id uint) (models.VacancyCategory, error) {
-	categoryList, err := repository.GetCategoryByID(id)
+	category, err := repository.GetCategoryByID(id)
 	if err != nil {
+		if errors.Is(err, errs.ErrRecordNotFound) {
+			return models.VacancyCategory{}, nil
+		}
 		return models.VacancyCategory{}, err
 	}
-	if len(categoryList) == 0 {
-		return models.VacancyCategory{}, errors.New("category not found")
-	}
-	return categoryList[0], nil
+	return category, nil
 }
 
 func AddCategory(category models.VacancyCategory) error {
 	existingCategory, err := repository.GetCategoryByID(category.ID)
 	if err != nil {
-		if !errors.Is(err, errs.ErrRecordNotFound) {
-			return err
+		if errors.Is(err, errs.ErrRecordNotFound) {
+			return repository.AddCategory(category)
 		}
+		return err
 	}
-
-	if len(existingCategory) > 0 {
+	if existingCategory.ID != 0 {
 		return errors.New("category already exists")
 	}
-
 	return repository.AddCategory(category)
 }
 
@@ -49,10 +48,9 @@ func UpdateCategory(category models.VacancyCategory) error {
 		}
 		return err
 	}
-	if len(existingCategory) == 0 {
+	if existingCategory.ID == 0 {
 		return errors.New("category does not exist")
 	}
-
 	return repository.UpdateCategory(category)
 }
 
@@ -64,9 +62,8 @@ func DeleteCategory(id uint) error {
 		}
 		return err
 	}
-	if len(existingCategory) == 0 {
+	if existingCategory.ID == 0 {
 		return errors.New("category does not exist")
 	}
-
 	return repository.DeleteCategory(id)
 }
