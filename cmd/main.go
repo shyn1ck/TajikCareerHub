@@ -14,6 +14,17 @@ import (
 	"syscall"
 )
 
+// @title TajikCareerHub API
+// @version 1.0
+// @description API Server for TajikCareerHub Application
+
+// @host localhost:8181
+// @BasePath /
+
+// @securityDefinitions.apikey ApiKeyAuth
+// @in header
+// @name Authorization
+
 func main() {
 	if err := godotenv.Load(); err != nil {
 		logger.Error.Fatalf("Ошибка загрузки .env файла: %s", err)
@@ -41,7 +52,7 @@ func main() {
 	mainServer := new(server.Server)
 	go func() {
 		if err = mainServer.Run(configs.AppSettings.AppParams.PortRun, controllers.InitRoutes()); err != nil {
-			log.Fatalf("Ошибка при запуске HTTP сервера: %s", err)
+			log.Fatalf("Error to start HTTP server: %s", err)
 		}
 	}()
 
@@ -51,13 +62,13 @@ func main() {
 
 	if sqlDB, err := db.GetDBConn().DB(); err == nil {
 		if err := sqlDB.Close(); err != nil {
-			logger.Error.Fatalf("Ошибка при закрытии соединения с БД: %s", err)
+			logger.Error.Fatalf("Error to close DB: %s", err)
 		}
 	} else {
-		logger.Error.Fatalf("Ошибка при получении *sql.DB из GORM: %s", err)
+		logger.Error.Fatalf("Error to get *sql.DB from GORM: %s", err)
 	}
 
 	if err = mainServer.Shutdown(context.Background()); err != nil {
-		logger.Error.Fatalf("Ошибка при завершении работы сервера: %s", err)
+		logger.Error.Fatalf("Error during server shutdown: %s", err)
 	}
 }
