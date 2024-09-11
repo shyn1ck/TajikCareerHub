@@ -29,8 +29,8 @@ func GetApplicationsByUserID(userID uint) ([]models.Application, error) {
 	return applications, nil
 }
 
-func GetApplicationsByJobID(jobID uint) ([]models.Application, error) {
-	applications, err := repository.GetApplicationsByJobID(jobID)
+func GetApplicationsByVacancyID(vacancyID uint) ([]models.Application, error) {
+	applications, err := repository.GetApplicationsByVacancyID(vacancyID)
 	if err != nil {
 		return nil, err
 	}

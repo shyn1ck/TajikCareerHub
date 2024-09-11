@@ -6,20 +6,26 @@ import (
 	"TajikCareerHub/models"
 )
 
-func GetAllCategories() (category []models.VacancyCategory, err error) {
-	err = db.GetDBConn().Where("deleted_at = ?", false).Find(&category).Error
+func GetAllCategories() ([]models.VacancyCategory, error) {
+	var categories []models.VacancyCategory
+	err := db.GetDBConn().
+		Where("deleted_at = ?", false).
+		Find(&categories).Error
 	if err != nil {
 		logger.Error.Printf("[repository.GetAllCategories]: Error retrieving all Categories. Error: %v\n", err)
 		return nil, err
 	}
-	return category, nil
+	return categories, nil
 }
 
-func GetCategoryByID(id uint) (category []models.VacancyCategory, err error) {
-	err = db.GetDBConn().Where("id = ?", id).First(&category).Error
+func GetCategoryByID(id uint) (models.VacancyCategory, error) {
+	var category models.VacancyCategory
+	err := db.GetDBConn().
+		Where("id = ? AND deleted_at = false", id).
+		First(&category).Error
 	if err != nil {
 		logger.Error.Printf("[repository.GetCategoryByID]: Error retrieving category with ID %v. Error: %v\n", id, err)
-		return nil, TranslateError(err)
+		return models.VacancyCategory{}, TranslateError(err)
 	}
 	return category, nil
 }
@@ -34,7 +40,10 @@ func AddCategory(category models.VacancyCategory) error {
 }
 
 func UpdateCategory(category models.VacancyCategory) error {
-	err := db.GetDBConn().Save(&category).Error
+	err := db.GetDBConn().
+		Model(&models.VacancyCategory{}).
+		Where("id = ? AND deleted_at = false", category.ID).
+		Save(&category).Error
 	if err != nil {
 		logger.Error.Printf("[repository.UpdateCategory]: Failed to update category with ID %v. Error: %v\n", category.ID, err)
 		return TranslateError(err)
@@ -43,7 +52,10 @@ func UpdateCategory(category models.VacancyCategory) error {
 }
 
 func DeleteCategory(id uint) error {
-	err := db.GetDBConn().Model(&models.VacancyCategory{}).Where("id = ?", id).Update("deleted_at", true).Error
+	err := db.GetDBConn().
+		Model(&models.VacancyCategory{}).
+		Where("id = ?", id).
+		Update("deleted_at", true).Error
 	if err != nil {
 		logger.Error.Printf("[repository.DeleteCategory]: Failed to soft delete category with ID %v. Error: %v\n", id, err)
 		return TranslateError(err)

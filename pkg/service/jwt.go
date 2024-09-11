@@ -2,8 +2,6 @@ package service
 
 import (
 	"TajikCareerHub/configs"
-	"TajikCareerHub/errs"
-	"TajikCareerHub/pkg/repository"
 	"errors"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
@@ -56,7 +54,7 @@ func ParseToken(tokenString string) (*CustomClaims, error) {
 func GetUserIDFromToken(c *gin.Context) (uint, error) {
 	tokenString := c.GetHeader("Authorization")
 	if tokenString == "" {
-		return 0, errors.New("Authorization header is missing")
+		return 0, errors.New("authorization header is missing")
 	}
 	tokenString = strings.TrimPrefix(tokenString, "Bearer ")
 	claims, err := ParseToken(tokenString)
@@ -64,15 +62,4 @@ func GetUserIDFromToken(c *gin.Context) (uint, error) {
 		return 0, err
 	}
 	return claims.UserID, nil
-}
-
-func checkUserBlocked(userID uint) error {
-	user, err := repository.GetUserByID(userID)
-	if err != nil {
-		return err
-	}
-	if user.IsBlocked {
-		return errs.ErrUserBlocked
-	}
-	return nil
 }

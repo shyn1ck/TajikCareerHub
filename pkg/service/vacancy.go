@@ -9,17 +9,23 @@ func GetAllVacancies(userID uint, search string, minSalary int, maxSalary int, l
 	if err := checkUserBlocked(userID); err != nil {
 		return nil, err
 	}
+
 	vacancies, err := repository.GetAllVacancies(search, minSalary, maxSalary, location, category, sort)
 	if err != nil {
 		return nil, err
 	}
+
 	var filteredVacancies []models.Vacancy
 	for _, vacancy := range vacancies {
+		if err := checkVacancyBlocked(vacancy.ID); err != nil {
+			continue
+		}
 		if err := checkUserBlocked(vacancy.UserID); err != nil {
 			continue
 		}
 		filteredVacancies = append(filteredVacancies, vacancy)
 	}
+
 	return filteredVacancies, nil
 }
 
@@ -32,7 +38,9 @@ func GetVacancyByID(userID uint, vacancyID uint) (models.Vacancy, error) {
 	if err != nil {
 		return models.Vacancy{}, err
 	}
-
+	if err := checkVacancyBlocked(vacancyID); err != nil {
+		return models.Vacancy{}, err
+	}
 	return vacancy, nil
 }
 
@@ -41,12 +49,7 @@ func AddVacancy(userID uint, vacancy models.Vacancy) error {
 		return err
 	}
 	vacancy.UserID = userID
-	err := repository.AddVacancy(vacancy)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return repository.AddVacancy(vacancy)
 }
 
 func UpdateVacancy(userID uint, vacancyID uint, updatedVacancy models.Vacancy) error {
@@ -58,6 +61,10 @@ func UpdateVacancy(userID uint, vacancyID uint, updatedVacancy models.Vacancy) e
 	if err != nil {
 		return err
 	}
+	if err := checkVacancyBlocked(vacancyID); err != nil {
+		return err
+	}
+
 	if updatedVacancy.Title != "" {
 		vacancy.Title = updatedVacancy.Title
 	}
@@ -80,5 +87,9 @@ func DeleteVacancy(userID uint, vacancyID uint) error {
 	if err := checkUserBlocked(userID); err != nil {
 		return err
 	}
+	if err := checkVacancyBlocked(vacancyID); err != nil {
+		return err
+	}
+
 	return repository.DeleteVacancy(vacancyID)
 }

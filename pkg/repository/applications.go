@@ -4,15 +4,15 @@ import (
 	"TajikCareerHub/db"
 	"TajikCareerHub/logger"
 	"TajikCareerHub/models"
-	"gorm.io/gorm"
 )
 
-func GetAllApplications() (applications []models.Application, err error) {
-	err = db.GetDBConn().
+func GetAllApplications() ([]models.Application, error) {
+	var applications []models.Application
+	err := db.GetDBConn().
 		Preload("User").
-		Preload("Job").
+		Preload("Vacancy").
 		Preload("Resume").
-		Where("deleted_at is NULL").Find(&applications).Error
+		Where("deleted_at = false").Find(&applications).Error
 	if err != nil {
 		logger.Error.Printf("[repository.GetAllApplications]: Error retrieving all applications. Error: %v\n", err)
 		return nil, err
@@ -20,12 +20,13 @@ func GetAllApplications() (applications []models.Application, err error) {
 	return applications, nil
 }
 
-func GetApplicationByID(id uint) (application models.Application, err error) {
-	err = db.GetDBConn().
+func GetApplicationByID(id uint) (models.Application, error) {
+	var application models.Application
+	err := db.GetDBConn().
 		Preload("User").
-		Preload("Job").
+		Preload("Vacancy").
 		Preload("Resume").
-		Where("id = ? AND deleted_at IS NULL", id).
+		Where("id = ? AND deleted_at = false", id).
 		First(&application).Error
 	if err != nil {
 		logger.Error.Printf("[repository.GetApplicationByID]: Error retrieving application with ID %v. Error: %v\n", id, err)
@@ -34,12 +35,13 @@ func GetApplicationByID(id uint) (application models.Application, err error) {
 	return application, nil
 }
 
-func GetApplicationsByUserID(userID uint) (applications []models.Application, err error) {
-	err = db.GetDBConn().
+func GetApplicationsByUserID(userID uint) ([]models.Application, error) {
+	var applications []models.Application
+	err := db.GetDBConn().
 		Preload("User").
-		Preload("Job").
+		Preload("Vacancy").
 		Preload("Resume").
-		Where("user_id = ? AND deleted_at IS NULL", userID).
+		Where("user_id = ? AND deleted_at = false", userID).
 		Find(&applications).Error
 	if err != nil {
 		logger.Error.Printf("[repository.GetApplicationsByUserID]: Error retrieving applications for user ID %v. Error: %v\n", userID, err)
@@ -48,15 +50,16 @@ func GetApplicationsByUserID(userID uint) (applications []models.Application, er
 	return applications, nil
 }
 
-func GetApplicationsByJobID(jobID uint) (applications []models.Application, err error) {
-	err = db.GetDBConn().
+func GetApplicationsByVacancyID(vacancyID uint) ([]models.Application, error) {
+	var applications []models.Application
+	err := db.GetDBConn().
 		Preload("User").
-		Preload("Job").
+		Preload("Vacancy").
 		Preload("Resume").
-		Where("job_id = ? AND deleted_at IS NULL", jobID).
+		Where("vacancy_id = ? AND deleted_at = false", vacancyID).
 		Find(&applications).Error
 	if err != nil {
-		logger.Error.Printf("[repository.GetApplicationsByJobID]: Error retrieving applications for job ID %v. Error: %v\n", jobID, err)
+		logger.Error.Printf("[repository.GetApplicationsByVacancyID]: Error retrieving applications for vacancy ID %v. Error: %v\n", vacancyID, err)
 		return nil, err
 	}
 	return applications, nil
@@ -84,7 +87,7 @@ func DeleteApplication(id uint) error {
 	err := db.GetDBConn().
 		Model(&models.Application{}).
 		Where("id = ?", id).
-		Update("deleted_at", gorm.Expr("NOW()")).Error
+		Update("deleted_at", true).Error
 	if err != nil {
 		logger.Error.Printf("[repository.DeleteApplication]: Failed to soft delete application with ID %v. Error: %v\n", id, err)
 		return err

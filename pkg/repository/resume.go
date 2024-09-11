@@ -9,7 +9,11 @@ import (
 func GetAllResumes(search string, minExperienceYears int, location string, category string) ([]models.Resume, error) {
 	var resumes []models.Resume
 
-	query := db.GetDBConn().Preload("VacancyCategory").Model(&models.Resume{})
+	query := db.GetDBConn().
+		Preload("VacancyCategory").
+		Model(&models.Resume{}).
+		Where("deleted_at = false")
+
 	if search != "" {
 		query = query.Where("summary ILIKE ?", "%"+search+"%")
 	}
@@ -37,9 +41,12 @@ func GetAllResumes(search string, minExperienceYears int, location string, categ
 
 func GetResumeByID(id uint) (models.Resume, error) {
 	var resume models.Resume
-	err := db.GetDBConn().Where("id = ?", id).First(&resume).Error
+	err := db.GetDBConn().
+		Where("id = ?", id).
+		Where("deleted_at = false").
+		First(&resume).Error
 	if err != nil {
-		logger.Error.Printf("[repository.GetResumeByID] error getting resume by ID %v: %v\n", id, err)
+		logger.Error.Printf("[repository.GetResumeByID] Error getting resume by ID %v: %v\n", id, err)
 		return resume, TranslateError(err)
 	}
 	return resume, nil
@@ -54,7 +61,10 @@ func AddResume(resume models.Resume) error {
 }
 
 func UpdateResume(resumeID uint, resume models.Resume) error {
-	err := db.GetDBConn().Model(&models.Resume{}).Where("id = ?", resumeID).Updates(resume).Error
+	err := db.GetDBConn().
+		Model(&models.Resume{}).
+		Where("id = ? AND deleted_at = false", resumeID).
+		Updates(resume).Error
 	if err != nil {
 		logger.Error.Printf("[repository.UpdateResume]: Failed to update resume with ID %v. Error: %v\n", resumeID, err)
 		return TranslateError(err)
@@ -63,7 +73,11 @@ func UpdateResume(resumeID uint, resume models.Resume) error {
 }
 
 func DeleteResume(id uint) error {
-	err := db.GetDBConn().Model(&models.Resume{}).Where("id = ?", id).Update("deleted_at", true).Error
+	err := db.GetDBConn().
+		Model(&models.Resume{}).
+		Where("id = ?", id).
+		Update("deleted_at", true).
+		Error
 	if err != nil {
 		logger.Error.Printf("[repository.DeleteResume] Failed to delete resume with ID %v: %v\n", id, err)
 		return TranslateError(err)

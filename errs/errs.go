@@ -21,4 +21,7 @@ var (
 	ErrApplicationFailed           = errors.New("ApplicationFailed")
 	ErrReviewSubmissionFailed      = errors.New("ReviewSubmissionFailed")
 	ErrReportGenerationFailed      = errors.New("ReportGenerationFailed")
+	ErrResumeBlocked               = errors.New("ResumeBlocked")
+	ErrVacancyBlocked              = errors.New("VacancyBlocked")
+	ErrIDIsNotCorrect              = errors.New("IDIsNotCorrect")
 )

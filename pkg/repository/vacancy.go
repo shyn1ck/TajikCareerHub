@@ -15,7 +15,8 @@ func GetAllVacancies(search string, minSalary int, maxSalary int, location strin
 		Preload("User", func(db *gorm.DB) *gorm.DB {
 			return db.Select("id", "full_name", "email")
 		}).
-		Model(&models.Vacancy{})
+		Model(&models.Vacancy{}).
+		Where("deleted_at = false")
 
 	if search != "" {
 		query = query.Where("title ILIKE ?", "%"+search+"%")
@@ -59,12 +60,13 @@ func GetVacancyByID(id uint) (models.Vacancy, error) {
 		Preload("Company").
 		Preload("VacancyCategory").
 		Preload("User", func(db *gorm.DB) *gorm.DB {
-			return db.Select("id", "full_name", "email") // Загружаем только нужные поля
+			return db.Select("id", "full_name", "email")
 		}).
 		Where("id = ?", id).
+		Where("deleted_at = false").
 		First(&vacancy).Error
 	if err != nil {
-		logger.Error.Printf("[repository.GetVacancyByID]: Error retrieving vacancy with ID %v. Error: %v\n", id, err)
+		logger.Error.Printf("[repository.GetVacancyByID] Error retrieving vacancy with ID %v. Error: %v\n", id, err)
 		return models.Vacancy{}, TranslateError(err)
 	}
 	return vacancy, nil
@@ -79,7 +81,7 @@ func AddVacancy(vacancy models.Vacancy) error {
 }
 
 func UpdateVacancy(vacancyID uint, vacancy models.Vacancy) error {
-	err := db.GetDBConn().Model(&models.Vacancy{}).Where("id = ?", vacancyID).Updates(vacancy).Error
+	err := db.GetDBConn().Model(&models.Vacancy{}).Where("id = ? AND deleted_at = false", vacancyID).Updates(vacancy).Error
 	if err != nil {
 		logger.Error.Printf("[repository.UpdateVacancy]: Failed to update vacancy with ID %v. Error: %v\n", vacancyID, err)
 		return TranslateError(err)
@@ -90,7 +92,7 @@ func UpdateVacancy(vacancyID uint, vacancy models.Vacancy) error {
 func DeleteVacancy(vacancyID uint) error {
 	err := db.GetDBConn().Model(&models.Vacancy{}).Where("id = ?", vacancyID).Update("deleted_at", true).Error
 	if err != nil {
-		logger.Error.Printf("[repository.DeleteVacancy]: Failed to soft delete vacancy with ID %v. Error: %v\n", vacancyID, err)
+		logger.Error.Printf("[repository.DeleteVacancy] Failed to soft delete vacancy with ID %v. Error: %v\n", vacancyID, err)
 		return TranslateError(err)
 	}
 	return nil

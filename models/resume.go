@@ -12,5 +12,6 @@ type Resume struct {
 	Location          string          `json:"location" gorm:"type:varchar(255)"`
 	VacancyCategoryID uint            `json:"vacancy_category_id" gorm:"not null"`
 	VacancyCategory   VacancyCategory `gorm:"foreignKey:VacancyCategoryID"`
+	IsBlocked         bool            `json:"is_blocked" gorm:"default:false"`
 	BaseModel
 }

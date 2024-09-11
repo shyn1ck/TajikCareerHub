@@ -64,39 +64,39 @@ func GetApplicationsByUserID(c *gin.Context) {
 	c.JSON(http.StatusOK, applications)
 }
 
-func GetApplicationsByJobID(c *gin.Context) {
+func GetApplicationsByVacancyID(c *gin.Context) {
 	ip := c.ClientIP()
-	jobIDStr := c.Param("jobID")
-	jobID, err := strconv.ParseUint(jobIDStr, 10, 32)
+	vacancyIDStr := c.Param("vacancyID")
+	vacancyID, err := strconv.ParseUint(vacancyIDStr, 10, 32)
 	if err != nil {
-		logger.Info.Printf("[controllers.GetApplicationsByJobID] Client IP: %s - Client requested applications for job ID %s. Error: Invalid job ID\n", ip, jobIDStr)
+		logger.Info.Printf("[controllers.GetApplicationsByVacancyID] Client IP: %s - Client requested applications for vacancy ID %s. Error: Invalid vacancy ID\n", ip, vacancyIDStr)
 		handleError(c, err)
 		return
 	}
 
-	applications, err := service.GetApplicationsByJobID(uint(jobID))
+	applications, err := service.GetApplicationsByVacancyID(uint(vacancyID))
 	if err != nil {
-		logger.Info.Printf("[controllers.GetApplicationsByJobID] Client IP: %s - Client requested applications for job ID %v. Error retrieving applications\n", ip, jobID)
+		logger.Info.Printf("[controllers.GetApplicationsByVacancyID] Client IP: %s - Client requested applications for vacancy ID %v. Error retrieving applications\n", ip, vacancyID)
 		handleError(c, err)
 		return
 	}
 
-	logger.Info.Printf("[controllers.GetApplicationsByJobID] Client IP: %s - Successfully retrieved applications for job ID %v\n", ip, jobID)
+	logger.Info.Printf("[controllers.GetApplicationsByVacancyID] Client IP: %s - Successfully retrieved applications for vacancy ID %v\n", ip, vacancyID)
 	c.JSON(http.StatusOK, applications)
 }
 
-func ApplyForJob(c *gin.Context) {
+func ApplyForVacancy(c *gin.Context) {
 	ip := c.ClientIP()
 	userIDStr := c.Param("user_id")
-	jobIDStr := c.Param("job_id")
+	vacancyIDStr := c.Param("vacancy_id")
 	resumeIDStr := c.Param("resume_id")
-	logger.Info.Printf("[controllers.ApplyForJob] Client IP: %s - Request to apply for job with user ID: %s, job ID: %s, resume ID: %s\n", ip, userIDStr, jobIDStr, resumeIDStr)
+	logger.Info.Printf("[controllers.ApplyForVacancy] Client IP: %s - Request to apply for vacancy with user ID: %s, vacancy ID: %s, resume ID: %s\n", ip, userIDStr, vacancyIDStr, resumeIDStr)
 	userID, err := strconv.ParseUint(userIDStr, 10, 32)
 	if err != nil {
 		handleError(c, err)
 		return
 	}
-	jobID, err := strconv.ParseUint(jobIDStr, 10, 32)
+	vacancyID, err := strconv.ParseUint(vacancyIDStr, 10, 32)
 	if err != nil {
 		handleError(c, err)
 		return
@@ -106,14 +106,14 @@ func ApplyForJob(c *gin.Context) {
 		handleError(c, err)
 		return
 	}
-	err = service.ApplyForVacancy(uint(userID), uint(jobID), uint(resumeID))
+	err = service.ApplyForVacancy(uint(userID), uint(vacancyID), uint(resumeID))
 	if err != nil {
 		handleError(c, err)
 		return
 	}
 
-	logger.Info.Printf("[controllers.ApplyForJob] Client IP: %s - Successfully applied for job %v by user %v.\n", ip, jobID, userID)
-	c.JSON(http.StatusOK, gin.H{"message": "Successfully applied for job"})
+	logger.Info.Printf("[controllers.ApplyForVacancy] Client IP: %s - Successfully applied for vacancy %v by user %v.\n", ip, vacancyID, userID)
+	c.JSON(http.StatusOK, gin.H{"message": "Successfully applied for vacancy"})
 }
 
 func UpdateApplication(c *gin.Context) {
@@ -177,5 +177,5 @@ func UpdateApplicationStatus(c *gin.Context) {
 }
 
 func GetJobReport(c *gin.Context) {
-
+	// TODO: Implement this function
 }
