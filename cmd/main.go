@@ -8,17 +8,16 @@ import (
 	"TajikCareerHub/server"
 	"context"
 	"github.com/joho/godotenv"
-	"log"
 	"os"
 	"os/signal"
 	"syscall"
 )
 
-// @title TajikCareerHub API
+// @title Tajik Career Hub API
 // @version 1.0
-// @description API Server for TajikCareerHub Application
+// @description This is a Tajik Career Hub API documentation.
 
-// @host localhost:8181
+// @host localhost:8080
 // @BasePath /
 
 // @securityDefinitions.apikey ApiKeyAuth
@@ -27,15 +26,13 @@ import (
 
 func main() {
 	if err := godotenv.Load(); err != nil {
-		logger.Error.Fatalf("Ошибка загрузки .env файла: %s", err)
+		logger.Error.Fatalf("Error loading the .env file: %s", err)
 	}
-	err := configs.ReadSettings()
-	if err != nil {
-		panic(err)
+	if err := configs.ReadSettings(); err != nil {
+		logger.Error.Fatalf("Error reading settings: %s", err)
 	}
-	err = logger.Init()
-	if err != nil {
-		return
+	if err := logger.Init(); err != nil {
+		logger.Error.Fatalf("Error initializing logger: %s", err)
 	}
 	if err := db.ConnectToDB(); err != nil {
 		logger.Error.Fatalf("Failed to connect to database: %v", err)
@@ -51,8 +48,8 @@ func main() {
 
 	mainServer := new(server.Server)
 	go func() {
-		if err = mainServer.Run(configs.AppSettings.AppParams.PortRun, controllers.InitRoutes()); err != nil {
-			log.Fatalf("Error to start HTTP server: %s", err)
+		if err := mainServer.Run(configs.AppSettings.AppParams.PortRun, controllers.InitRoutes()); err != nil {
+			logger.Error.Fatalf("Error starting HTTP server: %s", err)
 		}
 	}()
 
@@ -62,13 +59,13 @@ func main() {
 
 	if sqlDB, err := db.GetDBConn().DB(); err == nil {
 		if err := sqlDB.Close(); err != nil {
-			logger.Error.Fatalf("Error to close DB: %s", err)
+			logger.Error.Fatalf("Error closing DB: %s", err)
 		}
 	} else {
-		logger.Error.Fatalf("Error to get *sql.DB from GORM: %s", err)
+		logger.Error.Fatalf("Error getting *sql.DB from GORM: %s", err)
 	}
 
-	if err = mainServer.Shutdown(context.Background()); err != nil {
+	if err := mainServer.Shutdown(context.Background()); err != nil {
 		logger.Error.Fatalf("Error during server shutdown: %s", err)
 	}
 }

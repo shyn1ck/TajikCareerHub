@@ -2,15 +2,19 @@ package controllers
 
 import (
 	"TajikCareerHub/configs"
+	_ "TajikCareerHub/docs"
+	"TajikCareerHub/logger"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 	"net/http"
 )
 
 func InitRoutes() *gin.Engine {
 	r := gin.Default()
 	gin.SetMode(configs.AppSettings.AppParams.GinMode)
-
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	r.GET("/ping", PingPong)
 
 	auth := r.Group("/auth")
@@ -97,12 +101,11 @@ func InitRoutes() *gin.Engine {
 		resumeGroup.DELETE("/:id", DeleteResume)
 	}
 
-	err := r.Run(fmt.Sprintf("%s:%s", configs.AppSettings.AppParams.ServerURL, configs.AppSettings.AppParams.PortRun))
-	if err != nil {
-		return r
+	if err := r.Run(fmt.Sprintf("%s:%s", configs.AppSettings.AppParams.ServerURL, configs.AppSettings.AppParams.PortRun)); err != nil {
+		logger.Error.Fatalf("Error starting server: %v", err)
 	}
 
-	return nil
+	return r
 }
 
 func PingPong(c *gin.Context) {
