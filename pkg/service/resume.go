@@ -2,6 +2,7 @@ package service
 
 import (
 	"TajikCareerHub/errs"
+	"TajikCareerHub/logger"
 	"TajikCareerHub/models"
 	"TajikCareerHub/pkg/repository"
 )
@@ -48,7 +49,10 @@ func AddResume(resume models.Resume, userID uint) error {
 	if resume.UserID == 0 {
 		return errs.ErrIDIsNotCorrect
 	}
-
+	if err := resume.ValidateResume(); err != nil {
+		logger.Error.Printf("[service.AddResume] validation error: %v\n", err)
+		return err
+	}
 	return repository.AddResume(resume)
 }
 

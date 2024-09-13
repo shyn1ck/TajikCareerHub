@@ -7,30 +7,7 @@ import (
 	"TajikCareerHub/pkg/repository"
 	"TajikCareerHub/utils"
 	"errors"
-	"strings"
 )
-
-func validateUserCredentials(username, email, password, role string) error {
-	if strings.TrimSpace(username) == "" {
-		return errs.ErrUsernameExists
-	}
-	if strings.TrimSpace(email) == "" {
-		return errs.ErrEmailExists
-	}
-	if strings.TrimSpace(role) == "" {
-		return errs.ErrRoleExist
-	}
-	if strings.ToLower(role) == "admin" {
-		return errs.ErrRoleCannotBeAdmin
-	}
-	if strings.TrimSpace(role) != "specialist" && strings.TrimSpace(role) != "employer" {
-		return errs.ErrInvalidRole
-	}
-	if len(password) < 8 {
-		return errs.ErrIncorrectPasswordLength
-	}
-	return nil
-}
 
 func GetAllUsers() ([]models.User, error) {
 	users, err := repository.GetAllUsers()
@@ -68,7 +45,7 @@ func CheckUserExists(username, email string) (bool, bool, error) {
 }
 
 func CreateUser(user models.User) (uint, error) {
-	if err := validateUserCredentials(user.UserName, user.Email, user.Password, user.Role); err != nil {
+	if err := user.ValidateCredentials(); err != nil {
 		logger.Error.Printf("[service.CreateUser] validation error: %v\n", err)
 		return 0, err
 	}
@@ -116,9 +93,8 @@ func DeleteUser(id uint) error {
 }
 
 func UpdateUserPassword(id uint, newPassword string) error {
-	logger.Info.Printf("[service.UpdateUserPassword] Updating password for user ID: %d\n", id)
 	if len(newPassword) < 8 {
-		return errors.New("password must be at least 8 characters long")
+		return errs.ErrIncorrectPassword
 	}
 	hashedPassword := utils.GenerateHash(newPassword)
 	return repository.UpdateUserPassword(id, hashedPassword)

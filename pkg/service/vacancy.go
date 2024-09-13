@@ -1,6 +1,7 @@
 package service
 
 import (
+	"TajikCareerHub/logger"
 	"TajikCareerHub/models"
 	"TajikCareerHub/pkg/repository"
 )
@@ -9,12 +10,10 @@ func GetAllVacancies(userID uint, search string, minSalary int, maxSalary int, l
 	if err := checkUserBlocked(userID); err != nil {
 		return nil, err
 	}
-
 	vacancies, err := repository.GetAllVacancies(search, minSalary, maxSalary, location, category, sort)
 	if err != nil {
 		return nil, err
 	}
-
 	var filteredVacancies []models.Vacancy
 	for _, vacancy := range vacancies {
 		if err := checkVacancyBlocked(vacancy.ID); err != nil {
@@ -33,7 +32,6 @@ func GetVacancyByID(userID uint, vacancyID uint) (models.Vacancy, error) {
 	if err := checkUserBlocked(userID); err != nil {
 		return models.Vacancy{}, err
 	}
-
 	vacancy, err := repository.GetVacancyByID(vacancyID)
 	if err != nil {
 		return models.Vacancy{}, err
@@ -49,6 +47,10 @@ func AddVacancy(userID uint, vacancy models.Vacancy) error {
 		return err
 	}
 	vacancy.UserID = userID
+	if err := vacancy.ValidateVacancy(); err != nil {
+		logger.Error.Printf("[service.AddVacancy] validation error: %v\n", err)
+		return err
+	}
 	return repository.AddVacancy(vacancy)
 }
 
@@ -56,7 +58,6 @@ func UpdateVacancy(userID uint, vacancyID uint, updatedVacancy models.Vacancy) e
 	if err := checkUserBlocked(userID); err != nil {
 		return err
 	}
-
 	vacancy, err := repository.GetVacancyByID(vacancyID)
 	if err != nil {
 		return err
@@ -90,6 +91,5 @@ func DeleteVacancy(userID uint, vacancyID uint) error {
 	if err := checkVacancyBlocked(vacancyID); err != nil {
 		return err
 	}
-
 	return repository.DeleteVacancy(vacancyID)
 }

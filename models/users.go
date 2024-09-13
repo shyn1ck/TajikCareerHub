@@ -1,6 +1,8 @@
 package models
 
 import (
+	"TajikCareerHub/errs"
+	"strings"
 	"time"
 )
 
@@ -14,4 +16,26 @@ type User struct {
 	Role      string    `json:"role" gorm:"type:varchar(255);not null"`
 	IsBlocked bool      `json:"is_blocked" gorm:"type:bool;not null;default:false"`
 	BaseModel
+}
+
+func (u User) ValidateCredentials() error {
+	if strings.TrimSpace(u.UserName) == "" {
+		return errs.ErrUsernameExists
+	}
+	if strings.TrimSpace(u.Email) == "" {
+		return errs.ErrEmailExists
+	}
+	if strings.TrimSpace(u.Role) == "" {
+		return errs.ErrRoleExist
+	}
+	if strings.ToLower(u.Role) == "admin" {
+		return errs.ErrRoleCannotBeAdmin
+	}
+	if strings.TrimSpace(u.Role) != "specialist" && strings.TrimSpace(u.Role) != "employer" {
+		return errs.ErrInvalidRole
+	}
+	if len(u.Password) < 8 {
+		return errs.ErrIncorrectPasswordLength
+	}
+	return nil
 }
