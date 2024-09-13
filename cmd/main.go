@@ -17,7 +17,7 @@ import (
 // @version 1.0
 // @description This is a Tajik Career Hub API documentation.
 
-// @host localhost:8080
+// @host localhost:8181
 // @BasePath /
 
 // @securityDefinitions.apikey ApiKeyAuth

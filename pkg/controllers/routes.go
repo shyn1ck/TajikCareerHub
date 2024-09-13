@@ -62,10 +62,6 @@ func InitRoutes() *gin.Engine {
 		applicationGroup.DELETE("/:id", DeleteApplication)
 		applicationGroup.GET("/user/:userID", GetApplicationsByUserID)
 		applicationGroup.GET("/job/:jobID", GetApplicationsByVacancyID)
-		applicationGroup.GET("/user/:userID/activity", GetUserApplicationActivity)
-		applicationGroup.GET("/job/:jobID/applications", GetVacancyApplications)
-		applicationGroup.PUT("/:id/status", UpdateApplicationStatus)
-		applicationGroup.GET("/job/:jobID/report", GetJobReport)
 	}
 
 	companyGroup := r.Group("/company").Use(checkUserAuthentication)

@@ -32,8 +32,9 @@ func SignUp(c *gin.Context) {
 		return
 	}
 
+	response := newDefaultResponse("user created successfully")
 	c.JSON(http.StatusCreated, gin.H{
-		"message": "user created successfully",
+		"message": response.Message,
 		"user_id": id,
 	})
 }
@@ -63,7 +64,5 @@ func SignIn(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"access_token": accessToken,
-	})
+	c.JSON(http.StatusOK, accessTokenResponse{accessToken})
 }

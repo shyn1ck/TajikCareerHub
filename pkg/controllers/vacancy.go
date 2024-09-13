@@ -9,6 +9,24 @@ import (
 	"strconv"
 )
 
+// GetAllVacancies
+// @Summary Retrieve all vacancies with filters
+// @Tags vacancies
+// @Description Get a list of all vacancies with optional filters such as search, salary range, location, category, and sort order.
+// @ID get-all-vacancies
+// @Accept json
+// @Produce json
+// @Param userID query integer true "User ID to check if the user is blocked"
+// @Param search query string false "Search keyword for filtering vacancies"
+// @Param minSalary query integer false "Minimum salary for filtering vacancies"
+// @Param maxSalary query integer false "Maximum salary for filtering vacancies"
+// @Param location query string false "Location for filtering vacancies"
+// @Param category query string false "Category for filtering vacancies"
+// @Param sort query string false "Sorting order for vacancies"
+// @Success 200 {array} models.Vacancy "Successfully retrieved list of vacancies"
+// @Failure 400 {object} ErrorResponse "Bad Request"
+// @Failure 500 {object} ErrorResponse "Internal Server Error"
+// @Router /vacancies [get]
 func GetAllVacancies(c *gin.Context) {
 	ip := c.ClientIP()
 	search := c.Query("search")
@@ -51,6 +69,20 @@ func GetAllVacancies(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"vacancies": vacancies})
 }
 
+// GetVacancyByID
+// @Summary Retrieve a specific vacancy by ID
+// @Tags vacancies
+// @Description Get details of a single vacancy by its ID.
+// @ID get-vacancy-by-id
+// @Accept json
+// @Produce json
+// @Param userID query integer true "User ID to check if the user is blocked"
+// @Param vacancyID path integer true "ID of the vacancy to retrieve"
+// @Success 200 {object} models.Vacancy "Successfully retrieved vacancy"
+// @Failure 400 {object} ErrorResponse "Bad Request"
+// @Failure 404 {object} ErrorResponse "Vacancy Not Found"
+// @Failure 500 {object} ErrorResponse "Internal Server Error"
+// @Router /vacancies/{vacancyID} [get]
 func GetVacancyByID(c *gin.Context) {
 	ip := c.ClientIP()
 	idStr := c.Param("id")
@@ -75,6 +107,20 @@ func GetVacancyByID(c *gin.Context) {
 	c.JSON(http.StatusOK, vacancy)
 }
 
+// AddVacancy
+// @Summary Create a new vacancy
+// @Tags vacancies
+// @Description Add a new vacancy with the provided details.
+// @ID add-vacancy
+// @Accept json
+// @Produce json
+// @Param userID query integer true "User ID to check if the user is blocked"
+// @Param vacancy body models.Vacancy true "Vacancy object to be added"
+// @Success 201 {object} defaultResponse "Vacancy created successfully"
+// @Failure 400 {object} ErrorResponse "Bad Request"
+// @Failure 403 {object} ErrorResponse "ErrPermissionDenied"
+// @Failure 500 {object} ErrorResponse "Internal Server Error"
+// @Router /vacancies [post]
 func AddVacancy(c *gin.Context) {
 	userID, err := service.GetUserIDFromToken(c)
 	if err != nil {
@@ -99,6 +145,21 @@ func AddVacancy(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Vacancy added successfully"})
 }
 
+// UpdateVacancy
+// @Summary Update an existing vacancy
+// @Tags vacancies
+// @Description Update an existing vacancy by its ID.
+// @ID update-vacancy
+// @Accept json
+// @Produce json
+// @Param userID query integer true "User ID to check if the user is blocked"
+// @Param vacancyID path integer true "ID of the vacancy to update"
+// @Param vacancy body models.Vacancy true "Updated vacancy object"
+// @Success 200 {object} defaultResponse "Vacancy updated successfully"
+// @Failure 400 {object} ErrorResponse "Bad Request"
+// @Failure 404 {object} ErrorResponse "Vacancy Not Found"
+// @Failure 500 {object} ErrorResponse "Internal Server Error"
+// @Router /vacancies/{vacancyID} [put]
 func UpdateVacancy(c *gin.Context) {
 	ip := c.ClientIP()
 	idStr := c.Param("id")
@@ -130,6 +191,19 @@ func UpdateVacancy(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Vacancy updated successfully"})
 }
 
+// DeleteVacancy
+// @Summary Delete a vacancy
+// @Tags vacancies
+// @Description Soft delete a specific vacancy by its ID.
+// @ID delete-vacancy
+// @Accept json
+// @Produce json
+// @Param userID query integer true "User ID to check if the user is blocked"
+// @Param vacancyID path integer true "ID of the vacancy to delete"
+// @Success 204 {object} defaultResponse "Vacancy deleted successfully"
+// @Failure 404 {object} ErrorResponse "Vacancy Not Found"
+// @Failure 500 {object} ErrorResponse "Internal Server Error"
+// @Router /vacancies/{vacancyID} [delete]
 func DeleteVacancy(c *gin.Context) {
 	ip := c.ClientIP()
 	idStr := c.Param("id")

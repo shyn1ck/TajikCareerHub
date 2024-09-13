@@ -18,6 +18,9 @@ func newErrorResponse(message string) ErrorResponse {
 }
 
 func handleError(c *gin.Context, err error) {
+	var statusCode int
+	var errorResponse ErrorResponse
+
 	switch {
 	case errors.Is(err, errs.ErrUsernameUniquenessFailed),
 		errors.Is(err, errs.ErrIncorrectUsernameOrPassword),
@@ -28,12 +31,14 @@ func handleError(c *gin.Context, err error) {
 		errors.Is(err, errs.ErrIDIsNotCorrect),
 		errors.Is(err, errs.ErrInvalidRole),
 		errors.Is(err, errs.ErrIncorrectPasswordLength):
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		statusCode = http.StatusBadRequest
+		errorResponse = newErrorResponse(err.Error())
 
 	case errors.Is(err, errs.ErrRecordNotFound),
 		errors.Is(err, errs.ErrUsersNotFound),
 		errors.Is(err, errs.ErrUserNotFound):
-		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		statusCode = http.StatusNotFound
+		errorResponse = newErrorResponse(err.Error())
 
 	case errors.Is(err, errs.ErrPermissionDenied),
 		errors.Is(err, errs.ErrAccessDenied),
@@ -42,14 +47,16 @@ func handleError(c *gin.Context, err error) {
 		errors.Is(err, errs.ErrVacancyBlocked),
 		errors.Is(err, errs.ErrRoleCannotBeAdmin),
 		errors.Is(err, errs.ErrRoleExist):
-		c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
+		statusCode = http.StatusForbidden
+		errorResponse = newErrorResponse(err.Error())
 
 	case errors.Is(err, errs.ErrResumeCreationFailed),
 		errors.Is(err, errs.ErrJobCreationFailed),
 		errors.Is(err, errs.ErrApplicationFailed),
 		errors.Is(err, errs.ErrReviewSubmissionFailed),
 		errors.Is(err, errs.ErrReportGenerationFailed):
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		statusCode = http.StatusInternalServerError
+		errorResponse = newErrorResponse(err.Error())
 
 	case errors.Is(err, errs.ErrForeignKeyViolation),
 		errors.Is(err, errs.ErrNotNullViolation),
@@ -57,11 +64,15 @@ func handleError(c *gin.Context, err error) {
 		errors.Is(err, errs.ErrCheckConstraintViolation),
 		errors.Is(err, errs.ErrUniqueViolation),
 		errors.Is(err, errs.ErrDeadlockDetected):
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		statusCode = http.StatusInternalServerError
+		errorResponse = newErrorResponse(err.Error())
 
 	default:
-		c.JSON(http.StatusInternalServerError, gin.H{"error": errs.ErrSomethingWentWrong.Error()})
+		statusCode = http.StatusInternalServerError
+		errorResponse = newErrorResponse(errs.ErrSomethingWentWrong.Error())
 	}
+
+	c.JSON(statusCode, errorResponse)
 }
 
 type defaultResponse struct {

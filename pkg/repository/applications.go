@@ -94,3 +94,16 @@ func DeleteApplication(id uint) error {
 	}
 	return nil
 }
+
+func GetApplicationCountByUserID(userID uint) (int64, error) {
+	var count int64
+	err := db.GetDBConn().
+		Model(&models.Application{}).
+		Where("user_id = ? AND deleted_at = false", userID).
+		Count(&count).Error
+	if err != nil {
+		logger.Error.Printf("[repository.GetApplicationCountByUserID]: Error retrieving application count for user ID %v. Error: %v\n", userID, err)
+		return 0, err
+	}
+	return count, nil
+}

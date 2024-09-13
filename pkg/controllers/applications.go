@@ -196,3 +196,24 @@ func UpdateApplicationStatus(c *gin.Context) {
 	logger.Info.Printf("[controllers.UpdateApplicationStatus] Client IP: %s - Successfully updated status for application ID %v\n", ip, id)
 	c.JSON(http.StatusOK, gin.H{"message": "Application status updated successfully"})
 }
+
+//func GetApplicationCount(c *gin.Context) {
+//	ip := c.ClientIP()
+//	userIDStr := c.Param("user_id")
+//	userID, err := strconv.ParseUint(userIDStr, 10, 32)
+//	if err != nil {
+//		logger.Info.Printf("[controllers.GetApplicationCount] Client IP: %s - Invalid user ID %s. Error: %v\n", ip, userIDStr, err)
+//		handleError(c, err)
+//		return
+//	}
+//
+//	count, err := service.GetApplicationCountByUserID(uint(userID))
+//	if err != nil {
+//		logger.Info.Printf("[controllers.GetApplicationCount] Client IP: %s - Error retrieving application count for user ID %v. Error: %v\n", ip, userID, err)
+//		handleError(c, err)
+//		return
+//	}
+//
+//	logger.Info.Printf("[controllers.GetApplicationCount] Client IP: %s - Successfully retrieved application count for user ID %v: %v\n", ip, userID, count)
+//	c.JSON(http.StatusOK, gin.H{"application_count": count})
+//}
