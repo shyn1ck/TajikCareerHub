@@ -63,3 +63,16 @@ func GetUserIDFromToken(c *gin.Context) (uint, error) {
 	}
 	return claims.UserID, nil
 }
+
+func GetRoleFromToken(c *gin.Context) (string, error) {
+	tokenString := c.GetHeader("Authorization")
+	if tokenString == "" {
+		return "", errors.New("authorization header is missing")
+	}
+	tokenString = strings.TrimPrefix(tokenString, "Bearer ")
+	claims, err := ParseToken(tokenString)
+	if err != nil {
+		return "", err
+	}
+	return claims.Role, nil
+}

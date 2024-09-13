@@ -20,7 +20,6 @@ import (
 // @Failure 400 {object} ErrorResponse "Bad Request"
 // @Failure 500 {object} ErrorResponse "Internal Server Error"
 // @Router /auth/sign-up [post]
-
 func SignUp(c *gin.Context) {
 	var user models.User
 	if err := c.BindJSON(&user); err != nil {
@@ -52,7 +51,6 @@ func SignUp(c *gin.Context) {
 // @Failure 401 {object} ErrorResponse "Unauthorized"
 // @Failure 500 {object} ErrorResponse "Internal Server Error"
 // @Router /auth/sign-in [post]
-
 func SignIn(c *gin.Context) {
 	var user models.User
 	if err := c.BindJSON(&user); err != nil {

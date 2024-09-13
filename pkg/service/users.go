@@ -10,15 +10,24 @@ import (
 	"strings"
 )
 
-func validateUserCredentials(username, email, password string) error {
+func validateUserCredentials(username, email, password, role string) error {
 	if strings.TrimSpace(username) == "" {
-		return errors.New("username cannot be empty")
+		return errs.ErrUsernameExists
 	}
 	if strings.TrimSpace(email) == "" {
-		return errors.New("email cannot be empty")
+		return errs.ErrEmailExists
+	}
+	if strings.TrimSpace(role) == "" {
+		return errs.ErrRoleExist
+	}
+	if strings.ToLower(role) == "admin" {
+		return errs.ErrRoleCannotBeAdmin
+	}
+	if strings.TrimSpace(role) != "specialist" && strings.TrimSpace(role) != "employer" {
+		return errs.ErrInvalidRole
 	}
 	if len(password) < 8 {
-		return errors.New("password must be at least 8 characters long")
+		return errs.ErrIncorrectPasswordLength
 	}
 	return nil
 }
@@ -59,7 +68,7 @@ func CheckUserExists(username, email string) (bool, bool, error) {
 }
 
 func CreateUser(user models.User) (uint, error) {
-	if err := validateUserCredentials(user.UserName, user.Email, user.Password); err != nil {
+	if err := validateUserCredentials(user.UserName, user.Email, user.Password, user.Role); err != nil {
 		logger.Error.Printf("[service.CreateUser] validation error: %v\n", err)
 		return 0, err
 	}
