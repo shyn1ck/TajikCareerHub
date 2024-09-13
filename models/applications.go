@@ -11,3 +11,8 @@ type Application struct {
 	Status    string  `json:"status" gorm:"not null;default:'pending'"`
 	BaseModel
 }
+
+type ApplicationStatusUpdate struct {
+	ApplicationID uint   `json:"application_id" binding:"required"`
+	Status        string `json:"status" binding:"required"`
+}

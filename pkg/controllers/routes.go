@@ -63,7 +63,7 @@ func InitRoutes() *gin.Engine {
 		applicationGroup.GET("/user/:userID", GetApplicationsByUserID)
 		applicationGroup.GET("/job/:jobID", GetApplicationsByVacancyID)
 		applicationGroup.GET("/user/:userID/activity", GetUserApplicationActivity)
-		applicationGroup.GET("/job/:jobID/applications", GetJobApplications)
+		applicationGroup.GET("/job/:jobID/applications", GetVacancyApplications)
 		applicationGroup.PUT("/:id/status", UpdateApplicationStatus)
 		applicationGroup.GET("/job/:jobID/report", GetJobReport)
 	}
