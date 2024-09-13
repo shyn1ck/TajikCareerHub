@@ -7,16 +7,6 @@ import (
 	"net/http"
 )
 
-type ErrorResponse struct {
-	Error string `json:"error"`
-}
-
-func newErrorResponse(message string) ErrorResponse {
-	return ErrorResponse{
-		Error: message,
-	}
-}
-
 func handleError(c *gin.Context, err error) {
 	var statusCode int
 	var errorResponse ErrorResponse
@@ -73,18 +63,4 @@ func handleError(c *gin.Context, err error) {
 	}
 
 	c.JSON(statusCode, errorResponse)
-}
-
-type defaultResponse struct {
-	Message string `json:"message"`
-}
-
-func newDefaultResponse(message string) defaultResponse {
-	return defaultResponse{
-		Message: message,
-	}
-}
-
-type accessTokenResponse struct {
-	AccessToken string `json:"access_token"`
 }
