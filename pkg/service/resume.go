@@ -92,6 +92,12 @@ func UpdateResume(resumeID uint, updatedResume models.Resume, userID uint) error
 		resume.VacancyCategoryID = updatedResume.VacancyCategoryID
 	}
 
+	err = resume.ValidateResume()
+	if err != nil {
+		logger.Error.Printf("[service.UpdateResume] validation error: %v\n", err)
+		return err
+	}
+
 	return repository.UpdateResume(resumeID, resume)
 }
 

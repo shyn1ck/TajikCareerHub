@@ -28,20 +28,10 @@ func InitRoutes() *gin.Engine {
 		userGroup.GET("/", GetAllUsers)
 		userGroup.POST("/", CreateUser)
 		userGroup.PUT("/:id", UpdateUser)
+		userGroup.GET("/:id", GetUserByID)
 		userGroup.DELETE("/:id", DeleteUser)
-	}
-
-	r.GET("/users/username/:username", GetUserByUsername)
-	r.GET("/users/:id", GetUserByID)
-
-	passwordGroup := r.Group("/users/:id/password").Use(checkUserAuthentication)
-	{
-		passwordGroup.PATCH("/", UpdateUserPassword)
-	}
-
-	existenceGroup := r.Group("/users/existence")
-	{
-		existenceGroup.GET("/", CheckUserExists)
+		userGroup.PATCH("/:id/password", UpdateUserPassword)
+		userGroup.GET("/username/:username", GetUserByUsername)
 	}
 
 	vacancyGroup := r.Group("/vacancy").Use(checkUserAuthentication)

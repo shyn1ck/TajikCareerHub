@@ -9,6 +9,20 @@ import (
 	"strconv"
 )
 
+// GetAllResumes godoc
+// @Summary      Get all resumes
+// @Description  Get resumes with optional filters: search term, location, category, and minimum experience years
+// @Tags         resumes
+// @Accept       json
+// @Produce      json
+// @Param        search       query   string  false  "Search term"
+// @Param        location     query   string  false  "Location"
+// @Param        category     query   string  false  "Category"
+// @Param        min-experience-years  query   int     false  "Minimum years of experience"
+// @Success      200  {array}   models.Resume  "Success"
+// @Failure      400  {object}  ErrorResponse  "Invalid request"
+// @Failure      500  {object}  ErrorResponse  "Internal server error"
+// @Router       /resumes [get]
 func GetAllResumes(c *gin.Context) {
 	ip := c.ClientIP()
 	search := c.Query("search")
@@ -44,6 +58,17 @@ func GetAllResumes(c *gin.Context) {
 	c.JSON(http.StatusOK, resumes)
 }
 
+// GetResumeByID godoc
+// @Summary      Get resume by ID
+// @Description  Get a specific resume by its ID
+// @Tags         resumes
+// @Accept       json
+// @Produce      json
+// @Param        id  path    int     true    "Resume ID"
+// @Success      200  {object}  models.Resume  "Success"
+// @Failure      400  {object}  ErrorResponse  "Invalid ID"
+// @Failure      500  {object}  ErrorResponse  "Internal server error"
+// @Router       /resumes/{id} [get]
 func GetResumeByID(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.ParseUint(idStr, 10, 32)
@@ -67,6 +92,17 @@ func GetResumeByID(c *gin.Context) {
 	c.JSON(http.StatusOK, resume)
 }
 
+// AddResume godoc
+// @Summary      Add a new resume
+// @Description  Add a new resume to the system
+// @Tags         resumes
+// @Accept       json
+// @Produce      json
+// @Param        resume  body    models.Resume  true  "Resume object"
+// @Success      201  {object}  defaultResponse  "Success"
+// @Failure      400  {object}  ErrorResponse  "Invalid request"
+// @Failure      500  {object}  ErrorResponse  "Internal server error"
+// @Router       /resumes [post]
 func AddResume(c *gin.Context) {
 	ip := c.ClientIP()
 	userID, err := service.GetUserIDFromToken(c)
@@ -91,9 +127,21 @@ func AddResume(c *gin.Context) {
 	}
 
 	logger.Info.Printf("[controllers.AddResume] Client IP: %s - Resume added successfully: %v\n", ip, resume)
-	c.JSON(http.StatusCreated, gin.H{"message": "Resume added successfully"})
+	c.JSON(http.StatusCreated, newDefaultResponse("Resume added successfully"))
 }
 
+// UpdateResume godoc
+// @Summary      Update an existing resume
+// @Description  Update the details of an existing resume by its ID
+// @Tags         resumes
+// @Accept       json
+// @Produce      json
+// @Param        id      path    int             true    "Resume ID"
+// @Param        resume  body    models.Resume  true  "Updated resume object"
+// @Success      200  {object}  defaultResponse  "Success"
+// @Failure      400  {object}  ErrorResponse  "Invalid ID or request"
+// @Failure      500  {object}  ErrorResponse  "Internal server error"
+// @Router       /resumes/{id} [put]
 func UpdateResume(c *gin.Context) {
 	ip := c.ClientIP()
 	idStr := c.Param("id")
@@ -124,14 +172,25 @@ func UpdateResume(c *gin.Context) {
 	}
 
 	logger.Info.Printf("[controllers.UpdateResume] Client IP: %s - Resume with ID %v updated successfully.\n", ip, id)
-	c.JSON(http.StatusOK, gin.H{"message": "Resume updated successfully"})
+	c.JSON(http.StatusOK, newDefaultResponse("Resume updated successfully"))
 }
 
+// DeleteResume godoc
+// @Summary      Delete a resume
+// @Description  Delete a specific resume by its ID
+// @Tags         resumes
+// @Accept       json
+// @Produce      json
+// @Param        id  path    int     true    "Resume ID"
+// @Success      200  {object}  defaultResponse  "Success"
+// @Failure      400  {object}  ErrorResponse  "Invalid ID"
+// @Failure      500  {object}  ErrorResponse  "Internal server error"
+// @Router       /resumes/{id} [delete]
 func DeleteResume(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.ParseUint(idStr, 10, 32)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID"})
+		c.JSON(http.StatusBadRequest, newErrorResponse("Invalid ID"))
 		return
 	}
 	userID, err := service.GetUserIDFromToken(c)
@@ -141,9 +200,9 @@ func DeleteResume(c *gin.Context) {
 	}
 
 	if err := service.DeleteResume(uint(id), userID); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete resume"})
+		c.JSON(http.StatusInternalServerError, newErrorResponse("Failed to delete resume"))
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Resume deleted successfully"})
+	c.JSON(http.StatusOK, newDefaultResponse("Resume deleted successfully"))
 }

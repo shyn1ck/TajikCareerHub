@@ -12,7 +12,7 @@ type Application struct {
 	BaseModel
 }
 
-type ApplicationStatusUpdate struct {
-	ApplicationID uint   `json:"application_id" binding:"required"`
-	Status        string `json:"status" binding:"required"`
+type ApplicationStatus struct {
+	ID   uint   `gorm:"primaryKey"`
+	Name string `gorm:"type:varchar(50);not null"`
 }

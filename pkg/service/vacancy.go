@@ -81,6 +81,12 @@ func UpdateVacancy(userID uint, vacancyID uint, updatedVacancy models.Vacancy) e
 	if updatedVacancy.Salary != 0 {
 		vacancy.Salary = updatedVacancy.Salary
 	}
+
+	err = vacancy.ValidateVacancy()
+	if err != nil {
+		logger.Error.Printf("[service.UpdateVacancy] validation error: %v\n", err)
+		return err
+	}
 	return repository.UpdateVacancy(vacancyID, vacancy)
 }
 

@@ -10,7 +10,7 @@ import (
 
 // SignUp
 // @Summary Register a new user
-// @Tags auth
+// @Tags Authorization
 // @Description Create a new user account with the provided details
 // @ID create-account
 // @Accept json
@@ -41,7 +41,7 @@ func SignUp(c *gin.Context) {
 
 // SignIn
 // @Summary Sign in to an existing account
-// @Tags auth
+// @Tags Authorization
 // @Description Authenticate a user and return an access token
 // @ID sign-in-to-account
 // @Accept json
