@@ -45,3 +45,9 @@ func (v Vacancy) ValidateVacancy() error {
 	}
 	return nil
 }
+
+type VacancyReport struct {
+	VacancyID        uint   `json:"vacancy_id"`
+	VacancyTitle     string `json:"vacancy_title"`
+	ApplicationCount uint   `json:"application_count"`
+}

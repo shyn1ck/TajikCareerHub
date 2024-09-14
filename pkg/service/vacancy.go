@@ -1,6 +1,7 @@
 package service
 
 import (
+	"TajikCareerHub/errs"
 	"TajikCareerHub/logger"
 	"TajikCareerHub/models"
 	"TajikCareerHub/pkg/repository"
@@ -98,4 +99,16 @@ func DeleteVacancy(userID uint, vacancyID uint) error {
 		return err
 	}
 	return repository.DeleteVacancy(vacancyID)
+}
+
+func GetVacancyReport(userID uint) ([]models.VacancyReport, error) {
+	err := checkUserBlocked(userID)
+	if err != nil {
+		return nil, errs.ErrUserBlocked
+	}
+	reports, err := repository.GetVacancyReport()
+	if err != nil {
+		return nil, err
+	}
+	return reports, nil
 }

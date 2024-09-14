@@ -17,3 +17,9 @@ type ApplicationStatus struct {
 	ID   uint   `gorm:"primaryKey"`
 	Name string `gorm:"type:varchar(50);not null"`
 }
+
+type SpecialistActivityReport struct {
+	UserID           uint   `json:"user_id"`
+	UserName         string `json:"user_name"`
+	ApplicationCount uint   `json:"application_count"`
+}

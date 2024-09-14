@@ -97,3 +97,18 @@ func DeleteVacancy(vacancyID uint) error {
 	}
 	return nil
 }
+
+func GetVacancyReport() ([]models.VacancyReport, error) {
+	var reports []models.VacancyReport
+	err := db.GetDBConn().
+		Table("vacancies").
+		Select("vacancies.id as vacancy_id, vacancies.title as vacancy_title, COUNT(applications.id) as application_count").
+		Joins("left join applications on applications.vacancy_id = vacancies.id").
+		Group("vacancies.id").
+		Scan(&reports).Error
+	if err != nil {
+		logger.Error.Printf("[repository.GetVacancyReport] Error retrieving vacancy report: %v", err)
+		return nil, err
+	}
+	return reports, nil
+}

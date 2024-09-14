@@ -83,6 +83,7 @@ func InitRoutes() *gin.Engine {
 		VacancyCategoryGroup.POST("/", CreateCategory)
 		VacancyCategoryGroup.PUT("/:id", UpdateCategory)
 		VacancyCategoryGroup.DELETE("/:id", DeleteCategory)
+		VacancyCategoryGroup.GET("/", GetVacancyReport)
 	}
 
 	if err := r.Run(fmt.Sprintf("%s:%s", configs.AppSettings.AppParams.ServerURL, configs.AppSettings.AppParams.PortRun)); err != nil {
