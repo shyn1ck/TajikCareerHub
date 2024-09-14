@@ -9,6 +9,15 @@ import (
 	"strconv"
 )
 
+// GetAllCompanies godoc
+// @Summary Get all companies
+// @Description Retrieve a list of all companies. No authentication required.
+// @Tags Companies
+// @Accept json
+// @Produce json
+// @Success 200 {array} defaultResponse
+// @Failure 500 {object} ErrorResponse
+// @Router /companies [get]
 func GetAllCompanies(c *gin.Context) {
 	ip := c.ClientIP()
 	logger.Info.Printf("[controllers.GetAllCompanies] Client IP: %s - Client requested all companies\n", ip)
@@ -21,6 +30,17 @@ func GetAllCompanies(c *gin.Context) {
 	c.JSON(http.StatusOK, companies)
 }
 
+// GetCompanyByID godoc
+// @Summary Get company by ID
+// @Description Retrieve a single company by its ID. No authentication required.
+// @Tags Companies
+// @Accept json
+// @Produce json
+// @Param id path integer true "Company ID"
+// @Success 200 {object} defaultResponse
+// @Failure 400 {object} ErrorResponse
+// @Failure 404 {object} ErrorResponse
+// @Router /companies/{id} [get]
 func GetCompanyByID(c *gin.Context) {
 	ip := c.ClientIP()
 	idStr := c.Param("id")
@@ -40,6 +60,18 @@ func GetCompanyByID(c *gin.Context) {
 	c.JSON(http.StatusOK, company)
 }
 
+// AddCompany godoc
+// @Summary Add a new company
+// @Description Add a new company to the database. Requires authentication.
+// @Tags Companies
+// @Accept json
+// @Produce json
+// @Param company body models.Company true "Company data"
+// @Success 201 {object} defaultResponse
+// @Failure 400 {object} ErrorResponse
+// @Failure 401 {object} ErrorResponse
+// @Router /companies [post]
+// @Security ApiKeyAuth
 func AddCompany(c *gin.Context) {
 	ip := c.ClientIP()
 	var company models.Company
@@ -56,6 +88,20 @@ func AddCompany(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"message": "Company added successfully"})
 }
 
+// UpdateCompany godoc
+// @Summary Update an existing company
+// @Description Update a company by its ID. Requires authentication.
+// @Tags Companies
+// @Accept json
+// @Produce json
+// @Param id path integer true "Company ID"
+// @Param company body models.Company true "Updated company data"
+// @Success 200 {object} defaultResponse
+// @Failure 400 {object} ErrorResponse
+// @Failure 401 {object} ErrorResponse
+// @Failure 404 {object} ErrorResponse
+// @Router /companies/{id} [put]
+// @Security ApiKeyAuth
 func UpdateCompany(c *gin.Context) {
 	ip := c.ClientIP()
 	var company models.Company
@@ -81,6 +127,19 @@ func UpdateCompany(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Company updated successfully"})
 }
 
+// DeleteCompany godoc
+// @Summary Delete a company
+// @Description Soft delete a company by its ID. Requires authentication.
+// @Tags Companies
+// @Accept json
+// @Produce json
+// @Param id path integer true "Company ID"
+// @Success 200 {object} defaultResponse
+// @Failure 400 {object} ErrorResponse
+// @Failure 401 {object} ErrorResponse
+// @Failure 404 {object} ErrorResponse
+// @Router /companies/{id} [delete]
+// @Security ApiKeyAuth
 func DeleteCompany(c *gin.Context) {
 	ip := c.ClientIP()
 	idStr := c.Param("id")

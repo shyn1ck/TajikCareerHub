@@ -11,7 +11,7 @@ import (
 
 // GetAllVacancies
 // @Summary Retrieve all vacancies with filters
-// @Tags vacancies
+// @Tags Vacancies
 // @Description Get a list of all vacancies with optional filters such as search, salary range, location, category, and sort order.
 // @ID get-all-vacancies
 // @Accept json
@@ -26,6 +26,7 @@ import (
 // @Success 200 {array} models.Vacancy "Successfully retrieved list of vacancies"
 // @Failure 400 {object} ErrorResponse "Bad Request"
 // @Failure 500 {object} ErrorResponse "Internal Server Error"
+// @Security     ApiKeyAuth
 // @Router /vacancies [get]
 func GetAllVacancies(c *gin.Context) {
 	ip := c.ClientIP()
@@ -71,7 +72,7 @@ func GetAllVacancies(c *gin.Context) {
 
 // GetVacancyByID
 // @Summary Retrieve a specific vacancy by ID
-// @Tags vacancies
+// @Tags Vacancies
 // @Description Get details of a single vacancy by its ID.
 // @ID get-vacancy-by-id
 // @Accept json
@@ -82,6 +83,7 @@ func GetAllVacancies(c *gin.Context) {
 // @Failure 400 {object} ErrorResponse "Bad Request"
 // @Failure 404 {object} ErrorResponse "Vacancy Not Found"
 // @Failure 500 {object} ErrorResponse "Internal Server Error"
+// @Security     ApiKeyAuth
 // @Router /vacancies/{vacancyID} [get]
 func GetVacancyByID(c *gin.Context) {
 	ip := c.ClientIP()
@@ -109,7 +111,7 @@ func GetVacancyByID(c *gin.Context) {
 
 // AddVacancy
 // @Summary Create a new vacancy
-// @Tags vacancies
+// @Tags Vacancies
 // @Description Add a new vacancy with the provided details.
 // @ID add-vacancy
 // @Accept json
@@ -120,6 +122,7 @@ func GetVacancyByID(c *gin.Context) {
 // @Failure 400 {object} ErrorResponse "Bad Request"
 // @Failure 403 {object} ErrorResponse "ErrPermissionDenied"
 // @Failure 500 {object} ErrorResponse "Internal Server Error"
+// @Security     ApiKeyAuth
 // @Router /vacancies [post]
 func AddVacancy(c *gin.Context) {
 	userID, err := service.GetUserIDFromToken(c)
@@ -147,7 +150,7 @@ func AddVacancy(c *gin.Context) {
 
 // UpdateVacancy
 // @Summary Update an existing vacancy
-// @Tags vacancies
+// @Tags Vacancies
 // @Description Update an existing vacancy by its ID.
 // @ID update-vacancy
 // @Accept json
@@ -159,6 +162,7 @@ func AddVacancy(c *gin.Context) {
 // @Failure 400 {object} ErrorResponse "Bad Request"
 // @Failure 404 {object} ErrorResponse "Vacancy Not Found"
 // @Failure 500 {object} ErrorResponse "Internal Server Error"
+// @Security     ApiKeyAuth
 // @Router /vacancies/{vacancyID} [put]
 func UpdateVacancy(c *gin.Context) {
 	ip := c.ClientIP()
@@ -193,7 +197,7 @@ func UpdateVacancy(c *gin.Context) {
 
 // DeleteVacancy
 // @Summary Delete a vacancy
-// @Tags vacancies
+// @Tags Vacancies
 // @Description Soft delete a specific vacancy by its ID.
 // @ID delete-vacancy
 // @Accept json
@@ -203,6 +207,7 @@ func UpdateVacancy(c *gin.Context) {
 // @Success 204 {object} defaultResponse "Vacancy deleted successfully"
 // @Failure 404 {object} ErrorResponse "Vacancy Not Found"
 // @Failure 500 {object} ErrorResponse "Internal Server Error"
+// @Security     ApiKeyAuth
 // @Router /vacancies/{vacancyID} [delete]
 func DeleteVacancy(c *gin.Context) {
 	ip := c.ClientIP()

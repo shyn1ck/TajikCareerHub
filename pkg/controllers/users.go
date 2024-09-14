@@ -10,6 +10,16 @@ import (
 	"time"
 )
 
+// GetAllUsers godoc
+// @Summary      Get all users
+// @Description  Retrieve a list of all users
+// @Tags         Users
+// @Accept       json
+// @Produce      json
+// @Success      200  {array}  models.User  "Success"
+// @Failure      500  {object}  ErrorResponse  "Internal server error"
+// @Security     ApiKeyAuth
+// @Router       /users [get]
 func GetAllUsers(c *gin.Context) {
 	ip := c.ClientIP()
 	logger.Info.Printf("[controllers.GetAllUsers] Client IP: %s - Request to get all users.\n", ip)
@@ -22,6 +32,19 @@ func GetAllUsers(c *gin.Context) {
 	c.JSON(http.StatusOK, users)
 }
 
+// GetUserByID godoc
+// @Summary      Get user by ID
+// @Description  Retrieve a specific user by its ID
+// @Tags         Users
+// @Accept       json
+// @Produce      json
+// @Param        id  path    int     true    "User ID"
+// @Success      200  {object}  models.User  "Success"
+// @Failure      400  {object}  ErrorResponse  "Invalid ID"
+// @Failure      404  {object}  ErrorResponse  "User not found"
+// @Failure      500  {object}  ErrorResponse  "Internal server error"
+// @Security     ApiKeyAuth
+// @Router       /users/{id} [get]
 func GetUserByID(c *gin.Context) {
 	ip := c.ClientIP()
 	idStr := c.Param("id")
@@ -41,6 +64,19 @@ func GetUserByID(c *gin.Context) {
 	c.JSON(http.StatusOK, user)
 }
 
+// GetUserByUsername godoc
+// @Summary      Get user by username
+// @Description  Retrieve a specific user by their username
+// @Tags         Users
+// @Accept       json
+// @Produce      json
+// @Param        username  path    string  true  "Username"
+// @Success      200  {object}  models.User  "Success"
+// @Failure      400  {object}  ErrorResponse  "Invalid username"
+// @Failure      404  {object}  ErrorResponse  "User not found"
+// @Failure      500  {object}  ErrorResponse  "Internal server error"
+// @Security     ApiKeyAuth
+// @Router       /users/username/{username} [get]
 func GetUserByUsername(c *gin.Context) {
 	ip := c.ClientIP()
 	username := c.Param("username")
@@ -67,6 +103,17 @@ func GetUserByUsername(c *gin.Context) {
 	c.JSON(http.StatusOK, user)
 }
 
+// CreateUser godoc
+// @Summary      Create a new user
+// @Description  Create a new user with the provided details
+// @Tags         Users
+// @Accept       json
+// @Produce      json
+// @Param        user  body    models.User  true  "User data"
+// @Success      201  {object}  defaultResponse "Success"
+// @Failure      400  {object}  ErrorResponse  "Invalid input"
+// @Failure      500  {object}  ErrorResponse  "Internal server error"
+// @Router       /users [post]
 func CreateUser(c *gin.Context) {
 	ip := c.ClientIP()
 	var user models.User
@@ -83,6 +130,20 @@ func CreateUser(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"message": "User created successfully"})
 }
 
+// UpdateUser godoc
+// @Summary      Update user details
+// @Description  Update an existing user with the provided details
+// @Tags         Users
+// @Accept       json
+// @Produce      json
+// @Param        id  path    int     true    "User ID"
+// @Param        user  body    models.User  true  "Updated user data"
+// @Success      200  {object}  defaultResponse  "Success"
+// @Failure      400  {object}  ErrorResponse  "Invalid ID or input"
+// @Failure      404  {object}  ErrorResponse  "User not found"
+// @Failure      500  {object}  ErrorResponse  "Internal server error"
+// @Security     ApiKeyAuth
+// @Router       /users/{id} [put]
 func UpdateUser(c *gin.Context) {
 	ip := c.ClientIP()
 	id := c.Param("id")
@@ -143,6 +204,18 @@ func UpdateUser(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "User updated successfully"})
 }
 
+// DeleteUser godoc
+// @Summary      Delete user
+// @Description  Soft delete a user by ID
+// @Tags         Users
+// @Accept       json
+// @Produce      json
+// @Param        id  path    int     true    "User ID"
+// @Success      200  {object}  defaultResponse  "Success"
+// @Failure      400  {object}  ErrorResponse  "Invalid ID"
+// @Failure      500  {object}  ErrorResponse  "Internal server error"
+// @Security     ApiKeyAuth
+// @Router       /users/{id} [delete]
 func DeleteUser(c *gin.Context) {
 	ip := c.ClientIP()
 	idStr := c.Param("id")
@@ -157,83 +230,5 @@ func DeleteUser(c *gin.Context) {
 		return
 	}
 	logger.Info.Printf("[controllers.DeleteUser] Client IP: %s - User with ID %v soft deleted successfully.\n", ip, id)
-	c.JSON(http.StatusOK, gin.H{"message": "User deleted successfully"})
-}
-
-func UpdateUserPassword(c *gin.Context) {
-	ip := c.ClientIP()
-	idStr := c.Param("id")
-	logger.Info.Printf("[controllers.UpdateUserPassword] Client IP: %s - Request to update password for user with ID: %s\n", ip, idStr)
-	id, err := strconv.ParseUint(idStr, 10, 32)
-	if err != nil {
-		handleError(c, err)
-		return
-	}
-	var request struct {
-		NewPassword string `json:"new_password"`
-	}
-	if err := c.ShouldBindJSON(&request); err != nil {
-		handleError(c, err)
-		return
-	}
-	if err := service.UpdateUserPassword(uint(id), request.NewPassword); err != nil {
-		handleError(c, err)
-		return
-	}
-	logger.Info.Printf("[controllers.UpdateUserPassword] Client IP: %s - Password for user with ID %v updated successfully.\n", ip, id)
-	c.JSON(http.StatusOK, gin.H{"message": "Password updated successfully"})
-}
-
-func CheckUserExists(c *gin.Context) {
-	ip := c.ClientIP()
-	username := c.Query("username")
-	email := c.Query("email")
-	logger.Info.Printf("[controllers.CheckUserExists] Client IP: %s - Request to check user existence with username: %s and email: %s\n", ip, username, email)
-	usernameExists, emailExists, err := service.CheckUserExists(username, email)
-	if err != nil {
-		handleError(c, err)
-		return
-	}
-	logger.Info.Printf("[controllers.CheckUserExists] Client IP: %s - User existence check complete for username %v and email %v. Username Exists: %v, Email Exists: %v\n", ip, username, email, usernameExists, emailExists)
-	c.JSON(http.StatusOK, gin.H{"username_exists": usernameExists, "email_exists": emailExists})
-}
-
-func BlockUser(c *gin.Context) {
-	ip := c.ClientIP()
-	idParam := c.Param("id")
-	logger.Info.Printf("[controllers.BlockUserController] Client IP: %s - Request to block user with ID %s.\n", ip, idParam)
-	id, err := strconv.ParseUint(idParam, 10, 32)
-	if err != nil || id == 0 {
-		logger.Error.Printf("[controllers.BlockUserController] Client IP: %s - Invalid user ID: %s.\n", ip, idParam)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
-		return
-	}
-	err = service.BlockUser(uint(id))
-	if err != nil {
-		logger.Error.Printf("[controllers.BlockUserController] Client IP: %s - Failed to block user with ID %d: %v.\n", ip, id, err)
-		handleError(c, err)
-		return
-	}
-	logger.Info.Printf("[controllers.BlockUserController] Client IP: %s - Successfully blocked user with ID %d.\n", ip, id)
-	c.JSON(http.StatusOK, gin.H{"message": "User blocked successfully"})
-}
-
-func UnblockUser(c *gin.Context) {
-	ip := c.ClientIP()
-	idParam := c.Param("id")
-	logger.Info.Printf("[controllers.UnblockUserController] Client IP: %s - Request to unblock user with ID %s.\n", ip, idParam)
-	id, err := strconv.ParseUint(idParam, 10, 32)
-	if err != nil || id == 0 {
-		logger.Error.Printf("[controllers.UnblockUserController] Client IP: %s - Invalid user ID: %s.\n", ip, idParam)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
-		return
-	}
-	err = service.UnblockUser(uint(id))
-	if err != nil {
-		logger.Error.Printf("[controllers.UnblockUserController] Client IP: %s - Failed to unblock user with ID %d: %v.\n", ip, id, err)
-		handleError(c, err)
-		return
-	}
-	logger.Info.Printf("[controllers.UnblockUserController] Client IP: %s - Successfully unblocked user with ID %d.\n", ip, id)
-	c.JSON(http.StatusOK, gin.H{"message": "User unblocked successfully"})
+	c.JSON(http.StatusOK, gin.H{"message": "User soft deleted successfully"})
 }

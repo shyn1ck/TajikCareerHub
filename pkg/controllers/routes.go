@@ -30,7 +30,7 @@ func InitRoutes() *gin.Engine {
 		userGroup.PUT("/:id", UpdateUser)
 		userGroup.GET("/:id", GetUserByID)
 		userGroup.DELETE("/:id", DeleteUser)
-		userGroup.PATCH("/:id/password", UpdateUserPassword)
+		//userGroup.PATCH("/:id/password", UpdateUserPassword)
 		userGroup.GET("/username/:username", GetUserByUsername)
 	}
 
@@ -43,6 +43,15 @@ func InitRoutes() *gin.Engine {
 		vacancyGroup.DELETE("/:id", DeleteVacancy)
 	}
 
+	resumeGroup := r.Group("/resumes").Use(checkUserAuthentication)
+	{
+		resumeGroup.GET("/", GetAllResumes)
+		resumeGroup.GET("/:id", GetResumeByID)
+		resumeGroup.POST("/", AddResume)
+		resumeGroup.PUT("/:id", UpdateResume)
+		resumeGroup.DELETE("/:id", DeleteResume)
+	}
+
 	companyGroup := r.Group("/company").Use(checkUserAuthentication)
 	{
 		companyGroup.GET("/", GetAllCompanies)
@@ -52,11 +61,20 @@ func InitRoutes() *gin.Engine {
 		companyGroup.DELETE("/:id", DeleteCompany)
 	}
 
-	adminGroup := r.Group("/admin").Use(checkUserAuthentication)
+	applicationGroup := r.Group("/application").Use(checkUserAuthentication)
 	{
-		adminGroup.PUT("/user/:id/block", BlockUser)
-		adminGroup.PUT("/user/:id/unblock", UnblockUser)
+		applicationGroup.GET("/", GetAllApplications)
+		applicationGroup.GET("/:id", GetApplicationByID)
+		applicationGroup.POST("/", AddApplication)
+		applicationGroup.PUT("/:id", UpdateApplication)
+		applicationGroup.DELETE("/:id", DeleteApplication)
 	}
+
+	//adminGroup := r.Group("/admin").Use(checkUserAuthentication)
+	////{
+	////	adminGroup.PUT("/user/:id/block", BlockUser)
+	////	adminGroup.PUT("/user/:id/unblock", UnblockUser)
+	//}
 
 	VacancyCategoryGroup := r.Group("/category").Use(checkUserAuthentication)
 	{
@@ -65,15 +83,6 @@ func InitRoutes() *gin.Engine {
 		VacancyCategoryGroup.POST("/", CreateCategory)
 		VacancyCategoryGroup.PUT("/:id", UpdateCategory)
 		VacancyCategoryGroup.DELETE("/:id", DeleteCategory)
-	}
-
-	resumeGroup := r.Group("/resumes").Use(checkUserAuthentication)
-	{
-		resumeGroup.GET("/", GetAllResumes)
-		resumeGroup.GET("/:id", GetResumeByID)
-		resumeGroup.POST("/", AddResume)
-		resumeGroup.PUT("/:id", UpdateResume)
-		resumeGroup.DELETE("/:id", DeleteResume)
 	}
 
 	if err := r.Run(fmt.Sprintf("%s:%s", configs.AppSettings.AppParams.ServerURL, configs.AppSettings.AppParams.PortRun)); err != nil {

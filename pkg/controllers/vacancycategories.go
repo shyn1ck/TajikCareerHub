@@ -9,6 +9,19 @@ import (
 	"strconv"
 )
 
+// GetCategoryByID godoc
+// @Summary      Get category by ID
+// @Description  Retrieve a specific category by its ID
+// @Tags         Categories
+// @Accept       json
+// @Produce      json
+// @Param        id  path    int     true    "Category ID"
+// @Success      200  {object}  defaultResponse  "Success"
+// @Failure      400  {object}  ErrorResponse  "Invalid ID"
+// @Failure      404  {object}  ErrorResponse  "Category not found"
+// @Failure      500  {object}  ErrorResponse  "Internal server error"
+// @Security     ApiKeyAuth
+// @Router       /categories/{id} [get]
 func GetCategoryByID(c *gin.Context) {
 	ip := c.ClientIP()
 	idStr := c.Param("id")
@@ -28,9 +41,19 @@ func GetCategoryByID(c *gin.Context) {
 	c.JSON(http.StatusOK, category)
 }
 
+// GetAllCategories godoc
+// @Summary      Get all categories
+// @Description  Retrieve a list of all categories
+// @Tags         Categories
+// @Accept       json
+// @Produce      json
+// @Success      200  {array}  models.VacancyCategory  "Success"
+// @Failure      500  {object}  ErrorResponse  "Internal server error"
+// @Security     ApiKeyAuth
+// @Router       /categories [get]
 func GetAllCategories(c *gin.Context) {
 	ip := c.ClientIP()
-	logger.Info.Printf("[controllers.GetAllVacancyCategories] Client IP: %s - Client requested all vacancy categories\n", ip)
+	logger.Info.Printf("[controllers.GetAllCategories] Client IP: %s - Client requested all categories\n", ip)
 
 	categories, err := service.GetAllCategories()
 	if err != nil {
@@ -38,10 +61,22 @@ func GetAllCategories(c *gin.Context) {
 		return
 	}
 
-	logger.Info.Printf("[controllers.GetAllCategories] Client IP: %s - Successfully retrieved all vacancy categories\n", ip)
+	logger.Info.Printf("[controllers.GetAllCategories] Client IP: %s - Successfully retrieved all categories\n", ip)
 	c.JSON(http.StatusOK, categories)
 }
 
+// CreateCategory godoc
+// @Summary      Create a new category
+// @Description  Create a new category with the provided details
+// @Tags         Categories
+// @Accept       json
+// @Produce      json
+// @Param        category  body    models.VacancyCategory  true  "Category data"
+// @Success      201  {object}  defaultResponse  "Success"
+// @Failure      400  {object}  ErrorResponse  "Invalid input"
+// @Failure      500  {object}  ErrorResponse  "Internal server error"
+// @Security     ApiKeyAuth
+// @Router       /categories [post]
 func CreateCategory(c *gin.Context) {
 	ip := c.ClientIP()
 	var category models.VacancyCategory
@@ -55,10 +90,24 @@ func CreateCategory(c *gin.Context) {
 		return
 	}
 
-	logger.Info.Printf("[controllers.CreateVacancyCategory] Client IP: %s - Successfully created vacancy category with data %v\n", ip, category)
-	c.JSON(http.StatusCreated, gin.H{"message": "Vacancy category created successfully"})
+	logger.Info.Printf("[controllers.CreateCategory] Client IP: %s - Successfully created category with data %v\n", ip, category)
+	c.JSON(http.StatusCreated, gin.H{"message": "Category created successfully"})
 }
 
+// UpdateCategory godoc
+// @Summary      Update category
+// @Description  Update an existing category with the provided details
+// @Tags         Categories
+// @Accept       json
+// @Produce      json
+// @Param        id  path    int     true    "Category ID"
+// @Param        category  body    models.VacancyCategory  true  "Updated category data"
+// @Success      200  {object}  defaultResponse  "Success"
+// @Failure      400  {object}  ErrorResponse  "Invalid ID or input"
+// @Failure      404  {object}  ErrorResponse  "Category not found"
+// @Failure      500  {object}  ErrorResponse  "Internal server error"
+// @Security     ApiKeyAuth
+// @Router       /categories/{id} [put]
 func UpdateCategory(c *gin.Context) {
 	ip := c.ClientIP()
 	var category models.VacancyCategory
@@ -80,10 +129,22 @@ func UpdateCategory(c *gin.Context) {
 		return
 	}
 
-	logger.Info.Printf("[controllers.UpdateVacancyCategory] Client IP: %s - Successfully updated vacancy category with ID %v\n", ip, id)
-	c.JSON(http.StatusOK, gin.H{"message": "Vacancy category updated successfully"})
+	logger.Info.Printf("[controllers.UpdateCategory] Client IP: %s - Successfully updated category with ID %v\n", ip, id)
+	c.JSON(http.StatusOK, gin.H{"message": "Category updated successfully"})
 }
 
+// DeleteCategory godoc
+// @Summary      Delete category
+// @Description  Soft delete a category by ID
+// @Tags         Categories
+// @Accept       json
+// @Produce      json
+// @Param        id  path    int     true    "Category ID"
+// @Success      200  {object}  defaultResponse  "Success"
+// @Failure      400  {object}  ErrorResponse  "Invalid ID"
+// @Failure      500  {object}  ErrorResponse  "Internal server error"
+// @Security     ApiKeyAuth
+// @Router       /categories/{id} [delete]
 func DeleteCategory(c *gin.Context) {
 	ip := c.ClientIP()
 	idStr := c.Param("id")
@@ -98,6 +159,6 @@ func DeleteCategory(c *gin.Context) {
 		return
 	}
 
-	logger.Info.Printf("[controllers.DeleteVacancyCategory] Client IP: %s - Successfully soft deleted vacancy category with ID %v\n", ip, id)
-	c.JSON(http.StatusOK, gin.H{"message": "Vacancy category deleted successfully"})
+	logger.Info.Printf("[controllers.DeleteCategory] Client IP: %s - Successfully soft deleted category with ID %v\n", ip, id)
+	c.JSON(http.StatusOK, gin.H{"message": "Category deleted successfully"})
 }

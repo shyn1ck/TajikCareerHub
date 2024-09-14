@@ -12,16 +12,17 @@ import (
 // GetAllResumes godoc
 // @Summary      Get all resumes
 // @Description  Get resumes with optional filters: search term, location, category, and minimum experience years
-// @Tags         resumes
+// @Tags         Resumes
 // @Accept       json
 // @Produce      json
 // @Param        search       query   string  false  "Search term"
 // @Param        location     query   string  false  "Location"
 // @Param        category     query   string  false  "Category"
 // @Param        min-experience-years  query   int     false  "Minimum years of experience"
-// @Success      200  {array}   models.Resume  "Success"
+// @Success      200  {array}   defaultResponse  "Success"
 // @Failure      400  {object}  ErrorResponse  "Invalid request"
 // @Failure      500  {object}  ErrorResponse  "Internal server error"
+// @Security     ApiKeyAuth
 // @Router       /resumes [get]
 func GetAllResumes(c *gin.Context) {
 	ip := c.ClientIP()
@@ -61,13 +62,14 @@ func GetAllResumes(c *gin.Context) {
 // GetResumeByID godoc
 // @Summary      Get resume by ID
 // @Description  Get a specific resume by its ID
-// @Tags         resumes
+// @Tags         Resumes
 // @Accept       json
 // @Produce      json
 // @Param        id  path    int     true    "Resume ID"
 // @Success      200  {object}  models.Resume  "Success"
 // @Failure      400  {object}  ErrorResponse  "Invalid ID"
 // @Failure      500  {object}  ErrorResponse  "Internal server error"
+// @Security     ApiKeyAuth
 // @Router       /resumes/{id} [get]
 func GetResumeByID(c *gin.Context) {
 	idStr := c.Param("id")
@@ -95,13 +97,14 @@ func GetResumeByID(c *gin.Context) {
 // AddResume godoc
 // @Summary      Add a new resume
 // @Description  Add a new resume to the system
-// @Tags         resumes
+// @Tags         Resumes
 // @Accept       json
 // @Produce      json
 // @Param        resume  body    models.Resume  true  "Resume object"
 // @Success      201  {object}  defaultResponse  "Success"
 // @Failure      400  {object}  ErrorResponse  "Invalid request"
 // @Failure      500  {object}  ErrorResponse  "Internal server error"
+// @Security     ApiKeyAuth
 // @Router       /resumes [post]
 func AddResume(c *gin.Context) {
 	ip := c.ClientIP()
@@ -133,7 +136,7 @@ func AddResume(c *gin.Context) {
 // UpdateResume godoc
 // @Summary      Update an existing resume
 // @Description  Update the details of an existing resume by its ID
-// @Tags         resumes
+// @Tags         Resumes
 // @Accept       json
 // @Produce      json
 // @Param        id      path    int             true    "Resume ID"
@@ -141,6 +144,7 @@ func AddResume(c *gin.Context) {
 // @Success      200  {object}  defaultResponse  "Success"
 // @Failure      400  {object}  ErrorResponse  "Invalid ID or request"
 // @Failure      500  {object}  ErrorResponse  "Internal server error"
+// @Security     ApiKeyAuth
 // @Router       /resumes/{id} [put]
 func UpdateResume(c *gin.Context) {
 	ip := c.ClientIP()
@@ -178,13 +182,14 @@ func UpdateResume(c *gin.Context) {
 // DeleteResume godoc
 // @Summary      Delete a resume
 // @Description  Delete a specific resume by its ID
-// @Tags         resumes
+// @Tags         Resumes
 // @Accept       json
 // @Produce      json
 // @Param        id  path    int     true    "Resume ID"
 // @Success      200  {object}  defaultResponse  "Success"
 // @Failure      400  {object}  ErrorResponse  "Invalid ID"
 // @Failure      500  {object}  ErrorResponse  "Internal server error"
+// @Security     ApiKeyAuth
 // @Router       /resumes/{id} [delete]
 func DeleteResume(c *gin.Context) {
 	idStr := c.Param("id")

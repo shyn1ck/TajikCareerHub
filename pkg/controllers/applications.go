@@ -9,6 +9,16 @@ import (
 	"strconv"
 )
 
+// GetAllApplications godoc
+// @Summary Get all applications
+// @Description Get a list of all applications. Requires authentication.
+// @Tags Applications
+// @Accept json
+// @Produce json
+// @Success 200 {array} models.Application
+// @Failure 401 {object} ErrorResponse
+// @Router /applications [get]
+// @Security ApiKeyAuth
 func GetAllApplications(c *gin.Context) {
 	ip := c.ClientIP()
 	logger.Info.Printf("[controllers.GetAllApplications] Client IP: %s - Client requested all applications\n", ip)
@@ -26,6 +36,19 @@ func GetAllApplications(c *gin.Context) {
 	c.JSON(http.StatusOK, applications)
 }
 
+// GetApplicationByID godoc
+// @Summary Get application by ID
+// @Description Get a single application by its ID. Requires authentication.
+// @Tags Applications
+// @Accept json
+// @Produce json
+// @Param id path integer true "Application ID"
+// @Success 200 {object} models.Application
+// @Failure 400 {object} ErrorResponse
+// @Failure 401 {object} ErrorResponse
+// @Failure 404 {object} ErrorResponse
+// @Router /applications/{id} [get]
+// @Security ApiKeyAuth
 func GetApplicationByID(c *gin.Context) {
 	ip := c.ClientIP()
 	idStr := c.Param("id")
@@ -50,6 +73,18 @@ func GetApplicationByID(c *gin.Context) {
 	c.JSON(http.StatusOK, application)
 }
 
+// AddApplication godoc
+// @Summary Add a new application
+// @Description Add a new application. Requires authentication.
+// @Tags Applications
+// @Accept json
+// @Produce json
+// @Param application body models.Application true "Application data"
+// @Success 201 {object} defaultResponse
+// @Failure 400 {object} ErrorResponse
+// @Failure 401 {object} ErrorResponse
+// @Router /applications [post]
+// @Security ApiKeyAuth
 func AddApplication(c *gin.Context) {
 	ip := c.ClientIP()
 	var application models.Application
@@ -66,6 +101,20 @@ func AddApplication(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"message": "Application added successfully"})
 }
 
+// UpdateApplication godoc
+// @Summary Update an existing application
+// @Description Update an application by its ID. Requires authentication.
+// @Tags Applications
+// @Accept json
+// @Produce json
+// @Param id path integer true "Application ID"
+// @Param application body models.Application true "Updated application data"
+// @Success 200 {object} defaultResponse
+// @Failure 400 {object} ErrorResponse
+// @Failure 401 {object} ErrorResponse
+// @Failure 404 {object} ErrorResponse
+// @Router /applications/{id} [put]
+// @Security ApiKeyAuth
 func UpdateApplication(c *gin.Context) {
 	ip := c.ClientIP()
 	var application models.Application
@@ -91,6 +140,19 @@ func UpdateApplication(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Application updated successfully"})
 }
 
+// DeleteApplication godoc
+// @Summary Delete an application
+// @Description Soft delete an application by its ID. Requires authentication.
+// @Tags Applications
+// @Accept json
+// @Produce json
+// @Param id path integer true "Application ID"
+// @Success 200 {object} defaultResponse
+// @Failure 400 {object} ErrorResponse
+// @Failure 401 {object} ErrorResponse
+// @Failure 404 {object} ErrorResponse
+// @Router /applications/{id} [delete]
+// @Security ApiKeyAuth
 func DeleteApplication(c *gin.Context) {
 	ip := c.ClientIP()
 	idStr := c.Param("id")
