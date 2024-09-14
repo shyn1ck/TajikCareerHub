@@ -1,1 +1,68 @@
 package service
+
+import (
+	"TajikCareerHub/errs"
+	"TajikCareerHub/models"
+	"TajikCareerHub/pkg/repository"
+)
+
+func GetAllApplications(userID uint) ([]models.Application, error) {
+	err := checkUserBlocked(userID)
+	if err != nil {
+		return nil, err
+	}
+	applications, err := repository.GetAllApplications()
+	if err != nil {
+		return nil, err
+	}
+
+	return applications, nil
+}
+
+func GetApplicationByID(userID, id uint) (models.Application, error) {
+	err := checkUserBlocked(userID)
+	if err != nil {
+		return models.Application{}, errs.ErrUserBlocked
+	}
+	application, err := repository.GetApplicationByID(id)
+	if err != nil {
+		return application, err
+	}
+	return application, nil
+}
+
+func AddApplication(application models.Application) error {
+	err := checkUserBlocked(application.UserID)
+	if err != nil {
+		return errs.ErrUserBlocked
+	}
+	err = repository.AddApplication(application)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func UpdateApplication(application models.Application) error {
+	err := checkUserBlocked(application.UserID)
+	if err != nil {
+		return errs.ErrUserBlocked
+	}
+	err = repository.UpdateApplication(application.ID, application)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func DeleteApplication(id, userID uint) error {
+	err := checkUserBlocked(userID)
+	if err != nil {
+		return errs.ErrUserBlocked
+	}
+	err = repository.DeleteApplication(id)
+	if err != nil {
+		return err
+	}
+	return nil
+}

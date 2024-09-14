@@ -43,17 +43,6 @@ func InitRoutes() *gin.Engine {
 		vacancyGroup.DELETE("/:id", DeleteVacancy)
 	}
 
-	applicationGroup := r.Group("/applications").Use(checkUserAuthentication)
-	{
-		applicationGroup.GET("/", GetAllApplications)
-		applicationGroup.GET("/:id", GetApplicationByID)
-		applicationGroup.POST("/users/:user_id/jobs/:job_id/apply/:resume_id", ApplyForVacancy)
-		applicationGroup.PUT("/:id", UpdateApplication)
-		applicationGroup.DELETE("/:id", DeleteApplication)
-		applicationGroup.GET("/user/:userID", GetApplicationsByUserID)
-		applicationGroup.GET("/job/:jobID", GetApplicationsByVacancyID)
-	}
-
 	companyGroup := r.Group("/company").Use(checkUserAuthentication)
 	{
 		companyGroup.GET("/", GetAllCompanies)
