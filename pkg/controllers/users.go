@@ -232,3 +232,67 @@ func DeleteUser(c *gin.Context) {
 	logger.Info.Printf("[controllers.DeleteUser] Client IP: %s - User with ID %v soft deleted successfully.\n", ip, id)
 	c.JSON(http.StatusOK, gin.H{"message": "User soft deleted successfully"})
 }
+
+// BlockUser godoc
+// @Summary      Block user
+// @Description  Block a user by their ID
+// @Tags         Users
+// @Accept       json
+// @Produce      json
+// @Param        id  path    integer  true  "User ID"  example(1)
+// @Success      200  {object}  defaultResponse  "User blocked successfully"
+// @Failure      400  {object}  ErrorResponse    "Invalid ID"
+// @Failure      500  {object}  ErrorResponse    "Internal server error"
+// @Security     ApiKeyAuth
+// @Router       /users/block/{id} [put]
+func BlockUser(c *gin.Context) {
+	ip := c.ClientIP()
+	idParam := c.Param("id")
+	logger.Info.Printf("[controllers.BlockUserController] Client IP: %s - Request to block user with ID %s.\n", ip, idParam)
+	id, err := strconv.ParseUint(idParam, 10, 32)
+	if err != nil || id == 0 {
+		logger.Error.Printf("[controllers.BlockUserController] Client IP: %s - Invalid user ID: %s.\n", ip, idParam)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
+		return
+	}
+	err = service.BlockUser(uint(id))
+	if err != nil {
+		logger.Error.Printf("[controllers.BlockUserController] Client IP: %s - Failed to block user with ID %d: %v.\n", ip, id, err)
+		handleError(c, err)
+		return
+	}
+	logger.Info.Printf("[controllers.BlockUserController] Client IP: %s - Successfully blocked user with ID %d.\n", ip, id)
+	c.JSON(http.StatusOK, gin.H{"message": "User blocked successfully"})
+}
+
+// UnblockUser godoc
+// @Summary      Unblock user
+// @Description  Unlock a user by ID
+// @Tags         Users
+// @Accept       json
+// @Produce      json
+// @Param        id  path    integer  true  "User ID"  example(1)
+// @Success      200  {object}  defaultResponse  "User unblocked successfully"
+// @Failure      400  {object}  ErrorResponse    "Invalid ID"
+// @Failure      500  {object}  ErrorResponse    "Internal server error"
+// @Security     ApiKeyAuth
+// @Router       /users/unblock/{id} [put]
+func UnblockUser(c *gin.Context) {
+	ip := c.ClientIP()
+	idParam := c.Param("id")
+	logger.Info.Printf("[controllers.UnblockUserController] Client IP: %s - Request to unblock user with ID %s.\n", ip, idParam)
+	id, err := strconv.ParseUint(idParam, 10, 32)
+	if err != nil || id == 0 {
+		logger.Error.Printf("[controllers.UnblockUserController] Client IP: %s - Invalid user ID: %s.\n", ip, idParam)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
+		return
+	}
+	err = service.UnblockUser(uint(id))
+	if err != nil {
+		logger.Error.Printf("[controllers.UnblockUserController] Client IP: %s - Failed to unblock user with ID %d: %v.\n", ip, id, err)
+		handleError(c, err)
+		return
+	}
+	logger.Info.Printf("[controllers.UnblockUserController] Client IP: %s - Successfully unblocked user with ID %d.\n", ip, id)
+	c.JSON(http.StatusOK, gin.H{"message": "User unblocked successfully"})
+}

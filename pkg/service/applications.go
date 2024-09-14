@@ -2,6 +2,7 @@ package service
 
 import (
 	"TajikCareerHub/errs"
+	"TajikCareerHub/logger"
 	"TajikCareerHub/models"
 	"TajikCareerHub/pkg/repository"
 )
@@ -39,6 +40,7 @@ func AddApplication(application models.Application) error {
 	err = repository.AddApplication(application)
 	if err != nil {
 		return err
+		logger.Error.Printf("[repository.AddApplication]: Error adding application to database", err)
 	}
 	return nil
 }
@@ -65,4 +67,16 @@ func DeleteApplication(id, userID uint) error {
 		return err
 	}
 	return nil
+}
+
+func GetSpecialistActivityReport(userID uint) ([]models.SpecialistActivityReport, error) {
+	err := checkUserBlocked(userID)
+	if err != nil {
+		return nil, errs.ErrUserBlocked
+	}
+	reports, err := repository.GetSpecialistActivityReport()
+	if err != nil {
+		return nil, err
+	}
+	return reports, nil
 }

@@ -41,6 +41,7 @@ func InitRoutes() *gin.Engine {
 		vacancyGroup.POST("/", AddVacancy)
 		vacancyGroup.PUT("/:id", UpdateVacancy)
 		vacancyGroup.DELETE("/:id", DeleteVacancy)
+		vacancyGroup.GET("/report", GetVacancyReport)
 	}
 
 	resumeGroup := r.Group("/resumes").Use(checkUserAuthentication)
@@ -70,11 +71,11 @@ func InitRoutes() *gin.Engine {
 		applicationGroup.DELETE("/:id", DeleteApplication)
 	}
 
-	//adminGroup := r.Group("/admin").Use(checkUserAuthentication)
-	////{
-	////	adminGroup.PUT("/user/:id/block", BlockUser)
-	////	adminGroup.PUT("/user/:id/unblock", UnblockUser)
-	//}
+	adminGroup := r.Group("/admin").Use(checkUserAuthentication)
+	{
+		adminGroup.PUT("/user/:id/block", BlockUser)
+		adminGroup.PUT("/user/:id/unblock", UnblockUser)
+	}
 
 	VacancyCategoryGroup := r.Group("/category").Use(checkUserAuthentication)
 	{
@@ -83,7 +84,6 @@ func InitRoutes() *gin.Engine {
 		VacancyCategoryGroup.POST("/", CreateCategory)
 		VacancyCategoryGroup.PUT("/:id", UpdateCategory)
 		VacancyCategoryGroup.DELETE("/:id", DeleteCategory)
-		VacancyCategoryGroup.GET("/", GetVacancyReport)
 	}
 
 	if err := r.Run(fmt.Sprintf("%s:%s", configs.AppSettings.AppParams.ServerURL, configs.AppSettings.AppParams.PortRun)); err != nil {

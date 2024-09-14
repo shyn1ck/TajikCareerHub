@@ -236,7 +236,7 @@ func DeleteVacancy(c *gin.Context) {
 
 func GetVacancyReport(c *gin.Context) {
 	ip := c.ClientIP()
-	logger.Info.Printf("[controllers.GetVacancyReport]: Client with ip %s Request to get vacancy report:\n", ip)
+	logger.Info.Printf("[controllers.GetVacancyReport]: Client with IP %s requested to get vacancy report.\n", ip)
 	userID, err := service.GetUserIDFromToken(c)
 	if err != nil {
 		handleError(c, err)
@@ -249,6 +249,6 @@ func GetVacancyReport(c *gin.Context) {
 		return
 	}
 
-	logger.Info.Printf("[controllers.GetVacancyReport] Client IP: %s - Successfully retrieved vacancy report\n", ip)
+	logger.Info.Printf("[controllers.GetVacancyReport] Client IP: %s - Successfully retrieved vacancy report.\n", ip)
 	c.JSON(http.StatusOK, reports)
 }

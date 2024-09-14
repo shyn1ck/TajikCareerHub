@@ -176,3 +176,33 @@ func DeleteApplication(c *gin.Context) {
 	logger.Info.Printf("[controllers.DeleteApplication] Client IP: %s - Successfully soft deleted application with ID %v\n", ip, id)
 	c.JSON(http.StatusOK, gin.H{"message": "Application deleted successfully"})
 }
+
+// GetSpecialistActivityReport
+// @Summary      Get specialist activity report
+// @Tags         Reports
+// @Description  Get a report of how many vacancies a specialist has applied for
+// @ID get-specialist-activity-report
+// @Accept       json
+// @Produce      json
+// @Success      200  {array}  models.SpecialistActivityReport  "Success"
+// @Failure      500  {object} ErrorResponse  "Internal server error"
+// @Security     ApiKeyAuth
+// @Router       /reports/specialist-activity [get]
+func GetSpecialistActivityReport(c *gin.Context) {
+	ip := c.ClientIP()
+	logger.Info.Printf("[controllers.GetSpecialistActivityReport] Client IP: %s - Request to get specialist activity report\n", ip)
+	userID, err := service.GetUserIDFromToken(c)
+	if err != nil {
+		handleError(c, err)
+		return
+	}
+
+	reports, err := service.GetSpecialistActivityReport(userID)
+	if err != nil {
+		handleError(c, err)
+		return
+	}
+
+	logger.Info.Printf("[controllers.GetSpecialistActivityReport] Client IP: %s - Successfully retrieved specialist activity report\n", ip)
+	c.JSON(http.StatusOK, reports)
+}
