@@ -76,3 +76,16 @@ func GetRoleFromToken(c *gin.Context) (string, error) {
 	}
 	return claims.Role, nil
 }
+
+func GetUsernameFromToken(c *gin.Context) (string, error) {
+	tokenString := c.GetHeader("Authorization")
+	if tokenString == "" {
+		return "", errors.New("authorization header is missing")
+	}
+	tokenString = strings.TrimPrefix(tokenString, "Bearer ")
+	claims, err := ParseToken(tokenString)
+	if err != nil {
+		return "", err
+	}
+	return claims.Username, nil
+}

@@ -44,4 +44,5 @@ var (
 	ErrDescriptionMustBeLessThanDefiniteCharacters = errors.New("ErrDescriptionMustBeLessThan100Characters")
 	ErrSalaryMustBeANonNegativeNumber              = errors.New("ErrSalaryMustBeANonNegativeNumber")
 	ErrCompanyIDIsRequired                         = errors.New("ErrCompanyIDIsRequired")
+	ErrUserIdDoesNotMatchTheProvidedUsername       = errors.New("ErrUserIdDoesNotMatchTheProvidedUsername")
 )

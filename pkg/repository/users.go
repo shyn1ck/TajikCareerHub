@@ -45,18 +45,13 @@ func GetUserByUsername(username string) (*models.User, error) {
 
 func UserExists(username, email string) (bool, bool, error) {
 	var usernameExists, emailExists bool
-
 	var user models.User
-
-	// Check username existence
 	err := db.GetDBConn().Where("user_name = ? AND deleted_at = false", username).First(&user).Error
 	if err == nil {
 		usernameExists = true
 	} else if !errors.Is(err, errs.ErrRecordNotFound) {
 		return false, false, TranslateError(err)
 	}
-
-	// Check email existence
 	err = db.GetDBConn().Where("email = ? AND deleted_at = false", email).First(&user).Error
 	if err == nil {
 		emailExists = true
@@ -82,7 +77,6 @@ func GetUserByUsernameAndPassword(username, password string) (models.User, error
 		logger.Error.Printf("[repository.GetUserByUsernameAndPassword] error getting user by username and password: %v\n", err)
 		return models.User{}, TranslateError(err)
 	}
-
 	return user, nil
 }
 
@@ -94,8 +88,6 @@ func UpdateUser(user models.User) error {
 		"email":      user.Email,
 		"password":   user.Password,
 	}
-
-	// Remove empty fields
 	for k, v := range updateData {
 		if v == "" {
 			delete(updateData, k)

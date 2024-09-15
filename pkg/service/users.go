@@ -7,6 +7,7 @@ import (
 	"TajikCareerHub/pkg/repository"
 	"TajikCareerHub/utils"
 	"errors"
+	"fmt"
 )
 
 func GetAllUsers() ([]models.User, error) {
@@ -98,12 +99,24 @@ func DeleteUser(id uint) error {
 	return repository.DeleteUser(id)
 }
 
-func UpdateUserPassword(id uint, newPassword string) error {
-	if len(newPassword) < 8 {
-		return errs.ErrIncorrectPassword
+func UpdateUserPassword(userID uint, username string, oldPassword string, newPassword string) error {
+	hashedOldPassword := utils.GenerateHash(oldPassword)
+	fmt.Printf("Hashed old password: %s\n", hashedOldPassword)
+	user, err := repository.GetUserByUsernameAndPassword(username, hashedOldPassword)
+	if err != nil {
+		return errs.ErrIncorrectUsernameOrPassword
 	}
-	hashedPassword := utils.GenerateHash(newPassword)
-	return repository.UpdateUserPassword(id, hashedPassword)
+	if user.ID != userID {
+		return errs.ErrUserIdDoesNotMatchTheProvidedUsername
+	}
+
+	hashedNewPassword := utils.GenerateHash(newPassword)
+	err = repository.UpdateUserPassword(userID, hashedNewPassword)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func BlockUser(id uint) error {
