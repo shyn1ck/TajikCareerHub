@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"TajikCareerHub/errs"
 	"TajikCareerHub/logger"
 	"TajikCareerHub/models"
 	"TajikCareerHub/pkg/service"
@@ -55,7 +56,7 @@ func GetApplicationByID(c *gin.Context) {
 	id, err := strconv.ParseUint(idStr, 10, 32)
 	if err != nil {
 		logger.Info.Printf("[controllers.GetApplicationByID] Client IP: %s - Client requested application with ID %s. Error: Invalid application ID\n", ip, idStr)
-		handleError(c, err)
+		handleError(c, errs.ErrIDIsNotCorrect)
 		return
 	}
 	userID, err := service.GetUserIDFromToken(c)
@@ -80,7 +81,7 @@ func GetApplicationByID(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param application body models.Application true "Application data"
-// @Success 201 {object} defaultResponse
+// @Success 201 {object} DefaultResponse
 // @Failure 400 {object} ErrorResponse
 // @Failure 401 {object} ErrorResponse
 // @Router /applications [post]
@@ -98,7 +99,7 @@ func AddApplication(c *gin.Context) {
 		return
 	}
 	logger.Info.Printf("[controllers.AddApplication] Client IP: %s - Successfully added application with data %v\n", ip, application)
-	c.JSON(http.StatusCreated, gin.H{"message": "Application added successfully"})
+	c.JSON(http.StatusCreated, NewDefaultResponse("Application added successfully"))
 }
 
 // UpdateApplication godoc
@@ -109,7 +110,7 @@ func AddApplication(c *gin.Context) {
 // @Produce json
 // @Param id path integer true "Application ID"
 // @Param application body models.Application true "Updated application data"
-// @Success 200 {object} defaultResponse
+// @Success 200 {object} DefaultResponse
 // @Failure 400 {object} ErrorResponse
 // @Failure 401 {object} ErrorResponse
 // @Failure 404 {object} ErrorResponse
@@ -137,7 +138,7 @@ func UpdateApplication(c *gin.Context) {
 		return
 	}
 	logger.Info.Printf("[controllers.UpdateApplication] Client IP: %s - Successfully updated application with ID %v\n", ip, id)
-	c.JSON(http.StatusOK, gin.H{"message": "Application updated successfully"})
+	c.JSON(http.StatusOK, NewDefaultResponse("Application updated successfully"))
 }
 
 // DeleteApplication godoc
@@ -147,7 +148,7 @@ func UpdateApplication(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param id path integer true "Application ID"
-// @Success 200 {object} defaultResponse
+// @Success 200 {object} DefaultResponse
 // @Failure 400 {object} ErrorResponse
 // @Failure 401 {object} ErrorResponse
 // @Failure 404 {object} ErrorResponse
@@ -174,7 +175,7 @@ func DeleteApplication(c *gin.Context) {
 		return
 	}
 	logger.Info.Printf("[controllers.DeleteApplication] Client IP: %s - Successfully soft deleted application with ID %v\n", ip, id)
-	c.JSON(http.StatusOK, gin.H{"message": "Application deleted successfully"})
+	c.JSON(http.StatusOK, NewDefaultResponse("Application deleted successfully"))
 }
 
 // GetSpecialistActivityReport

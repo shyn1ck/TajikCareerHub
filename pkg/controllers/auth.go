@@ -2,6 +2,7 @@ package controllers
 
 import (
 	_ "TajikCareerHub/docs"
+	"TajikCareerHub/logger"
 	"TajikCareerHub/models"
 	"TajikCareerHub/pkg/service"
 	"github.com/gin-gonic/gin"
@@ -16,23 +17,27 @@ import (
 // @Accept json
 // @Produce json
 // @Param input body models.User true "User registration information"
-// @Success 201 {object} defaultResponse
+// @Success 201 {object} DefaultResponse "User created successfully"
 // @Failure 400 {object} ErrorResponse "Bad Request"
 // @Failure 500 {object} ErrorResponse "Internal Server Error"
 // @Router /auth/sign-up [post]
 func SignUp(c *gin.Context) {
+	ip := c.ClientIP()
+	logger.Info.Printf("Client with IP: %s requested to create a new user", ip)
 	var user models.User
 	if err := c.BindJSON(&user); err != nil {
+		logger.Error.Printf("Client with IP: %s failed to create new user: Error parsing request body: %v", ip, err)
 		handleError(c, err)
 		return
 	}
+
 	id, err := service.CreateUser(user)
 	if err != nil {
 		handleError(c, err)
 		return
 	}
-
-	response := newDefaultResponse("user created successfully")
+	response := NewDefaultResponse("User created successfully")
+	logger.Info.Printf("Client with IP: %s successfully created a new user with ID: %d", ip, id)
 	c.JSON(http.StatusCreated, gin.H{
 		"message": response.Message,
 		"user_id": id,
@@ -47,14 +52,18 @@ func SignUp(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param input body models.User true "User sign-in information"
-// @Success 200 {object} accessTokenResponse
+// @Success 200 {object} AccessTokenResponse
 // @Failure 400 {object} ErrorResponse "Bad Request"
 // @Failure 401 {object} ErrorResponse "Unauthorized"
 // @Failure 500 {object} ErrorResponse "Internal Server Error"
 // @Router /auth/sign-in [post]
 func SignIn(c *gin.Context) {
+	ip := c.ClientIP()
+	logger.Info.Printf("Client with IP: %s requested to sign in", ip)
+
 	var user models.User
 	if err := c.BindJSON(&user); err != nil {
+		logger.Error.Printf("Client with IP: %s failed to sign in: Error parsing request body: %v", ip, err)
 		handleError(c, err)
 		return
 	}
@@ -63,6 +72,6 @@ func SignIn(c *gin.Context) {
 		handleError(c, err)
 		return
 	}
-
-	c.JSON(http.StatusOK, accessTokenResponse{accessToken})
+	logger.Info.Printf("Client with IP: %s successfully signed in", ip)
+	c.JSON(http.StatusOK, AccessTokenResponse{accessToken})
 }

@@ -45,4 +45,5 @@ var (
 	ErrSalaryMustBeANonNegativeNumber              = errors.New("ErrSalaryMustBeANonNegativeNumber")
 	ErrCompanyIDIsRequired                         = errors.New("ErrCompanyIDIsRequired")
 	ErrUserIdDoesNotMatchTheProvidedUsername       = errors.New("ErrUserIdDoesNotMatchTheProvidedUsername")
+	ErrShouldBindJson                              = errors.New("ErrShouldBindJson")
 )

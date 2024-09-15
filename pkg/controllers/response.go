@@ -1,16 +1,16 @@
 package controllers
 
-type defaultResponse struct {
+type DefaultResponse struct {
 	Message string `json:"message"`
 }
 
-func newDefaultResponse(message string) defaultResponse {
-	return defaultResponse{
+func NewDefaultResponse(message string) DefaultResponse {
+	return DefaultResponse{
 		Message: message,
 	}
 }
 
-type accessTokenResponse struct {
+type AccessTokenResponse struct {
 	AccessToken string `json:"access_token"`
 }
 
@@ -18,13 +18,13 @@ type ErrorResponse struct {
 	Error string `json:"error"`
 }
 
-func newErrorResponse(message string) ErrorResponse {
+func NewErrorResponse(message string) ErrorResponse {
 	return ErrorResponse{
 		Error: message,
 	}
 }
 
-type passwordRequest struct {
+type PasswordRequest struct {
 	OldPassword string `json:"old_password" binding:"required"`
 	NewPassword string `json:"new_password" binding:"required"`
 }

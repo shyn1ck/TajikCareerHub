@@ -84,3 +84,11 @@ func DeleteResume(id uint) error {
 	}
 	return nil
 }
+
+func BlockResume(id uint) error {
+	return updateBlockStatus(id, true)
+}
+
+func UnblockResume(id uint) error {
+	return updateBlockStatus(id, false)
+}

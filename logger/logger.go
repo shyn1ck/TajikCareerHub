@@ -64,7 +64,7 @@ func Init() error {
 		LocalTime:  logParams.LocalTime,
 	}
 
-	gin.DefaultWriter = io.MultiWriter(os.Stdout, lumberLogInfo)
+	gin.DefaultWriter = io.MultiWriter(lumberLogInfo)
 
 	// Инициализация глобальных логгеров...
 	Info = log.New(gin.DefaultWriter, "INFO: ", log.Ldate|log.Ltime|log.Lshortfile)

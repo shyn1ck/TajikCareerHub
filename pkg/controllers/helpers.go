@@ -22,13 +22,13 @@ func handleError(c *gin.Context, err error) {
 		errors.Is(err, errs.ErrInvalidRole),
 		errors.Is(err, errs.ErrIncorrectPasswordLength):
 		statusCode = http.StatusBadRequest
-		errorResponse = newErrorResponse(err.Error())
+		errorResponse = NewErrorResponse(err.Error())
 
 	case errors.Is(err, errs.ErrRecordNotFound),
 		errors.Is(err, errs.ErrUsersNotFound),
 		errors.Is(err, errs.ErrUserNotFound):
 		statusCode = http.StatusNotFound
-		errorResponse = newErrorResponse(err.Error())
+		errorResponse = NewErrorResponse(err.Error())
 
 	case errors.Is(err, errs.ErrPermissionDenied),
 		errors.Is(err, errs.ErrAccessDenied),
@@ -38,7 +38,7 @@ func handleError(c *gin.Context, err error) {
 		errors.Is(err, errs.ErrRoleCannotBeAdmin),
 		errors.Is(err, errs.ErrRoleExist):
 		statusCode = http.StatusForbidden
-		errorResponse = newErrorResponse(err.Error())
+		errorResponse = NewErrorResponse(err.Error())
 
 	case errors.Is(err, errs.ErrResumeCreationFailed),
 		errors.Is(err, errs.ErrJobCreationFailed),
@@ -46,7 +46,7 @@ func handleError(c *gin.Context, err error) {
 		errors.Is(err, errs.ErrReviewSubmissionFailed),
 		errors.Is(err, errs.ErrReportGenerationFailed):
 		statusCode = http.StatusInternalServerError
-		errorResponse = newErrorResponse(err.Error())
+		errorResponse = NewErrorResponse(err.Error())
 
 	case errors.Is(err, errs.ErrForeignKeyViolation),
 		errors.Is(err, errs.ErrNotNullViolation),
@@ -55,11 +55,23 @@ func handleError(c *gin.Context, err error) {
 		errors.Is(err, errs.ErrUniqueViolation),
 		errors.Is(err, errs.ErrDeadlockDetected):
 		statusCode = http.StatusInternalServerError
-		errorResponse = newErrorResponse(err.Error())
+		errorResponse = NewErrorResponse(err.Error())
+
+	case errors.Is(err, errs.ExperienceYearsCannotBeNegative),
+		errors.Is(err, errs.SummaryCannotExceedDefiniteCharacters),
+		errors.Is(err, errs.ErrTitleIsRequired),
+		errors.Is(err, errs.ErrTitleMustBeLessThanDefiniteCharacters),
+		errors.Is(err, errs.ErrDescriptionIsRequired),
+		errors.Is(err, errs.ErrDescriptionMustBeLessThanDefiniteCharacters),
+		errors.Is(err, errs.ErrSalaryMustBeANonNegativeNumber),
+		errors.Is(err, errs.ErrCompanyIDIsRequired),
+		errors.Is(err, errs.ErrUserIdDoesNotMatchTheProvidedUsername):
+		statusCode = http.StatusBadRequest
+		errorResponse = NewErrorResponse(err.Error())
 
 	default:
 		statusCode = http.StatusInternalServerError
-		errorResponse = newErrorResponse(errs.ErrSomethingWentWrong.Error())
+		errorResponse = NewErrorResponse(errs.ErrSomethingWentWrong.Error())
 	}
 
 	c.JSON(statusCode, errorResponse)

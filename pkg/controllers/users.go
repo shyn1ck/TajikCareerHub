@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"TajikCareerHub/errs"
 	"TajikCareerHub/logger"
 	"TajikCareerHub/models"
 	"TajikCareerHub/pkg/service"
@@ -17,7 +18,7 @@ import (
 // @Accept       json
 // @Produce      json
 // @Param        username  path    string     false    "username"
-// @Success      200  {array}  models.User  "Success"
+// @Success      200  {array}   models.User  "Success"
 // @Success      200  {object}  models.User  "Success"
 // @Failure      500  {object}  ErrorResponse  "Internal server error"
 // @Security     ApiKeyAuth
@@ -25,7 +26,7 @@ import (
 func GetAllUsers(c *gin.Context) {
 	ip := c.ClientIP()
 	username := c.Param("username")
-	logger.Info.Printf("[controllers.GetAllUsers] Client IP: %s - Request to get users by username: %s.\n", ip, username)
+	logger.Info.Printf("[controllers.GetAllUsers] Client IP: %s - Request to get users:\n", ip)
 	if username != "" {
 		user, err := service.GetUserByUsername(username)
 		if err != nil {
@@ -64,7 +65,7 @@ func GetUserByID(c *gin.Context) {
 	logger.Info.Printf("[controllers.GetUserByID] Client IP: %s - Request to get user by ID: %s\n", ip, idStr)
 	id, err := strconv.ParseUint(idStr, 10, 32)
 	if err != nil {
-		handleError(c, err)
+		handleError(c, errs.ErrIDIsNotCorrect)
 		return
 	}
 	user, err := service.GetUserByID(uint(id))
@@ -83,8 +84,8 @@ func GetUserByID(c *gin.Context) {
 // @Tags         Users
 // @Accept       json
 // @Produce      json
-// @Param        user  body    models.User  true  "User data"
-// @Success      201  {object}  defaultResponse "Success"
+// @Param        user  body     models.User  true  "User data"
+// @Success      201  {object}  DefaultResponse "Success"
 // @Failure      400  {object}  ErrorResponse  "Invalid input"
 // @Failure      500  {object}  ErrorResponse  "Internal server error"
 // @Router       /users [post]
@@ -101,38 +102,51 @@ func CreateUser(c *gin.Context) {
 		return
 	}
 	logger.Info.Printf("[controllers.CreateUser] Client IP: %s - User %v created successfully.\n", ip, user.UserName)
-	c.JSON(http.StatusCreated, defaultResponse{Message: "User created successfully"})
+	c.JSON(http.StatusCreated, NewDefaultResponse("User created successfully."))
 }
 
+// UpdateUserPassword godoc
+// @Summary Update user password
+// @Description Update the password for the current user. Requires authentication.
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Param passwordRequest body PasswordRequest true "Password request data"
+// @Success 200 {object} DefaultResponse "user password update successfully"
+// @Failure 400 {object} ErrorResponse
+// @Failure 401 {object} ErrorResponse
+// @Failure 500 {object} ErrorResponse
+// @Security ApiKeyAuth
+// @Router /users/password [patch]
 func UpdateUserPassword(c *gin.Context) {
 	ip := c.ClientIP()
 	userID, err := service.GetUserIDFromToken(c)
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, ErrorResponse{Error: err.Error()})
+		handleError(c, err)
 		return
 	}
+	logger.Info.Printf("[controllers.UpdateUserPassword] Client IP: %s - Request to update user password: %v\n", ip, userID)
 	username, err := service.GetUsernameFromToken(c)
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, ErrorResponse{Error: err.Error()})
+		handleError(c, err)
 		return
 	}
 
-	var passwordRequest passwordRequest
+	var passwordRequest PasswordRequest
 	if err := c.ShouldBindJSON(&passwordRequest); err != nil {
 		logger.Error.Printf("[controllers.UpdateUserPassword] Client IP: %s - Error parsing request body: %v\n", ip, err)
-		c.JSON(http.StatusBadRequest, ErrorResponse{Error: "Invalid input"})
+		handleError(c, err)
 		return
 	}
 
 	err = service.UpdateUserPassword(userID, username, passwordRequest.OldPassword, passwordRequest.NewPassword)
 	if err != nil {
-		logger.Error.Printf("[controllers.UpdateUserPassword] Client IP: %s - Error updating password: %v\n", ip, err)
-		c.JSON(http.StatusInternalServerError, ErrorResponse{Error: err.Error()})
+		handleError(c, err)
 		return
 	}
 
 	logger.Info.Printf("[controllers.UpdateUserPassword] Client IP: %s - Successfully updated password for user ID: %d.\n", ip, userID)
-	c.JSON(http.StatusOK, gin.H{"message": "Password updated successfully"})
+	c.JSON(http.StatusOK, NewDefaultResponse("User password updated successfully."))
 }
 
 // UpdateUser godoc
@@ -142,8 +156,8 @@ func UpdateUserPassword(c *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Param        id  path    int     true    "User ID"
-// @Param        user  body    models.User  true  "Updated user data"
-// @Success      200  {object}  defaultResponse  "Success"
+// @Param        user  body     models.User  true  "Updated user data"
+// @Success      200  {object}  DefaultResponse  "Success"
 // @Failure      400  {object}  ErrorResponse  "Invalid ID or input"
 // @Failure      404  {object}  ErrorResponse  "User not found"
 // @Failure      500  {object}  ErrorResponse  "Internal server error"
@@ -155,11 +169,12 @@ func UpdateUser(c *gin.Context) {
 	logger.Info.Printf("[controllers.UpdateUser] Client IP: %s - Request to update user with ID: %s\n", ip, id)
 
 	if id == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "UserIDIsRequired"})
+		c.JSON(http.StatusBadRequest, ErrorResponse{"Invalid ID"})
 		return
 	}
 	userID, err := strconv.ParseUint(id, 10, 32)
 	if err != nil {
+		logger.Error.Printf("[controllers.UpdateUser] Client IP: %s - Error parsing user ID: %v", ip, err)
 		handleError(c, err)
 		return
 	}
@@ -174,7 +189,8 @@ func UpdateUser(c *gin.Context) {
 	}
 
 	if err := c.ShouldBindJSON(&userInput); err != nil {
-		handleError(c, err)
+		logger.Error.Printf("[controllers.UpdateUser] Client IP: %s - Error parsing request body: %v\n", ip, err)
+		handleError(c, errs.ErrShouldBindJson)
 		return
 	}
 
@@ -206,7 +222,7 @@ func UpdateUser(c *gin.Context) {
 	}
 
 	logger.Info.Printf("[controllers.UpdateUser] Client IP: %s - User with ID %v updated successfully.\n", ip, user.ID)
-	c.JSON(http.StatusOK, defaultResponse{Message: "User updated successfully"})
+	c.JSON(http.StatusOK, NewDefaultResponse("User updated successfully."))
 }
 
 // DeleteUser godoc
@@ -216,7 +232,7 @@ func UpdateUser(c *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Param        id  path    int     true    "User ID"
-// @Success      200  {object}  defaultResponse  "User deleted successfully"
+// @Success      200  {object}  DefaultResponse  "User deleted successfully"
 // @Failure      400  {object}  ErrorResponse  "Invalid ID"
 // @Failure      500  {object}  ErrorResponse  "Internal server error"
 // @Security     ApiKeyAuth
@@ -227,7 +243,7 @@ func DeleteUser(c *gin.Context) {
 	logger.Info.Printf("[controllers.DeleteUser] Client IP: %s - Request to delete user with ID: %s\n", ip, idStr)
 	id, err := strconv.ParseUint(idStr, 10, 32)
 	if err != nil {
-		handleError(c, err)
+		logger.Error.Printf("[controllers.DeleteUser] Client IP: %s - Error parsing user ID: %v", ip, err)
 		return
 	}
 	if err := service.DeleteUser(uint(id)); err != nil {
@@ -235,17 +251,17 @@ func DeleteUser(c *gin.Context) {
 		return
 	}
 	logger.Info.Printf("[controllers.DeleteUser] Client IP: %s - User with ID %v soft deleted successfully.\n", ip, id)
-	c.JSON(http.StatusOK, defaultResponse{Message: "User deleted successfully"})
+	c.JSON(http.StatusOK, NewDefaultResponse("User deleted successfully."))
 }
 
 // BlockUser godoc
 // @Summary      Block user
 // @Description  Block a user by their ID
-// @Tags         Users
+// @Tags         Admin
 // @Accept       json
 // @Produce      json
 // @Param        id  path    integer  true  "User ID"  example(1)
-// @Success      200  {object}  defaultResponse  "User blocked successfully"
+// @Success      200  {object}  DefaultResponse  "User blocked successfully"
 // @Failure      400  {object}  ErrorResponse    "Invalid ID"
 // @Failure      500  {object}  ErrorResponse    "Internal server error"
 // @Security     ApiKeyAuth
@@ -262,22 +278,21 @@ func BlockUser(c *gin.Context) {
 	}
 	err = service.BlockUser(uint(id))
 	if err != nil {
-		logger.Error.Printf("[controllers.BlockUserController] Client IP: %s - Failed to block user with ID %d: %v.\n", ip, id, err)
 		handleError(c, err)
 		return
 	}
 	logger.Info.Printf("[controllers.BlockUserController] Client IP: %s - Successfully blocked user with ID %d.\n", ip, id)
-	c.JSON(http.StatusOK, defaultResponse{Message: "User blocked successfully"})
+	c.JSON(http.StatusOK, NewDefaultResponse("User blocked successfully."))
 }
 
 // UnblockUser godoc
 // @Summary      Unblock user
 // @Description  Unlock a user by ID
-// @Tags         Users
+// @Tags         Admin
 // @Accept       json
 // @Produce      json
 // @Param        id  path    integer  true  "User ID"  example(1)
-// @Success      200  {object}  defaultResponse  "User unblocked successfully"
+// @Success      200  {object}  DefaultResponse  "User unblocked successfully"
 // @Failure      400  {object}  ErrorResponse    "Invalid ID"
 // @Failure      500  {object}  ErrorResponse    "Internal server error"
 // @Security     ApiKeyAuth
@@ -294,10 +309,9 @@ func UnblockUser(c *gin.Context) {
 	}
 	err = service.UnblockUser(uint(id))
 	if err != nil {
-		logger.Error.Printf("[controllers.UnblockUserController] Client IP: %s - Failed to unblock user with ID %d: %v.\n", ip, id, err)
 		handleError(c, err)
 		return
 	}
 	logger.Info.Printf("[controllers.UnblockUserController] Client IP: %s - Successfully unblocked user with ID %d.\n", ip, id)
-	c.JSON(http.StatusOK, defaultResponse{Message: "User unblocked successfully"})
+	c.JSON(http.StatusOK, NewDefaultResponse("User unblocked successfully."))
 }

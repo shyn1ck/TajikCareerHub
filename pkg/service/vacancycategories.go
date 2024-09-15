@@ -35,7 +35,7 @@ func AddCategory(category models.VacancyCategory) error {
 		return err
 	}
 	if existingCategory.ID != 0 {
-		return errors.New("category already exists")
+		return err
 	}
 	return repository.AddCategory(category)
 }

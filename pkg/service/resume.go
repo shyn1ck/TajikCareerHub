@@ -111,3 +111,19 @@ func DeleteResume(id uint, userID uint) error {
 
 	return repository.DeleteResume(id)
 }
+
+func BlockResume(id uint, userID uint) error {
+	if err := checkUserBlocked(userID); err != nil {
+		logger.Error.Printf("[service.BlockResume]: User %d is blocked", userID)
+		return errs.ErrUserBlocked
+	}
+	return repository.BlockResume(id)
+}
+
+func UnblockResume(id uint, userID uint) error {
+	if err := checkUserBlocked(userID); err != nil {
+		logger.Error.Printf("[service.UnblockResume]: User %d is blocked", userID)
+		return errs.ErrUserBlocked
+	}
+	return repository.UnblockResume(id)
+}

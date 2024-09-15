@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"TajikCareerHub/errs"
 	"TajikCareerHub/logger"
 	"TajikCareerHub/models"
 	"TajikCareerHub/pkg/service"
@@ -16,7 +17,7 @@ import (
 // @Accept       json
 // @Produce      json
 // @Param        id  path    int     true    "Category ID"
-// @Success      200  {object}  defaultResponse  "Success"
+// @Success      200  {object}  models.VacancyCategory   "Success"
 // @Failure      400  {object}  ErrorResponse  "Invalid ID"
 // @Failure      404  {object}  ErrorResponse  "Category not found"
 // @Failure      500  {object}  ErrorResponse  "Internal server error"
@@ -27,7 +28,8 @@ func GetCategoryByID(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.ParseUint(idStr, 10, 32)
 	if err != nil {
-		handleError(c, err)
+		logger.Error.Printf("[controllers.GetCategory] Error converting id to int: %s", err.Error())
+		handleError(c, errs.ErrIDIsNotCorrect)
 		return
 	}
 
@@ -47,7 +49,7 @@ func GetCategoryByID(c *gin.Context) {
 // @Tags         Categories
 // @Accept       json
 // @Produce      json
-// @Success      200  {array}  models.VacancyCategory  "Success"
+// @Success      200  {array}   models.VacancyCategory  "Success"
 // @Failure      500  {object}  ErrorResponse  "Internal server error"
 // @Security     ApiKeyAuth
 // @Router       /categories [get]
@@ -71,8 +73,8 @@ func GetAllCategories(c *gin.Context) {
 // @Tags         Categories
 // @Accept       json
 // @Produce      json
-// @Param        category  body    models.VacancyCategory  true  "Category data"
-// @Success      201  {object}  defaultResponse  "Success"
+// @Param        category  body models.VacancyCategory  true  "Category data"
+// @Success      201  {object}  DefaultResponse  "Success"
 // @Failure      400  {object}  ErrorResponse  "Invalid input"
 // @Failure      500  {object}  ErrorResponse  "Internal server error"
 // @Security     ApiKeyAuth
@@ -81,7 +83,7 @@ func CreateCategory(c *gin.Context) {
 	ip := c.ClientIP()
 	var category models.VacancyCategory
 	if err := c.ShouldBindJSON(&category); err != nil {
-		handleError(c, err)
+		handleError(c, errs.ErrShouldBindJson)
 		return
 	}
 
@@ -91,7 +93,7 @@ func CreateCategory(c *gin.Context) {
 	}
 
 	logger.Info.Printf("[controllers.CreateCategory] Client IP: %s - Successfully created category with data %v\n", ip, category)
-	c.JSON(http.StatusCreated, gin.H{"message": "Category created successfully"})
+	c.JSON(http.StatusCreated, NewDefaultResponse("Category created successfully"))
 }
 
 // UpdateCategory godoc
@@ -101,8 +103,8 @@ func CreateCategory(c *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Param        id  path    int     true    "Category ID"
-// @Param        category  body    models.VacancyCategory  true  "Updated category data"
-// @Success      200  {object}  defaultResponse  "Success"
+// @Param        category  body models.VacancyCategory  true  "Updated category data"
+// @Success      200  {object}  DefaultResponse  "Success"
 // @Failure      400  {object}  ErrorResponse  "Invalid ID or input"
 // @Failure      404  {object}  ErrorResponse  "Category not found"
 // @Failure      500  {object}  ErrorResponse  "Internal server error"
@@ -114,13 +116,13 @@ func UpdateCategory(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.ParseUint(idStr, 10, 32)
 	if err != nil {
-		handleError(c, err)
+		handleError(c, errs.ErrIDIsNotCorrect)
 		return
 	}
 	category.ID = uint(id)
 
 	if err := c.ShouldBindJSON(&category); err != nil {
-		handleError(c, err)
+		handleError(c, errs.ErrShouldBindJson)
 		return
 	}
 
@@ -130,7 +132,7 @@ func UpdateCategory(c *gin.Context) {
 	}
 
 	logger.Info.Printf("[controllers.UpdateCategory] Client IP: %s - Successfully updated category with ID %v\n", ip, id)
-	c.JSON(http.StatusOK, gin.H{"message": "Category updated successfully"})
+	c.JSON(http.StatusOK, NewDefaultResponse("Category updated successfully"))
 }
 
 // DeleteCategory godoc
@@ -140,7 +142,7 @@ func UpdateCategory(c *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Param        id  path    int     true    "Category ID"
-// @Success      200  {object}  defaultResponse  "Success"
+// @Success      200  {object}  DefaultResponse  "Success"
 // @Failure      400  {object}  ErrorResponse  "Invalid ID"
 // @Failure      500  {object}  ErrorResponse  "Internal server error"
 // @Security     ApiKeyAuth
@@ -150,7 +152,7 @@ func DeleteCategory(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.ParseUint(idStr, 10, 32)
 	if err != nil {
-		handleError(c, err)
+		handleError(c, errs.ErrIDIsNotCorrect)
 		return
 	}
 
@@ -160,5 +162,5 @@ func DeleteCategory(c *gin.Context) {
 	}
 
 	logger.Info.Printf("[controllers.DeleteCategory] Client IP: %s - Successfully soft deleted category with ID %v\n", ip, id)
-	c.JSON(http.StatusOK, gin.H{"message": "Category deleted successfully"})
+	c.JSON(http.StatusOK, NewDefaultResponse("Category deleted successfully"))
 }

@@ -50,6 +50,8 @@ func InitRoutes() *gin.Engine {
 		resumeGroup.POST("/", AddResume)
 		resumeGroup.PUT("/:id", UpdateResume)
 		resumeGroup.DELETE("/:id", DeleteResume)
+		resumeGroup.PUT("/block/:id", BlockResume)
+		resumeGroup.PUT("/unblock/:id", UnblockResume)
 	}
 
 	companyGroup := r.Group("/company").Use(checkUserAuthentication)

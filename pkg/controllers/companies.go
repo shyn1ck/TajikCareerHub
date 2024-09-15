@@ -15,12 +15,12 @@ import (
 // @Tags Companies
 // @Accept json
 // @Produce json
-// @Success 200 {array} defaultResponse
+// @Success 200 {array} models.Company
 // @Failure 500 {object} ErrorResponse
 // @Router /companies [get]
 func GetAllCompanies(c *gin.Context) {
 	ip := c.ClientIP()
-	logger.Info.Printf("[controllers.GetAllCompanies] Client IP: %s - Client requested all companies\n", ip)
+	logger.Info.Printf("[controllers.GetAllCompanies] Client IP: %s - Request to get all companies\n", ip)
 	companies, err := service.GetAllCompanies()
 	if err != nil {
 		handleError(c, err)
@@ -37,7 +37,7 @@ func GetAllCompanies(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param id path integer true "Company ID"
-// @Success 200 {object} defaultResponse
+// @Success 200 {object} models.Company
 // @Failure 400 {object} ErrorResponse
 // @Failure 404 {object} ErrorResponse
 // @Router /companies/{id} [get]
@@ -46,13 +46,12 @@ func GetCompanyByID(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.ParseUint(idStr, 10, 32)
 	if err != nil {
-		logger.Info.Printf("[controllers.GetCompanyByID] Client IP: %s - Client requested company with ID %s. Error: Invalid company ID\n", ip, idStr)
+		logger.Error.Printf("[controllers.GetCompanyByID] Client IP: %s - Invalid company ID %s: %v\n", ip, idStr, err)
 		handleError(c, err)
 		return
 	}
 	company, err := service.GetCompanyByID(uint(id))
 	if err != nil {
-		logger.Info.Printf("[controllers.GetCompanyByID] Client IP: %s - Client requested company with ID %v. Error retrieving company\n", ip, id)
 		handleError(c, err)
 		return
 	}
@@ -67,7 +66,7 @@ func GetCompanyByID(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param company body models.Company true "Company data"
-// @Success 201 {object} defaultResponse
+// @Success 201 {object} DefaultResponse
 // @Failure 400 {object} ErrorResponse
 // @Failure 401 {object} ErrorResponse
 // @Router /companies [post]
@@ -76,7 +75,7 @@ func AddCompany(c *gin.Context) {
 	ip := c.ClientIP()
 	var company models.Company
 	if err := c.ShouldBindJSON(&company); err != nil {
-		logger.Info.Printf("[controllers.AddCompany] Client IP: %s - Client attempted to add company with data %v. Error: Invalid input\n", ip, company)
+		logger.Error.Printf("[controllers.AddCompany] Client IP: %s - Error parsing company data %v: %v\n", ip, company, err)
 		handleError(c, err)
 		return
 	}
@@ -84,8 +83,8 @@ func AddCompany(c *gin.Context) {
 		handleError(c, err)
 		return
 	}
-	logger.Info.Printf("[controllers.AddCompany] Client IP: %s - Successfully added company with data %v\n", ip, company)
-	c.JSON(http.StatusCreated, gin.H{"message": "Company added successfully"})
+	logger.Info.Printf("[controllers.AddCompany] Client IP: %s - Successfully added company %v\n", ip, company)
+	c.JSON(http.StatusCreated, NewDefaultResponse("Company added successfully"))
 }
 
 // UpdateCompany godoc
@@ -96,7 +95,7 @@ func AddCompany(c *gin.Context) {
 // @Produce json
 // @Param id path integer true "Company ID"
 // @Param company body models.Company true "Updated company data"
-// @Success 200 {object} defaultResponse
+// @Success 200 {object} DefaultResponse
 // @Failure 400 {object} ErrorResponse
 // @Failure 401 {object} ErrorResponse
 // @Failure 404 {object} ErrorResponse
@@ -108,23 +107,22 @@ func UpdateCompany(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.ParseUint(idStr, 10, 32)
 	if err != nil {
-		logger.Info.Printf("[controllers.UpdateCompany] Client IP: %s - Client attempted to update company with ID %s. Error: Invalid company ID\n", ip, idStr)
+		logger.Error.Printf("[controllers.UpdateCompany] Client IP: %s - Invalid company ID %s: %v\n", ip, idStr, err)
 		handleError(c, err)
 		return
 	}
 	company.ID = uint(id)
 	if err := c.ShouldBindJSON(&company); err != nil {
-		logger.Info.Printf("[controllers.UpdateCompany] Client IP: %s - Client attempted to update company with ID %v using data %v. Error: Invalid input\n", ip, id, company)
+		logger.Error.Printf("[controllers.UpdateCompany] Client IP: %s - Error parsing updated company data %v: %v\n", ip, company, err)
 		handleError(c, err)
 		return
 	}
 	if err := service.UpdateCompany(company); err != nil {
-		logger.Info.Printf("[controllers.UpdateCompany] Client IP: %s - Client attempted to update company with ID %v using data %v. Error updating company\n", ip, id, company)
 		handleError(c, err)
 		return
 	}
 	logger.Info.Printf("[controllers.UpdateCompany] Client IP: %s - Successfully updated company with ID %v\n", ip, id)
-	c.JSON(http.StatusOK, gin.H{"message": "Company updated successfully"})
+	c.JSON(http.StatusOK, NewDefaultResponse("Company updated successfully"))
 }
 
 // DeleteCompany godoc
@@ -134,7 +132,7 @@ func UpdateCompany(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param id path integer true "Company ID"
-// @Success 200 {object} defaultResponse
+// @Success 200 {object} DefaultResponse
 // @Failure 400 {object} ErrorResponse
 // @Failure 401 {object} ErrorResponse
 // @Failure 404 {object} ErrorResponse
@@ -145,16 +143,15 @@ func DeleteCompany(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.ParseUint(idStr, 10, 32)
 	if err != nil {
-		logger.Info.Printf("[controllers.DeleteCompany] Client IP: %s - Client attempted to delete company with ID %s. Error: Invalid company ID\n", ip, idStr)
+		logger.Error.Printf("[controllers.DeleteCompany] Client IP: %s - Invalid company ID %s: %v\n", ip, idStr, err)
 		handleError(c, err)
 		return
 	}
 
 	if err := service.DeleteCompany(uint(id)); err != nil {
-		logger.Info.Printf("[controllers.DeleteCompany] Client IP: %s - Client attempted to delete company with ID %v. Error soft deleting company\n", ip, id)
 		handleError(c, err)
 		return
 	}
 	logger.Info.Printf("[controllers.DeleteCompany] Client IP: %s - Successfully soft deleted company with ID %v\n", ip, id)
-	c.JSON(http.StatusOK, gin.H{"message": "Company deleted successfully"})
+	c.JSON(http.StatusOK, NewDefaultResponse("Company deleted successfully"))
 }
