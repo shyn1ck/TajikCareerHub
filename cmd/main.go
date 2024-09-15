@@ -13,7 +13,7 @@ import (
 	"syscall"
 )
 
-// @title Tajik Career Hub API
+// @title Tajik Career Hub API ✨
 // @version 1.0
 // @description This is a Tajik Career Hub API documentation.
 

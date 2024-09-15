@@ -22,7 +22,7 @@ import (
 // @Failure      404  {object}  ErrorResponse  "Category not found"
 // @Failure      500  {object}  ErrorResponse  "Internal server error"
 // @Security     ApiKeyAuth
-// @Router       /categories/{id} [get]
+// @Router       /category/{id} [get]
 func GetCategoryByID(c *gin.Context) {
 	ip := c.ClientIP()
 	idStr := c.Param("id")
@@ -52,7 +52,7 @@ func GetCategoryByID(c *gin.Context) {
 // @Success      200  {array}   models.VacancyCategory  "Success"
 // @Failure      500  {object}  ErrorResponse  "Internal server error"
 // @Security     ApiKeyAuth
-// @Router       /categories [get]
+// @Router       /category [get]
 func GetAllCategories(c *gin.Context) {
 	ip := c.ClientIP()
 	logger.Info.Printf("[controllers.GetAllCategories] Client IP: %s - Client requested all categories\n", ip)
@@ -78,7 +78,7 @@ func GetAllCategories(c *gin.Context) {
 // @Failure      400  {object}  ErrorResponse  "Invalid input"
 // @Failure      500  {object}  ErrorResponse  "Internal server error"
 // @Security     ApiKeyAuth
-// @Router       /categories [post]
+// @Router       /category [post]
 func CreateCategory(c *gin.Context) {
 	ip := c.ClientIP()
 	var category models.VacancyCategory
@@ -86,7 +86,6 @@ func CreateCategory(c *gin.Context) {
 		handleError(c, errs.ErrShouldBindJson)
 		return
 	}
-
 	if err := service.AddCategory(category); err != nil {
 		handleError(c, err)
 		return
@@ -109,7 +108,7 @@ func CreateCategory(c *gin.Context) {
 // @Failure      404  {object}  ErrorResponse  "Category not found"
 // @Failure      500  {object}  ErrorResponse  "Internal server error"
 // @Security     ApiKeyAuth
-// @Router       /categories/{id} [put]
+// @Router       /category/{id} [put]
 func UpdateCategory(c *gin.Context) {
 	ip := c.ClientIP()
 	var category models.VacancyCategory
@@ -146,7 +145,7 @@ func UpdateCategory(c *gin.Context) {
 // @Failure      400  {object}  ErrorResponse  "Invalid ID"
 // @Failure      500  {object}  ErrorResponse  "Internal server error"
 // @Security     ApiKeyAuth
-// @Router       /categories/{id} [delete]
+// @Router       /category/{id} [delete]
 func DeleteCategory(c *gin.Context) {
 	ip := c.ClientIP()
 	idStr := c.Param("id")

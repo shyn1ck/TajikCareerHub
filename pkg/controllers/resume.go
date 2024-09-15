@@ -24,7 +24,7 @@ import (
 // @Failure      400  {object}  ErrorResponse  "Invalid request"
 // @Failure      500  {object}  ErrorResponse  "Internal server error"
 // @Security     ApiKeyAuth
-// @Router       /resumes [get]
+// @Router       /resume [get]
 func GetAllResumes(c *gin.Context) {
 	ip := c.ClientIP()
 	search := c.Query("search")
@@ -72,7 +72,7 @@ func GetAllResumes(c *gin.Context) {
 // @Failure      400  {object}  ErrorResponse  "Invalid ID"
 // @Failure      500  {object}  ErrorResponse  "Internal server error"
 // @Security     ApiKeyAuth
-// @Router       /resumes/{id} [get]
+// @Router       /resume/{id} [get]
 func GetResumeByID(c *gin.Context) {
 	ip := c.ClientIP()
 	idStr := c.Param("id")
@@ -112,7 +112,7 @@ func GetResumeByID(c *gin.Context) {
 // @Failure      400  {object}  ErrorResponse  "Invalid request"
 // @Failure      500  {object}  ErrorResponse  "Internal server error"
 // @Security     ApiKeyAuth
-// @Router       /resumes [post]
+// @Router       /resume [post]
 func AddResume(c *gin.Context) {
 	ip := c.ClientIP()
 	userID, err := service.GetUserIDFromToken(c)
@@ -152,7 +152,7 @@ func AddResume(c *gin.Context) {
 // @Failure      400  {object}  ErrorResponse  "Invalid ID or request"
 // @Failure      500  {object}  ErrorResponse  "Internal server error"
 // @Security     ApiKeyAuth
-// @Router       /resumes/{id} [put]
+// @Router       /resume/{id} [put]
 func UpdateResume(c *gin.Context) {
 	ip := c.ClientIP()
 	idStr := c.Param("id")
@@ -199,7 +199,7 @@ func UpdateResume(c *gin.Context) {
 // @Failure      400  {object}  ErrorResponse  "Invalid ID"
 // @Failure      500  {object}  ErrorResponse  "Internal server error"
 // @Security     ApiKeyAuth
-// @Router       /resumes/{id} [delete]
+// @Router       /resume/{id} [delete]
 func DeleteResume(c *gin.Context) {
 	ip := c.ClientIP()
 	idStr := c.Param("id")
@@ -240,7 +240,7 @@ func DeleteResume(c *gin.Context) {
 // @Failure      401   {object}  ErrorResponse  "Unauthorized"
 // @Failure      500   {object}  ErrorResponse  "Internal server error"
 // @Security     ApiKeyAuth
-// @Router       /resumes/block/{id} [put]
+// @Router       /resume/block/{id} [patch]
 func BlockResume(c *gin.Context) {
 	ip := c.ClientIP()
 	idStr := c.Param("id")
@@ -280,7 +280,7 @@ func BlockResume(c *gin.Context) {
 // @Failure      401   {object}  ErrorResponse  "Unauthorized"
 // @Failure      500   {object}  ErrorResponse  "Internal server error"
 // @Security     ApiKeyAuth
-// @Router       /resumes/unblock/{id} [put]
+// @Router       /resume/unblock/{id} [patch]
 func UnblockResume(c *gin.Context) {
 	ip := c.ClientIP()
 	idStr := c.Param("id")

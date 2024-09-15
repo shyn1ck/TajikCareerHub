@@ -5,6 +5,7 @@ import (
 	"TajikCareerHub/models"
 	"TajikCareerHub/pkg/repository"
 	"errors"
+	"gorm.io/gorm"
 )
 
 func GetAllCategories() ([]models.VacancyCategory, error) {
@@ -27,15 +28,19 @@ func GetCategoryByID(id uint) (models.VacancyCategory, error) {
 }
 
 func AddCategory(category models.VacancyCategory) error {
-	existingCategory, err := repository.GetCategoryByID(category.ID)
+	// Попробуем получить категорию по имени
+	existingCategory, err := repository.GetCategoryByName(category.Name)
 	if err != nil {
-		if errors.Is(err, errs.ErrRecordNotFound) {
-			return repository.AddCategory(category)
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			// Если категория не найдена, то ошибка игнорируется
+			// Мы просто создаем новую категорию
+		} else {
+			// Если другая ошибка, то возвращаем её
+			return err
 		}
-		return err
 	}
 	if existingCategory.ID != 0 {
-		return err
+		return errs.ErrCategoryAlreadyExist
 	}
 	return repository.AddCategory(category)
 }

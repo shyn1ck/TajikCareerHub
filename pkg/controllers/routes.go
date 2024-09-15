@@ -23,7 +23,7 @@ func InitRoutes() *gin.Engine {
 		auth.POST("/sign-in", SignIn)
 	}
 
-	userGroup := r.Group("/users").Use(checkUserAuthentication)
+	userGroup := r.Group("/user").Use(checkUserAuthentication)
 	{
 		userGroup.GET("/", GetAllUsers)
 		userGroup.POST("/", CreateUser)
@@ -31,6 +31,8 @@ func InitRoutes() *gin.Engine {
 		userGroup.GET("/:id", GetUserByID)
 		userGroup.DELETE("/:id", DeleteUser)
 		userGroup.PATCH("/password", UpdateUserPassword)
+		userGroup.PUT("/block/:id", BlockUser)
+		userGroup.PATCH("/unblock/:id", UnblockUser)
 	}
 
 	vacancyGroup := r.Group("/vacancy").Use(checkUserAuthentication)
@@ -43,15 +45,15 @@ func InitRoutes() *gin.Engine {
 		vacancyGroup.GET("/report", GetVacancyReport)
 	}
 
-	resumeGroup := r.Group("/resumes").Use(checkUserAuthentication)
+	resumeGroup := r.Group("/resume").Use(checkUserAuthentication)
 	{
 		resumeGroup.GET("/", GetAllResumes)
 		resumeGroup.GET("/:id", GetResumeByID)
 		resumeGroup.POST("/", AddResume)
 		resumeGroup.PUT("/:id", UpdateResume)
 		resumeGroup.DELETE("/:id", DeleteResume)
-		resumeGroup.PUT("/block/:id", BlockResume)
-		resumeGroup.PUT("/unblock/:id", UnblockResume)
+		resumeGroup.PATCH("/block/:id", BlockResume)
+		resumeGroup.PATCH("/unblock/:id", UnblockResume)
 	}
 
 	companyGroup := r.Group("/company").Use(checkUserAuthentication)
@@ -70,12 +72,6 @@ func InitRoutes() *gin.Engine {
 		applicationGroup.POST("/", AddApplication)
 		applicationGroup.PUT("/:id", UpdateApplication)
 		applicationGroup.DELETE("/:id", DeleteApplication)
-	}
-
-	adminGroup := r.Group("/admin").Use(checkUserAuthentication)
-	{
-		adminGroup.PUT("/user/:id/block", BlockUser)
-		adminGroup.PUT("/user/:id/unblock", UnblockUser)
 	}
 
 	VacancyCategoryGroup := r.Group("/category").Use(checkUserAuthentication)

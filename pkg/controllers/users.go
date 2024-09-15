@@ -13,20 +13,21 @@ import (
 
 // GetAllUsers godoc
 // @Summary      Get all users
-// @Description  Retrieve a list of all users
+// @Description  Retrieve a list of all users or a single user by username
 // @Tags         Users
 // @Accept       json
 // @Produce      json
-// @Param        username  path    string     false    "username"
-// @Success      200  {array}   models.User  "Success"
-// @Success      200  {object}  models.User  "Success"
+// @Param        username  query   string  false  "Username to filter the user"
+// @Success      200  {array}   models.User  "List of users"
+// @Success      200  {object}  models.User  "Single user details"
 // @Failure      500  {object}  ErrorResponse  "Internal server error"
 // @Security     ApiKeyAuth
-// @Router       /users [get]
+// @Router       /user [get]
 func GetAllUsers(c *gin.Context) {
 	ip := c.ClientIP()
-	username := c.Param("username")
-	logger.Info.Printf("[controllers.GetAllUsers] Client IP: %s - Request to get users:\n", ip)
+	username := c.Query("username")
+	logger.Info.Printf("[controllers.GetAllUsers] Client IP: %s - Request to get users.\n", ip)
+
 	if username != "" {
 		user, err := service.GetUserByUsername(username)
 		if err != nil {
@@ -58,7 +59,7 @@ func GetAllUsers(c *gin.Context) {
 // @Failure      404  {object}  ErrorResponse  "User not found"
 // @Failure      500  {object}  ErrorResponse  "Internal server error"
 // @Security     ApiKeyAuth
-// @Router       /users/{id} [get]
+// @Router       /user/{id} [get]
 func GetUserByID(c *gin.Context) {
 	ip := c.ClientIP()
 	idStr := c.Param("id")
@@ -88,7 +89,7 @@ func GetUserByID(c *gin.Context) {
 // @Success      201  {object}  DefaultResponse "Success"
 // @Failure      400  {object}  ErrorResponse  "Invalid input"
 // @Failure      500  {object}  ErrorResponse  "Internal server error"
-// @Router       /users [post]
+// @Router       /user [post]
 func CreateUser(c *gin.Context) {
 	ip := c.ClientIP()
 	var user models.User
@@ -117,7 +118,7 @@ func CreateUser(c *gin.Context) {
 // @Failure 401 {object} ErrorResponse
 // @Failure 500 {object} ErrorResponse
 // @Security ApiKeyAuth
-// @Router /users/password [patch]
+// @Router /user/password [patch]
 func UpdateUserPassword(c *gin.Context) {
 	ip := c.ClientIP()
 	userID, err := service.GetUserIDFromToken(c)
@@ -162,7 +163,7 @@ func UpdateUserPassword(c *gin.Context) {
 // @Failure      404  {object}  ErrorResponse  "User not found"
 // @Failure      500  {object}  ErrorResponse  "Internal server error"
 // @Security     ApiKeyAuth
-// @Router       /users/{id} [put]
+// @Router       /user/{id} [put]
 func UpdateUser(c *gin.Context) {
 	ip := c.ClientIP()
 	id := c.Param("id")
@@ -236,7 +237,7 @@ func UpdateUser(c *gin.Context) {
 // @Failure      400  {object}  ErrorResponse  "Invalid ID"
 // @Failure      500  {object}  ErrorResponse  "Internal server error"
 // @Security     ApiKeyAuth
-// @Router       /users/{id} [delete]
+// @Router       /user/{id} [delete]
 func DeleteUser(c *gin.Context) {
 	ip := c.ClientIP()
 	idStr := c.Param("id")
@@ -265,7 +266,7 @@ func DeleteUser(c *gin.Context) {
 // @Failure      400  {object}  ErrorResponse    "Invalid ID"
 // @Failure      500  {object}  ErrorResponse    "Internal server error"
 // @Security     ApiKeyAuth
-// @Router       /users/block/{id} [put]
+// @Router       /user/block/{id} [patch]
 func BlockUser(c *gin.Context) {
 	ip := c.ClientIP()
 	idParam := c.Param("id")
@@ -296,7 +297,7 @@ func BlockUser(c *gin.Context) {
 // @Failure      400  {object}  ErrorResponse    "Invalid ID"
 // @Failure      500  {object}  ErrorResponse    "Internal server error"
 // @Security     ApiKeyAuth
-// @Router       /users/unblock/{id} [put]
+// @Router       /user/unblock/{id} [patch]
 func UnblockUser(c *gin.Context) {
 	ip := c.ClientIP()
 	idParam := c.Param("id")

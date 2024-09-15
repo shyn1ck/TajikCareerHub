@@ -4,6 +4,8 @@ import (
 	"TajikCareerHub/db"
 	"TajikCareerHub/logger"
 	"TajikCareerHub/models"
+	"errors"
+	"gorm.io/gorm"
 )
 
 func GetAllCategories() ([]models.VacancyCategory, error) {
@@ -61,4 +63,16 @@ func DeleteCategory(id uint) error {
 		return TranslateError(err)
 	}
 	return nil
+}
+
+func GetCategoryByName(categoryName string) (category models.VacancyCategory, err error) {
+	err = db.GetDBConn().Where("name = ? AND deleted_at = false", categoryName).First(&category).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return category, nil
+		}
+		logger.Error.Printf("[repository.GetCategoryByName]: Error retrieving category by name. Error: %v\n", err)
+		return category, TranslateError(err)
+	}
+	return category, nil
 }

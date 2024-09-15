@@ -27,7 +27,7 @@ import (
 // @Failure 400 {object} ErrorResponse "Bad Request"
 // @Failure 500 {object} ErrorResponse "Internal Server Error"
 // @Security     ApiKeyAuth
-// @Router /vacancies [get]
+// @Router /vacancy [get]
 func GetAllVacancies(c *gin.Context) {
 	ip := c.ClientIP()
 	search := c.Query("search")
@@ -86,7 +86,7 @@ func GetAllVacancies(c *gin.Context) {
 // @Failure 404 {object} ErrorResponse "Vacancy Not Found"
 // @Failure 500 {object} ErrorResponse "Internal Server Error"
 // @Security     ApiKeyAuth
-// @Router /vacancies/{vacancyID} [get]
+// @Router /vacancy/{vacancyID} [get]
 func GetVacancyByID(c *gin.Context) {
 	ip := c.ClientIP()
 	idStr := c.Param("vacancyID")
@@ -126,7 +126,7 @@ func GetVacancyByID(c *gin.Context) {
 // @Failure 403 {object} ErrorResponse "ErrPermissionDenied"
 // @Failure 500 {object} ErrorResponse "Internal Server Error"
 // @Security     ApiKeyAuth
-// @Router /vacancies [post]
+// @Router /vacancy [post]
 func AddVacancy(c *gin.Context) {
 	userID, err := service.GetUserIDFromToken(c)
 	if err != nil {
@@ -167,7 +167,7 @@ func AddVacancy(c *gin.Context) {
 // @Failure 404 {object} ErrorResponse "Vacancy Not Found"
 // @Failure 500 {object} ErrorResponse "Internal Server Error"
 // @Security     ApiKeyAuth
-// @Router /vacancies/{vacancyID} [put]
+// @Router /vacancy/{vacancyID} [put]
 func UpdateVacancy(c *gin.Context) {
 	ip := c.ClientIP()
 	idStr := c.Param("vacancyID")
@@ -214,7 +214,7 @@ func UpdateVacancy(c *gin.Context) {
 // @Failure 404 {object} ErrorResponse "Vacancy Not Found"
 // @Failure 500 {object} ErrorResponse "Internal Server Error"
 // @Security     ApiKeyAuth
-// @Router /vacancies/{vacancyID} [delete]
+// @Router /vacancy/{vacancyID} [delete]
 func DeleteVacancy(c *gin.Context) {
 	ip := c.ClientIP()
 	idStr := c.Param("vacancyID")

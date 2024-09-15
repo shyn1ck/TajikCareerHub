@@ -46,4 +46,5 @@ var (
 	ErrCompanyIDIsRequired                         = errors.New("ErrCompanyIDIsRequired")
 	ErrUserIdDoesNotMatchTheProvidedUsername       = errors.New("ErrUserIdDoesNotMatchTheProvidedUsername")
 	ErrShouldBindJson                              = errors.New("ErrShouldBindJson")
+	ErrCategoryAlreadyExist                        = errors.New("ErrCategoryAlreadyExist")
 )

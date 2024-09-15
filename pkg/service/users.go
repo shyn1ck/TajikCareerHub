@@ -78,12 +78,6 @@ func UpdateUser(user models.User) error {
 		existingUser.Email = user.Email
 	}
 
-	err = user.ValidateCredentials()
-	if err != nil {
-		logger.Error.Printf("[service.UpdateUser] validation error: %v\n", err)
-		return err
-	}
-
 	err = repository.UpdateUser(existingUser)
 	if err != nil {
 		logger.Error.Printf("[service.UpdateUser] Failed to update user with ID %v: %v\n", user.ID, err)

@@ -17,7 +17,7 @@ import (
 // @Produce json
 // @Success 200 {array} models.Company
 // @Failure 500 {object} ErrorResponse
-// @Router /companies [get]
+// @Router /company [get]
 func GetAllCompanies(c *gin.Context) {
 	ip := c.ClientIP()
 	logger.Info.Printf("[controllers.GetAllCompanies] Client IP: %s - Request to get all companies\n", ip)
@@ -40,7 +40,7 @@ func GetAllCompanies(c *gin.Context) {
 // @Success 200 {object} models.Company
 // @Failure 400 {object} ErrorResponse
 // @Failure 404 {object} ErrorResponse
-// @Router /companies/{id} [get]
+// @Router /company/{id} [get]
 func GetCompanyByID(c *gin.Context) {
 	ip := c.ClientIP()
 	idStr := c.Param("id")
@@ -69,7 +69,7 @@ func GetCompanyByID(c *gin.Context) {
 // @Success 201 {object} DefaultResponse
 // @Failure 400 {object} ErrorResponse
 // @Failure 401 {object} ErrorResponse
-// @Router /companies [post]
+// @Router /company [post]
 // @Security ApiKeyAuth
 func AddCompany(c *gin.Context) {
 	ip := c.ClientIP()
@@ -99,7 +99,7 @@ func AddCompany(c *gin.Context) {
 // @Failure 400 {object} ErrorResponse
 // @Failure 401 {object} ErrorResponse
 // @Failure 404 {object} ErrorResponse
-// @Router /companies/{id} [put]
+// @Router /company/{id} [put]
 // @Security ApiKeyAuth
 func UpdateCompany(c *gin.Context) {
 	ip := c.ClientIP()
@@ -136,7 +136,7 @@ func UpdateCompany(c *gin.Context) {
 // @Failure 400 {object} ErrorResponse
 // @Failure 401 {object} ErrorResponse
 // @Failure 404 {object} ErrorResponse
-// @Router /companies/{id} [delete]
+// @Router /company/{id} [delete]
 // @Security ApiKeyAuth
 func DeleteCompany(c *gin.Context) {
 	ip := c.ClientIP()

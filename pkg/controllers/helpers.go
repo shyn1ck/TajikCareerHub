@@ -65,6 +65,7 @@ func handleError(c *gin.Context, err error) {
 		errors.Is(err, errs.ErrDescriptionMustBeLessThanDefiniteCharacters),
 		errors.Is(err, errs.ErrSalaryMustBeANonNegativeNumber),
 		errors.Is(err, errs.ErrCompanyIDIsRequired),
+		errors.Is(err, errs.ErrCategoryAlreadyExist),
 		errors.Is(err, errs.ErrUserIdDoesNotMatchTheProvidedUsername):
 		statusCode = http.StatusBadRequest
 		errorResponse = NewErrorResponse(err.Error())
