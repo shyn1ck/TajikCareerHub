@@ -23,3 +23,10 @@ type SpecialistActivityReport struct {
 	UserName         string `json:"user_name"`
 	ApplicationCount uint   `json:"application_count"`
 }
+
+type SwaggerApplication struct {
+	UserID    uint `json:"user_id" example:"1"`
+	VacancyID uint `json:"vacancy_id" example:"1"`
+	ResumeID  uint `json:"resume_id" example:"1"`
+	StatusID  uint `json:"status_id" example:"1"`
+}

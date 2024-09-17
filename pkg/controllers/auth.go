@@ -75,3 +75,5 @@ func SignIn(c *gin.Context) {
 	logger.Info.Printf("Client with IP: %s successfully signed in", ip)
 	c.JSON(http.StatusOK, AccessTokenResponse{accessToken})
 }
+
+// Sign in account

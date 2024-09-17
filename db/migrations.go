@@ -10,7 +10,6 @@ func Migrate() error {
 	if dbConn == nil {
 		return errors.New("database connection is not initialized")
 	}
-
 	err := dbConn.AutoMigrate(
 		&models.Vacancy{},
 		&models.User{},
@@ -23,7 +22,6 @@ func Migrate() error {
 	if err != nil {
 		return errors.New("failed to migrate database schema: " + err.Error())
 	}
-
 	initialStatuses := []models.ApplicationStatus{
 		{Name: "applied"},
 		{Name: "under_review"},

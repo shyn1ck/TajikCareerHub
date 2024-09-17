@@ -75,6 +75,7 @@ func GetSpecialistActivityReport() ([]models.SpecialistActivityReport, error) {
 		Table("users").
 		Select("users.id as user_id, users.full_name as user_name, COUNT(applications.id) as application_count").
 		Joins("left join applications on applications.user_id = users.id").
+		Where("applications.deleted_at IS NULL").
 		Group("users.id").
 		Scan(&reports).Error
 	if err != nil {

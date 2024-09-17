@@ -2,7 +2,6 @@ package service
 
 import (
 	"TajikCareerHub/errs"
-	"TajikCareerHub/logger"
 	"TajikCareerHub/models"
 	"TajikCareerHub/pkg/repository"
 )
@@ -40,7 +39,6 @@ func AddApplication(application models.Application) error {
 	err = repository.AddApplication(application)
 	if err != nil {
 		return err
-		logger.Error.Printf("[repository.AddApplication]: Error adding application to database", err)
 	}
 	return nil
 }

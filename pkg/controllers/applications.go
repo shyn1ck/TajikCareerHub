@@ -16,7 +16,7 @@ import (
 // @Tags Applications
 // @Accept json
 // @Produce json
-// @Success 200 {array} models.Application
+// @Success 200 {array} models.SwaggerApplication
 // @Failure 401 {object} ErrorResponse
 // @Router /applications [get]
 // @Security ApiKeyAuth
@@ -44,7 +44,7 @@ func GetAllApplications(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param id path integer true "Application ID"
-// @Success 200 {object} models.Application
+// @Success 200 {object} models.SwaggerApplication
 // @Failure 400 {object} ErrorResponse
 // @Failure 401 {object} ErrorResponse
 // @Failure 404 {object} ErrorResponse
@@ -80,21 +80,27 @@ func GetApplicationByID(c *gin.Context) {
 // @Tags Applications
 // @Accept json
 // @Produce json
-// @Param application body models.Application true "Application data"
+// @Param application body models.SwaggerApplication true "Application data"
 // @Success 201 {object} DefaultResponse
 // @Failure 400 {object} ErrorResponse
 // @Failure 401 {object} ErrorResponse
-// @Router /applications [post]
+// @Router /application [post]
 // @Security ApiKeyAuth
 func AddApplication(c *gin.Context) {
 	ip := c.ClientIP()
-	var application models.Application
+	var application models.SwaggerApplication
 	if err := c.ShouldBindJSON(&application); err != nil {
 		logger.Info.Printf("[controllers.AddApplication] Client IP: %s - Client attempted to add application with data %v. Error: Invalid input\n", ip, application)
 		handleError(c, err)
 		return
 	}
-	if err := service.AddApplication(application); err != nil {
+	app := models.Application{
+		UserID:    application.UserID,
+		VacancyID: application.VacancyID,
+		ResumeID:  application.ResumeID,
+		StatusID:  application.StatusID,
+	}
+	if err := service.AddApplication(app); err != nil {
 		handleError(c, err)
 		return
 	}
@@ -109,7 +115,7 @@ func AddApplication(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param id path integer true "Application ID"
-// @Param application body models.Application true "Updated application data"
+// @Param application body models.SwaggerApplication true "Updated application data"
 // @Success 200 {object} DefaultResponse
 // @Failure 400 {object} ErrorResponse
 // @Failure 401 {object} ErrorResponse
@@ -118,7 +124,7 @@ func AddApplication(c *gin.Context) {
 // @Security ApiKeyAuth
 func UpdateApplication(c *gin.Context) {
 	ip := c.ClientIP()
-	var application models.Application
+	var application models.SwaggerApplication
 	idStr := c.Param("id")
 	id, err := strconv.ParseUint(idStr, 10, 32)
 	if err != nil {
@@ -126,13 +132,19 @@ func UpdateApplication(c *gin.Context) {
 		handleError(c, err)
 		return
 	}
-	application.ID = uint(id)
+	app := models.Application{
+		ID:        uint(id),
+		UserID:    application.UserID,
+		VacancyID: application.VacancyID,
+		ResumeID:  application.ResumeID,
+		StatusID:  application.StatusID,
+	}
 	if err := c.ShouldBindJSON(&application); err != nil {
 		logger.Info.Printf("[controllers.UpdateApplication] Client IP: %s - Client attempted to update application with ID %v using data %v. Error: Invalid input\n", ip, id, application)
 		handleError(c, err)
 		return
 	}
-	if err := service.UpdateApplication(application); err != nil {
+	if err := service.UpdateApplication(app); err != nil {
 		logger.Info.Printf("[controllers.UpdateApplication] Client IP: %s - Error updating application with ID %v\n", ip, id)
 		handleError(c, err)
 		return
@@ -178,17 +190,17 @@ func DeleteApplication(c *gin.Context) {
 	c.JSON(http.StatusOK, NewDefaultResponse("Application deleted successfully"))
 }
 
-// GetSpecialistActivityReport
-// @Summary      Get specialist activity report
-// @Tags         Reports
-// @Description  Get a report of how many vacancies a specialist has applied for
+// GetSpecialistActivityReport godoc
+// @Summary Get specialist activity report
+// @Tags Reports
+// @Description Get a report of how many vacancies a specialist has applied for
 // @ID get-specialist-activity-report
-// @Accept       json
-// @Produce      json
-// @Success      200  {array}  models.SpecialistActivityReport  "Success"
-// @Failure      500  {object} ErrorResponse  "Internal server error"
-// @Security     ApiKeyAuth
-// @Router       /reports/specialist-activity [get]
+// @Accept json
+// @Produce json
+// @Success 200 {array} models.SpecialistActivityReport
+// @Failure 500 {object} ErrorResponse
+// @Security ApiKeyAuth
+// @Router /reports/specialist-activity [get]
 func GetSpecialistActivityReport(c *gin.Context) {
 	ip := c.ClientIP()
 	logger.Info.Printf("[controllers.GetSpecialistActivityReport] Client IP: %s - Request to get specialist activity report\n", ip)
