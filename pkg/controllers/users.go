@@ -18,7 +18,7 @@ import (
 // @Accept       json
 // @Produce      json
 // @Param        username  query   string  false  "Username to filter the user"
-// @Success      200  {array}   models.User  "List of users"
+// @Success      200  {array}   models.SwagUser  "List of users"
 // @Success      200  {object}  models.User  "Single user details"
 // @Failure      500  {object}  ErrorResponse  "Internal server error"
 // @Security     ApiKeyAuth
@@ -54,7 +54,7 @@ func GetAllUsers(c *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Param        id  path    int     true    "User ID"
-// @Success      200  {object}  models.User  "Success"
+// @Success      200  {object}  models.SwagUser  "Success"
 // @Failure      400  {object}  ErrorResponse  "Invalid ID"
 // @Failure      404  {object}  ErrorResponse  "User not found"
 // @Failure      500  {object}  ErrorResponse  "Internal server error"
@@ -85,7 +85,7 @@ func GetUserByID(c *gin.Context) {
 // @Tags         Users
 // @Accept       json
 // @Produce      json
-// @Param        user  body     models.User  true  "User data"
+// @Param        user  body     models.SwagUser  true  "User data"
 // @Success      201  {object}  DefaultResponse "Success"
 // @Failure      400  {object}  ErrorResponse  "Invalid input"
 // @Failure      500  {object}  ErrorResponse  "Internal server error"
@@ -157,7 +157,7 @@ func UpdateUserPassword(c *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Param        id  path    int     true    "User ID"
-// @Param        user  body     models.User  true  "Updated user data"
+// @Param        user  body     models.SwagUser  true  "Updated user data"
 // @Success      200  {object}  DefaultResponse  "Success"
 // @Failure      400  {object}  ErrorResponse  "Invalid ID or input"
 // @Failure      404  {object}  ErrorResponse  "User not found"
@@ -217,7 +217,7 @@ func UpdateUser(c *gin.Context) {
 		user.Email = *userInput.Email
 	}
 
-	if err := service.UpdateUser(user); err != nil {
+	if err := service.UpdateUser(user.ID, user); err != nil {
 		handleError(c, err)
 		return
 	}

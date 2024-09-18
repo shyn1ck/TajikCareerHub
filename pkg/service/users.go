@@ -58,7 +58,12 @@ func CreateUser(user models.User) (uint, error) {
 	return id, nil
 }
 
-func UpdateUser(user models.User) error {
+func UpdateUser(userID uint, user models.User) error {
+	err := checkUserBlocked(userID)
+	if err != nil {
+		return errs.ErrUserBlocked
+	}
+
 	existingUser, err := repository.GetUserByID(user.ID)
 	if err != nil {
 		logger.Error.Printf("[service.UpdateUser] Failed to get existing user with ID %v: %v\n", user.ID, err)

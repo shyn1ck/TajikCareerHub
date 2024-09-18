@@ -36,3 +36,13 @@ func (r Resume) ValidateResume() error {
 	}
 	return nil
 }
+
+type SwagResume struct {
+	ID                uint   `json:"id" gorm:"primaryKey;autoIncrement"`
+	FullName          string `json:"full_name" gorm:"type:varchar(255);not null"`
+	Skills            string `json:"skills" gorm:"type:text"`
+	Summary           string `json:"summary" gorm:"type:text"`
+	ExperienceYears   uint   `json:"experience_years" gorm:"not null"`
+	Location          string `json:"location" gorm:"type:varchar(255)"`
+	VacancyCategoryID uint   `json:"vacancy_category_id" gorm:"not null"`
+}

@@ -39,3 +39,16 @@ func (u User) ValidateCredentials() error {
 	}
 	return nil
 }
+
+type SwagUser struct {
+	Username string `json:"username" gorm:"unique"`
+	Password string `json:"password" gorm:"not null"`
+	FullName string `json:"full_name"`
+	Email    string `json:"email"`
+	Role     string `json:"role"`
+}
+
+type SwagInUser struct {
+	Username string `json:"username" gorm:"unique"`
+	Password string `json:"password" gorm:"not null"`
+}

@@ -5,7 +5,7 @@ import (
 )
 
 type BaseModel struct {
-	CreatedAt time.Time `json:"-" gorm:"autoCreateTime"`
-	UpdatedAt time.Time `json:"-" gorm:"autoUpdateTime"`
-	DeletedAt bool      `json:"-" gorm:"default:false"`
+	CreatedAt time.Time `json:"created_at" gorm:"autoCreateTime"`
+	UpdatedAt time.Time `json:"updated_at" gorm:"autoUpdateTime"`
+	DeletedAt bool      `json:"deleted_at" gorm:"default:false"`
 }

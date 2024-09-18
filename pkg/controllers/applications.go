@@ -18,7 +18,7 @@ import (
 // @Produce json
 // @Success 200 {array} models.SwaggerApplication
 // @Failure 401 {object} ErrorResponse
-// @Router /applications [get]
+// @Router /application [get]
 // @Security ApiKeyAuth
 func GetAllApplications(c *gin.Context) {
 	ip := c.ClientIP()
@@ -48,7 +48,7 @@ func GetAllApplications(c *gin.Context) {
 // @Failure 400 {object} ErrorResponse
 // @Failure 401 {object} ErrorResponse
 // @Failure 404 {object} ErrorResponse
-// @Router /applications/{id} [get]
+// @Router /application/{id} [get]
 // @Security ApiKeyAuth
 func GetApplicationByID(c *gin.Context) {
 	ip := c.ClientIP()
@@ -120,7 +120,7 @@ func AddApplication(c *gin.Context) {
 // @Failure 400 {object} ErrorResponse
 // @Failure 401 {object} ErrorResponse
 // @Failure 404 {object} ErrorResponse
-// @Router /applications/{id} [put]
+// @Router /application/{id} [put]
 // @Security ApiKeyAuth
 func UpdateApplication(c *gin.Context) {
 	ip := c.ClientIP()
@@ -164,7 +164,7 @@ func UpdateApplication(c *gin.Context) {
 // @Failure 400 {object} ErrorResponse
 // @Failure 401 {object} ErrorResponse
 // @Failure 404 {object} ErrorResponse
-// @Router /applications/{id} [delete]
+// @Router /application/{id} [delete]
 // @Security ApiKeyAuth
 func DeleteApplication(c *gin.Context) {
 	ip := c.ClientIP()
@@ -200,7 +200,7 @@ func DeleteApplication(c *gin.Context) {
 // @Success 200 {array} models.SpecialistActivityReport
 // @Failure 500 {object} ErrorResponse
 // @Security ApiKeyAuth
-// @Router /reports/specialist-activity [get]
+// @Router /activity [get]
 func GetSpecialistActivityReport(c *gin.Context) {
 	ip := c.ClientIP()
 	logger.Info.Printf("[controllers.GetSpecialistActivityReport] Client IP: %s - Request to get specialist activity report\n", ip)

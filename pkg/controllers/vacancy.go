@@ -120,7 +120,7 @@ func GetVacancyByID(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param userID query integer true "User ID to check if the user is blocked"
-// @Param vacancy body models.Vacancy true "Vacancy object to be added"
+// @Param vacancy body models.SwagVacancy true "Vacancy object to be added"
 // @Success 201 {object} DefaultResponse "Vacancy created successfully"
 // @Failure 400 {object} ErrorResponse "Bad Request"
 // @Failure 403 {object} ErrorResponse "ErrPermissionDenied"
@@ -161,7 +161,7 @@ func AddVacancy(c *gin.Context) {
 // @Produce json
 // @Param userID query integer true "User ID to check if the user is blocked"
 // @Param vacancyID path integer true "ID of the vacancy to update"
-// @Param vacancy body models.Vacancy true "Updated vacancy object"
+// @Param vacancy body models.SwagVacancy true "Updated vacancy object"
 // @Success 200 {object} DefaultResponse "Vacancy updated successfully"
 // @Failure 400 {object} ErrorResponse "Bad Request"
 // @Failure 404 {object} ErrorResponse "Vacancy Not Found"

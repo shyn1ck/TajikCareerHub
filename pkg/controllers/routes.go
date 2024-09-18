@@ -74,6 +74,12 @@ func InitRoutes() *gin.Engine {
 		applicationGroup.DELETE("/:id", DeleteApplication)
 	}
 
+	ActivityGroup := r.Group("/activity").Use(checkUserAuthentication)
+	{
+		ActivityGroup.GET("/", GetSpecialistActivityReport)
+		ActivityGroup.GET("/vacancy/:id", GetVacancyReport)
+	}
+
 	VacancyCategoryGroup := r.Group("/category").Use(checkUserAuthentication)
 	{
 		VacancyCategoryGroup.GET("/", GetAllCategories)

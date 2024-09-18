@@ -16,7 +16,7 @@ import (
 // @ID create-account
 // @Accept json
 // @Produce json
-// @Param input body models.User true "User registration information"
+// @Param input body models.SwagUser true "User registration information"
 // @Success 201 {object} DefaultResponse "User created successfully"
 // @Failure 400 {object} ErrorResponse "Bad Request"
 // @Failure 500 {object} ErrorResponse "Internal Server Error"
@@ -51,7 +51,7 @@ func SignUp(c *gin.Context) {
 // @ID sign-in-to-account
 // @Accept json
 // @Produce json
-// @Param input body models.User true "User sign-in information"
+// @Param input body models.SwagInUser true "User sign-in information"
 // @Success 200 {object} AccessTokenResponse
 // @Failure 400 {object} ErrorResponse "Bad Request"
 // @Failure 401 {object} ErrorResponse "Unauthorized"
@@ -75,5 +75,3 @@ func SignIn(c *gin.Context) {
 	logger.Info.Printf("Client with IP: %s successfully signed in", ip)
 	c.JSON(http.StatusOK, AccessTokenResponse{accessToken})
 }
-
-// Sign in account

@@ -51,3 +51,12 @@ type VacancyReport struct {
 	VacancyTitle     string `json:"vacancy_title"`
 	ApplicationCount uint   `json:"application_count"`
 }
+
+type SwagVacancy struct {
+	Title             string  `json:"title"`
+	Description       string  `json:"description"`
+	Location          string  `json:"location"`
+	Salary            float64 `json:"salary"`
+	CompanyID         uint    `json:"company_id"`
+	VacancyCategoryID uint    `json:"vacancy_category_id"`
+}

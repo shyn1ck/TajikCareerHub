@@ -20,7 +20,7 @@ import (
 // @Param        location              query   string  false  "Location"
 // @Param        category              query   string  false  "Category"
 // @Param        min-experience-years  query   int     false  "Minimum years of experience"
-// @Success      200  {array}   models.Resume   "Success"  "List of resumes"
+// @Success      200  {array}   models.SwagResume   "Success"  "List of resumes"
 // @Failure      400  {object}  ErrorResponse  "Invalid request"
 // @Failure      500  {object}  ErrorResponse  "Internal server error"
 // @Security     ApiKeyAuth
@@ -68,7 +68,7 @@ func GetAllResumes(c *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Param        id  path    int     true    "Resume ID"
-// @Success      200  {object}  models.Resume  "Success"
+// @Success      200  {object}  models.SwagResume  "Success"
 // @Failure      400  {object}  ErrorResponse  "Invalid ID"
 // @Failure      500  {object}  ErrorResponse  "Internal server error"
 // @Security     ApiKeyAuth
@@ -107,7 +107,7 @@ func GetResumeByID(c *gin.Context) {
 // @Tags         Resumes
 // @Accept       json
 // @Produce      json
-// @Param        resume  body   models.Resume  true  "Resume object"
+// @Param        resume  body   models.SwagResume  true  "Resume object"
 // @Success      201  {object}  DefaultResponse  "Resume created successfully"
 // @Failure      400  {object}  ErrorResponse  "Invalid request"
 // @Failure      500  {object}  ErrorResponse  "Internal server error"
