@@ -49,4 +49,8 @@ var (
 	ErrCategoryAlreadyExist                        = errors.New("ErrCategoryAlreadyExist")
 	ErrNoReportsFound                              = errors.New("ErrNoReportsFound")
 	ErrIDIsNotProvided                             = errors.New("ErrIDIsNotProvided")
+	ErrInvalidToken                                = errors.New("ErrInvalidToken")
+	ErrUnexpectedSigningMethod                     = errors.New("ErrUnexpectedSigningMethod")
+	ErrTokenParseError                             = errors.New("ErrTokenParseError")
+	ErrAuthorizationHeaderMissing                  = errors.New("ErrAuthorizationHeaderMissing")
 )

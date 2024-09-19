@@ -36,14 +36,14 @@ func GetUserByUsername(username string) (*models.User, error) {
 	return user, nil
 }
 
-func CheckUserExists(username, email string) (bool, bool, error) {
-	usernameExists, emailExists, err := repository.UserExists(username, email)
-	if err != nil {
-		logger.Error.Printf("[service.CheckUserExists] error checking user existence: %v\n", err)
-		return false, false, err
-	}
-	return usernameExists, emailExists, nil
-}
+//func CheckUserExists(username, email string) (bool, bool, error) {
+//	usernameExists, emailExists, err := repository.UserExists(username, email)
+//	if err != nil {
+//		logger.Error.Printf("[service.CheckUserExists] error checking user existence: %v\n", err)
+//		return false, false, err
+//	}
+//	return usernameExists, emailExists, nil
+//}
 
 func CreateUser(user models.User) (uint, error) {
 	if err := user.ValidateCredentials(); err != nil {
@@ -140,4 +140,21 @@ func UnblockUser(id uint) error {
 		logger.Error.Printf("[service.UnblockUser] Failed to unblock user with ID %v: %v", id, err)
 	}
 	return err
+}
+
+func GetSpecialistActivityReportByUser(userID uint) ([]models.SpecialistActivityReport, error) {
+	err := checkUserBlocked(userID)
+	if err != nil {
+		return nil, errs.ErrUserBlocked
+	}
+
+	reports, err := repository.GetSpecialistActivityReportByUser(userID)
+	if err != nil {
+		return nil, errs.ErrUsersNotFound
+	}
+
+	if len(reports) == 0 {
+		return nil, errs.ErrNoReportsFound
+	}
+	return reports, nil
 }

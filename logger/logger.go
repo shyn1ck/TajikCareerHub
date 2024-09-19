@@ -66,7 +66,6 @@ func Init() error {
 
 	gin.DefaultWriter = io.MultiWriter(lumberLogInfo)
 
-	// Инициализация глобальных логгеров...
 	Info = log.New(gin.DefaultWriter, "INFO: ", log.Ldate|log.Ltime|log.Lshortfile)
 	Error = log.New(lumberLogError, "ERROR: ", log.Ldate|log.Ltime|log.Lshortfile)
 	Warning = log.New(lumberLogWarning, "WARNING: ", log.Ldate|log.Ltime|log.Lshortfile)

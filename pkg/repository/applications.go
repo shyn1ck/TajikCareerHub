@@ -6,9 +6,8 @@ import (
 	"TajikCareerHub/models"
 )
 
-func GetAllApplications() ([]models.Application, error) {
-	var applications []models.Application
-	err := db.GetDBConn().
+func GetAllApplications() (applications []models.Application, err error) {
+	err = db.GetDBConn().
 		Preload("User").
 		Preload("Vacancy").
 		Preload("Resume").
@@ -16,14 +15,13 @@ func GetAllApplications() ([]models.Application, error) {
 		Find(&applications).Error
 	if err != nil {
 		logger.Error.Printf("[repository.GetAllApplications] Error fetching applications: %v", err)
-		return nil, err
+		return nil, TranslateError(err)
 	}
 	return applications, nil
 }
 
-func GetApplicationByID(id uint) (models.Application, error) {
-	var application models.Application
-	err := db.GetDBConn().
+func GetApplicationByID(id uint) (application models.Application, err error) {
+	err = db.GetDBConn().
 		Preload("User").
 		Preload("Vacancy").
 		Preload("Resume").
@@ -36,7 +34,7 @@ func GetApplicationByID(id uint) (models.Application, error) {
 	return application, nil
 }
 
-func AddApplication(application models.Application) error {
+func AddApplication(application models.Application) (err error) {
 	if err := db.GetDBConn().Create(&application).Error; err != nil {
 		logger.Error.Printf("[repository.AddApplication]: Failed to add application, error: %v\n", err)
 		return TranslateError(err)
@@ -44,8 +42,8 @@ func AddApplication(application models.Application) error {
 	return nil
 }
 
-func UpdateApplication(applicationID uint, application models.Application) error {
-	err := db.GetDBConn().
+func UpdateApplication(applicationID uint, application models.Application) (err error) {
+	err = db.GetDBConn().
 		Model(&models.Application{}).
 		Where("id = ? AND deleted_at = false", applicationID).
 		Updates(application).Error
@@ -56,8 +54,8 @@ func UpdateApplication(applicationID uint, application models.Application) error
 	return nil
 }
 
-func DeleteApplication(id uint) error {
-	err := db.GetDBConn().
+func DeleteApplication(id uint) (err error) {
+	err = db.GetDBConn().
 		Model(&models.Application{}).
 		Where("id = ?", id).
 		Update("deleted_at", true).
@@ -69,43 +67,12 @@ func DeleteApplication(id uint) error {
 	return nil
 }
 
-func GetSpecialistActivityReport() (reports []models.SpecialistActivityReport, err error) {
-	err = db.GetDBConn().
-		Table("users").
-		Select("users.id as user_id, users.full_name as user_name, COUNT(applications.id) as application_count").
-		Joins("left join applications on applications.user_id = users.id").
-		Where("applications.deleted_at = false").
-		Group("users.id").
-		Scan(&reports).Error
-
-	if err != nil {
-		return nil, err
-	}
-
-	return reports, nil
-}
-
-func UpdateApplicationStatus(applicationID uint, statusID uint) error {
-	err := db.GetDBConn().Model(&models.Application{}).
+func UpdateApplicationStatus(applicationID uint, statusID uint) (err error) {
+	err = db.GetDBConn().Model(&models.Application{}).
 		Where("id = ? AND deleted_at = false", applicationID).
 		Update("status_id", statusID).Error
 	if err != nil {
-		return err
+		return TranslateError(err)
 	}
 	return nil
-}
-
-func GetSpecialistActivityReportByUser(userID uint) (reports []models.SpecialistActivityReport, err error) {
-	err = db.GetDBConn().
-		Table("users").
-		Select("users.id as user_id, users.full_name as user_name, COUNT(applications.id) as application_count").
-		Joins("left join applications on applications.user_id = users.id").
-		Where("applications.deleted_at = false AND users.id = ?", userID).
-		Group("users.id").
-		Scan(&reports).Error
-	if err != nil {
-		logger.Error.Printf("[repository.GetSpecialistActivityReportByUser] Error retrieving specialist activity report: %v", err)
-		return nil, err
-	}
-	return reports, nil
 }

@@ -76,7 +76,7 @@ func InitRoutes() *gin.Engine {
 
 	activityGroup := r.Group("/activity").Use(checkUserAuthentication)
 	{
-		activityGroup.GET("/:user_id", GetSpecialistActivityReportByUser)
+		activityGroup.GET("/", GetSpecialistActivityReportByUser)
 		activityGroup.GET("/vacancy/:id", GetVacancyReportByID)
 		activityGroup.GET("/resume/:id", GetResumeReportByID)
 	}

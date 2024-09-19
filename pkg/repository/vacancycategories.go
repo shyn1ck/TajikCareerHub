@@ -8,21 +8,19 @@ import (
 	"gorm.io/gorm"
 )
 
-func GetAllCategories() ([]models.VacancyCategory, error) {
-	var categories []models.VacancyCategory
-	err := db.GetDBConn().
+func GetAllCategories() (categories []models.VacancyCategory, err error) {
+	err = db.GetDBConn().
 		Where("deleted_at = ?", false).
 		Find(&categories).Error
 	if err != nil {
 		logger.Error.Printf("[repository.GetAllCategories]: Error retrieving all Categories. Error: %v\n", err)
-		return nil, err
+		return nil, TranslateError(err)
 	}
 	return categories, nil
 }
 
-func GetCategoryByID(id uint) (models.VacancyCategory, error) {
-	var category models.VacancyCategory
-	err := db.GetDBConn().
+func GetCategoryByID(id uint) (category models.VacancyCategory, err error) {
+	err = db.GetDBConn().
 		Where("id = ? AND deleted_at = false", id).
 		First(&category).Error
 	if err != nil {
@@ -32,8 +30,8 @@ func GetCategoryByID(id uint) (models.VacancyCategory, error) {
 	return category, nil
 }
 
-func AddCategory(category models.VacancyCategory) error {
-	err := db.GetDBConn().Create(&category).Error
+func AddCategory(category models.VacancyCategory) (err error) {
+	err = db.GetDBConn().Create(&category).Error
 	if err != nil {
 		logger.Error.Printf("[repository.AddCategory]: Failed to add category. Error: %v\n", err)
 		return TranslateError(err)
@@ -41,8 +39,8 @@ func AddCategory(category models.VacancyCategory) error {
 	return nil
 }
 
-func UpdateCategory(category models.VacancyCategory) error {
-	err := db.GetDBConn().
+func UpdateCategory(category models.VacancyCategory) (err error) {
+	err = db.GetDBConn().
 		Model(&models.VacancyCategory{}).
 		Where("id = ? AND deleted_at = false", category.ID).
 		Save(&category).Error
@@ -53,8 +51,8 @@ func UpdateCategory(category models.VacancyCategory) error {
 	return nil
 }
 
-func DeleteCategory(id uint) error {
-	err := db.GetDBConn().
+func DeleteCategory(id uint) (err error) {
+	err = db.GetDBConn().
 		Model(&models.VacancyCategory{}).
 		Where("id = ?", id).
 		Update("deleted_at", true).Error

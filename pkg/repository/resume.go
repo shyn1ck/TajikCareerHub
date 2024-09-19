@@ -8,42 +8,34 @@ import (
 	"gorm.io/gorm"
 )
 
-func GetAllResumes(search string, minExperienceYears int, location string, category string) ([]models.Resume, error) {
-	var resumes []models.Resume
-
+func GetAllResumes(search string, minExperienceYears int, location string, category string) (resumes []models.Resume, err error) {
 	query := db.GetDBConn().
 		Preload("VacancyCategory").
 		Model(&models.Resume{}).
 		Where("deleted_at = false")
-
 	if search != "" {
 		query = query.Where("summary ILIKE ?", "%"+search+"%")
 	}
-
 	if location != "" {
 		query = query.Where("location = ?", location)
 	}
-
 	if category != "" {
 		query = query.Joins("JOIN vacancy_categories ON vacancy_categories.id = resumes.vacancy_category_id").
 			Where("vacancy_categories.name = ?", category)
 	}
-
 	if minExperienceYears > 0 {
 		query = query.Where("experience_years >= ?", minExperienceYears)
 	}
-
-	err := query.Find(&resumes).Error
+	err = query.Find(&resumes).Error
 	if err != nil {
 		logger.Error.Printf("[repository.GetAllResumes] Error fetching resumes: %v", err)
-		return nil, err
+		return nil, TranslateError(err)
 	}
 	return resumes, nil
 }
 
-func GetResumeByID(id uint) (models.Resume, error) {
-	var resume models.Resume
-	err := db.GetDBConn().
+func GetResumeByID(id uint) (resume models.Resume, err error) {
+	err = db.GetDBConn().
 		Where("id = ?", id).
 		Where("deleted_at = false").
 		First(&resume).Error
@@ -54,7 +46,7 @@ func GetResumeByID(id uint) (models.Resume, error) {
 	return resume, nil
 }
 
-func AddResume(resume models.Resume) error {
+func AddResume(resume models.Resume) (err error) {
 	if err := db.GetDBConn().Create(&resume).Error; err != nil {
 		logger.Error.Printf("[repository.AddResume]: Failed to add resume, error: %v\n", err)
 		return TranslateError(err)
@@ -62,8 +54,8 @@ func AddResume(resume models.Resume) error {
 	return nil
 }
 
-func UpdateResume(resumeID uint, resume models.Resume) error {
-	err := db.GetDBConn().
+func UpdateResume(resumeID uint, resume models.Resume) (err error) {
+	err = db.GetDBConn().
 		Model(&models.Resume{}).
 		Where("id = ? AND deleted_at = false", resumeID).
 		Updates(resume).Error
@@ -74,8 +66,8 @@ func UpdateResume(resumeID uint, resume models.Resume) error {
 	return nil
 }
 
-func DeleteResume(id uint) error {
-	err := db.GetDBConn().
+func DeleteResume(id uint) (err error) {
+	err = db.GetDBConn().
 		Model(&models.Resume{}).
 		Where("id = ?", id).
 		Update("deleted_at", true).
@@ -87,21 +79,12 @@ func DeleteResume(id uint) error {
 	return nil
 }
 
-func BlockResume(id uint) error {
-	return updateBlockStatus(id, true)
-}
-
-func UnblockResume(id uint) error {
-	return updateBlockStatus(id, false)
-}
-
-func RecordResumeView(userID uint, resumeID uint) error {
+func RecordResumeView(userID uint, resumeID uint) (err error) {
 	var resumeView models.ResumeView
-	err := db.GetDBConn().
+	err = db.GetDBConn().
 		Model(&models.ResumeView{}).
 		Where("user_id = ? AND resume_id = ?", userID, resumeID).
 		First(&resumeView).Error
-
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			err = db.GetDBConn().
@@ -112,23 +95,21 @@ func RecordResumeView(userID uint, resumeID uint) error {
 				}).Error
 			if err != nil {
 				logger.Error.Printf("[repository.RecordResumeView] Error creating view record for resume ID %v. Error: %v\n", resumeID, err)
-				return err
+				return TranslateError(err)
 			}
 			logger.Info.Printf("[repository.RecordResumeView] Created new view record for resume ID %v by user ID %v.\n", resumeID, userID)
 		} else {
 			logger.Error.Printf("[repository.RecordResumeView] Error checking view record for resume ID %v. Error: %v\n", resumeID, err)
-			return err
+			return TranslateError(err)
 		}
 	} else {
 		logger.Info.Printf("[repository.RecordResumeView] User ID %v already viewed resume ID %v.\n", userID, resumeID)
 	}
-
 	return nil
 }
 
 func GetResumeReportByID(resumeID uint) (*models.ResumeReport, error) {
 	var report models.ResumeReport
-
 	err := db.GetDBConn().
 		Table("resumes").
 		Select(`
@@ -141,12 +122,32 @@ func GetResumeReportByID(resumeID uint) (*models.ResumeReport, error) {
 		Where("resumes.id = ? AND resumes.deleted_at = false", resumeID).
 		Group("resumes.id").
 		Scan(&report).Error
-
 	if err != nil {
 		logger.Error.Printf("[repository.GetResumeReportByID] Error retrieving resume report: %v", err)
-		return nil, err
+		return nil, TranslateError(err)
 	}
 
 	logger.Info.Printf("[repository.GetResumeReportByID] Successfully retrieved data: %v", report)
 	return &report, nil
+}
+
+func updateBlockStatusResume(id uint, isBlocked bool) (err error) {
+	err = db.GetDBConn().Model(&models.Resume{}).Where("id = ?", id).Update("is_blocked", isBlocked).Error
+	if err != nil {
+		action := "block"
+		if !isBlocked {
+			action = "unblock"
+		}
+		logger.Error.Printf("[repository.updateBlockStatus] Failed to %s user with ID %v: %v\n", action, id, err)
+		return TranslateError(err)
+	}
+	return nil
+}
+
+func BlockResume(id uint) (err error) {
+	return updateBlockStatusResume(id, true)
+}
+
+func UnblockResume(id uint) (err error) {
+	return updateBlockStatusResume(id, false)
 }

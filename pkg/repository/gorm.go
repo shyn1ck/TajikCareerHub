@@ -4,67 +4,66 @@ import (
 	"TajikCareerHub/errs"
 	"TajikCareerHub/logger"
 	"errors"
+	"github.com/lib/pq"
 	"gorm.io/gorm"
-)
-
-import (
 	"strings"
 )
 
 func TranslateError(err error) error {
+	if err == nil {
+		return nil
+	}
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		logger.Warning.Printf("Record not found error: %v...", err)
 		return errs.ErrRecordNotFound
 	}
 
-	// Обработка ошибки нарушения уникальности (SQLSTATE 23505)
-	if strings.Contains(err.Error(), "duplicate key value violates unique constraint") {
-		if strings.Contains(err.Error(), "uni_users_user_name") {
-			logger.Warning.Printf("Username already exists error: %v...", err)
-			return errs.ErrUsernameExists
-		}
-		if strings.Contains(err.Error(), "uni_users_email") {
-			logger.Warning.Printf("Email already exists error: %v...", err)
-			return errs.ErrEmailExists
-		}
+	if errors.Is(err, gorm.ErrDuplicatedKey) {
+		logger.Warning.Printf("Duplicated key error: %v...", err)
+		return errs.ErrUniqueViolation
 	}
 
-	// Обработка ошибки нарушения внешнего ключа (SQLSTATE 23503)
-	if strings.Contains(err.Error(), "violates foreign key constraint") {
+	if errors.Is(err, gorm.ErrForeignKeyViolated) {
 		logger.Warning.Printf("Foreign key violation: %v...", err)
 		return errs.ErrForeignKeyViolation
 	}
 
-	// Обработка ошибки нарушения NOT NULL (SQLSTATE 23502)
-	if strings.Contains(err.Error(), "null value in column") {
-		logger.Warning.Printf("Not null constraint violation: %v...", err)
-		return errs.ErrNotNullViolation
-	}
+	var pqErr *pq.Error
+	if errors.As(err, &pqErr) {
+		switch pqErr.Code {
+		case "23505":
+			if strings.Contains(pqErr.Message, "uni_users_user_name") {
+				logger.Warning.Printf("Username already exists error: %v...", err)
+				return errs.ErrUsernameExists
+			}
+			if strings.Contains(pqErr.Message, "uni_users_email") {
+				logger.Warning.Printf("Email already exists error: %v...", err)
+				return errs.ErrEmailExists
+			}
+			logger.Warning.Printf("Unique constraint violation: %v...", err)
+			return errs.ErrUniqueViolation
 
-	// Обработка ошибки превышения длины строки (SQLSTATE 22001)
-	if strings.Contains(err.Error(), "value too long for type") {
-		logger.Warning.Printf("String too long error: %v...", err)
-		return errs.ErrStringTooLong
-	}
+		case "23503":
+			logger.Warning.Printf("Foreign key violation: %v...", err)
+			return errs.ErrForeignKeyViolation
 
-	// Обработка ошибки нарушения CHECK constraint (SQLSTATE 23514)
-	if strings.Contains(err.Error(), "violates check constraint") {
-		logger.Warning.Printf("Check constraint violation: %v...", err)
-		return errs.ErrCheckConstraintViolation
-	}
+		case "23502":
+			logger.Warning.Printf("Not null constraint violation: %v...", err)
+			return errs.ErrNotNullViolation
 
-	// Обработка ошибки нарушения уникальности (SQLSTATE 23505)
-	if strings.Contains(err.Error(), "duplicate key value violates unique constraint") {
-		logger.Warning.Printf("Unique constraint violation: %v...", err)
-		return errs.ErrUniqueViolation
-	}
+		case "22001":
+			logger.Warning.Printf("String too long error: %v...", err)
+			return errs.ErrStringTooLong
 
-	// Обработка других общих ошибок
-	if strings.Contains(err.Error(), "deadlock detected") {
-		logger.Warning.Printf("Deadlock detected: %v...", err)
-		return errs.ErrDeadlockDetected
-	}
+		case "23514":
+			logger.Warning.Printf("Check constraint violation: %v...", err)
+			return errs.ErrCheckConstraintViolation
 
-	logger.Error.Printf("Unhandled error: %v...", err)
-	return errs.ErrSomethingWentWrong
+		case "40P01":
+			logger.Warning.Printf("Deadlock detected: %v...", err)
+			return errs.ErrDeadlockDetected
+		}
+	}
+	logger.Error.Printf("Standard error occurred: %v...", err)
+	return err
 }

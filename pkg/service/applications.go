@@ -9,7 +9,7 @@ import (
 func GetAllApplications(userID uint) ([]models.Application, error) {
 	err := checkUserBlocked(userID)
 	if err != nil {
-		return nil, err
+		return nil, errs.ErrUserBlocked
 	}
 	applications, err := repository.GetAllApplications()
 	if err != nil {
@@ -82,22 +82,4 @@ func UpdateApplicationStatus(applicationID uint, statusID uint) error {
 		return err
 	}
 	return nil
-}
-
-func GetSpecialistActivityReportByUser(userID uint) ([]models.SpecialistActivityReport, error) {
-	err := checkUserBlocked(userID)
-	if err != nil {
-		return nil, errs.ErrUserBlocked
-	}
-
-	reports, err := repository.GetSpecialistActivityReportByUser(userID)
-	if err != nil {
-		return nil, errs.ErrUsersNotFound
-	}
-
-	if len(reports) == 0 {
-		return nil, errs.ErrNoReportsFound
-	}
-
-	return reports, nil
 }

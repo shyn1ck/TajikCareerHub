@@ -22,12 +22,10 @@ func GetAllResumes(search string, minExperienceYears int, location string, categ
 		}
 		filteredResumes = append(filteredResumes, resume)
 	}
-
 	return filteredResumes, nil
 }
 
 func GetResumeByID(id uint, userID uint) (models.Resume, error) {
-	// Проверка, заблокирован ли пользователь
 	if err := checkUserBlocked(userID); err != nil {
 		return models.Resume{}, err
 	}

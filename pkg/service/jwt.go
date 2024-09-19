@@ -2,8 +2,7 @@ package service
 
 import (
 	"TajikCareerHub/configs"
-	"errors"
-	"fmt"
+	"TajikCareerHub/errs"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"os"
@@ -36,25 +35,25 @@ func GenerateToken(userID uint, username, role string) (string, error) {
 func ParseToken(tokenString string) (*CustomClaims, error) {
 	token, err := jwt.ParseWithClaims(tokenString, &CustomClaims{}, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+			return nil, errs.ErrUnexpectedSigningMethod
 		}
 		return []byte(os.Getenv("JWT_SECRET_KEY")), nil
 	})
 
 	if err != nil {
-		return nil, err
+		return nil, errs.ErrTokenParseError
 	}
 
 	if claims, ok := token.Claims.(*CustomClaims); ok && token.Valid {
 		return claims, nil
 	}
-	return nil, fmt.Errorf("invalid token")
+	return nil, errs.ErrInvalidToken
 }
 
 func GetUserIDFromToken(c *gin.Context) (uint, error) {
 	tokenString := c.GetHeader("Authorization")
 	if tokenString == "" {
-		return 0, errors.New("authorization header is missing")
+		return 0, errs.ErrAuthorizationHeaderMissing
 	}
 	tokenString = strings.TrimPrefix(tokenString, "Bearer ")
 	claims, err := ParseToken(tokenString)
@@ -67,7 +66,7 @@ func GetUserIDFromToken(c *gin.Context) (uint, error) {
 func GetRoleFromToken(c *gin.Context) (string, error) {
 	tokenString := c.GetHeader("Authorization")
 	if tokenString == "" {
-		return "", errors.New("authorization header is missing")
+		return "", errs.ErrAuthorizationHeaderMissing
 	}
 	tokenString = strings.TrimPrefix(tokenString, "Bearer ")
 	claims, err := ParseToken(tokenString)
@@ -80,7 +79,7 @@ func GetRoleFromToken(c *gin.Context) (string, error) {
 func GetUsernameFromToken(c *gin.Context) (string, error) {
 	tokenString := c.GetHeader("Authorization")
 	if tokenString == "" {
-		return "", errors.New("authorization header is missing")
+		return "", errs.ErrAuthorizationHeaderMissing
 	}
 	tokenString = strings.TrimPrefix(tokenString, "Bearer ")
 	claims, err := ParseToken(tokenString)

@@ -41,7 +41,6 @@ func Migrate() error {
 		}
 		logger.Info.Println("Initial application statuses inserted successfully")
 	}
-
 	logger.Info.Println("Database migration completed successfully")
 	return nil
 }

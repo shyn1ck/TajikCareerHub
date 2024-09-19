@@ -316,3 +316,35 @@ func UnblockUser(c *gin.Context) {
 	logger.Info.Printf("[controllers.UnblockUserController] Client IP: %s - Successfully unblocked user with ID %d.\n", ip, id)
 	c.JSON(http.StatusOK, NewDefaultResponse("User unblocked successfully."))
 }
+
+// GetSpecialistActivityReportByUser godoc
+// @Summary Get specialist activity report for a specific user
+// @Tags Reports
+// @Description Get a report of how many vacancies a specific specialist has applied for
+// @ID get-specialist-activity-report-by-user
+// @Accept json
+// @Produce json
+// @Success 200 {array} models.SpecialistActivityReport
+// @Failure 400 {object} ErrorResponse "Invalid input"
+// @Failure 403 {object} ErrorResponse "Forbidden access"
+// @Failure 500 {object} ErrorResponse
+// @Security ApiKeyAuth
+// @Router /activity [get]
+func GetSpecialistActivityReportByUser(c *gin.Context) {
+	ip := c.ClientIP()
+	logger.Info.Printf("[controllers.GetSpecialistActivityReportByUser] Client IP: %s - Request to get specialist activity report for user\n", ip)
+	userID, err := service.GetUserIDFromToken(c)
+	if err != nil {
+		handleError(c, err)
+		return
+	}
+
+	reports, err := service.GetSpecialistActivityReportByUser(userID)
+	if err != nil {
+		handleError(c, err)
+		return
+	}
+
+	logger.Info.Printf("[controllers.GetSpecialistActivityReportByUser] Client IP: %s - Successfully retrieved specialist activity report for user\n", ip)
+	c.JSON(http.StatusOK, reports)
+}

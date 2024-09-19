@@ -8,8 +8,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func GetAllVacancies(search string, minSalary int, maxSalary int, location string, category string, sort string) ([]models.Vacancy, error) {
-	var vacancies []models.Vacancy
+func GetAllVacancies(search string, minSalary int, maxSalary int, location string, category string, sort string) (vacancies []models.Vacancy, err error) {
 	query := db.GetDBConn().
 		Preload("Company").
 		Preload("VacancyCategory").
@@ -18,11 +17,9 @@ func GetAllVacancies(search string, minSalary int, maxSalary int, location strin
 		}).
 		Model(&models.Vacancy{}).
 		Where("deleted_at = false")
-
 	if search != "" {
 		query = query.Where("title ILIKE ?", "%"+search+"%")
 	}
-
 	if minSalary > 0 && maxSalary > 0 {
 		query = query.Where("salary BETWEEN ? AND ?", minSalary, maxSalary)
 	} else if minSalary > 0 {
@@ -30,28 +27,23 @@ func GetAllVacancies(search string, minSalary int, maxSalary int, location strin
 	} else if maxSalary > 0 {
 		query = query.Where("salary <= ?", maxSalary)
 	}
-
 	if location != "" {
 		query = query.Where("location = ?", location)
 	}
-
 	if category != "" {
 		query = query.Joins("JOIN vacancy_categories ON vacancy_categories.id = vacancies.vacancy_category_id").
 			Where("vacancy_categories.name = ?", category)
 	}
-
 	if sort == "asc" {
 		query = query.Order("salary ASC")
 	} else if sort == "desc" {
 		query = query.Order("salary DESC")
 	}
-
-	err := query.Find(&vacancies).Error
+	err = query.Find(&vacancies).Error
 	if err != nil {
 		logger.Error.Printf("[repository.GetAllVacancies] Error fetching vacancies: %v", err)
-		return nil, err
+		return nil, TranslateError(err)
 	}
-
 	return vacancies, nil
 }
 
@@ -62,28 +54,26 @@ func GetVacancyByID(id uint) (vacancy models.Vacancy, err error) {
 		Preload("User", func(db *gorm.DB) *gorm.DB {
 			return db.Select("id", "full_name", "email")
 		}).
-		Where("id = ?", id).
-		Where("deleted_at = false").
+		Where("id = ? AND deleted_at = false", id).
 		First(&vacancy).Error
 
 	if err != nil {
 		logger.Error.Printf("[repository.GetVacancyByID] Error retrieving vacancy with ID %v. Error: %v\n", id, err)
 		return models.Vacancy{}, TranslateError(err)
 	}
-
 	return vacancy, nil
 }
 
-func AddVacancy(vacancy models.Vacancy) error {
-	if err := db.GetDBConn().Create(&vacancy).Error; err != nil {
+func AddVacancy(vacancy models.Vacancy) (err error) {
+	if err = db.GetDBConn().Create(&vacancy).Error; err != nil {
 		logger.Error.Printf("[repository.AddVacancy]: Failed to add vacancy, error: %v\n", err)
 		return TranslateError(err)
 	}
 	return nil
 }
 
-func UpdateVacancy(vacancyID uint, vacancy models.Vacancy) error {
-	err := db.GetDBConn().Model(&models.Vacancy{}).Where("id = ? AND deleted_at = false", vacancyID).Updates(vacancy).Error
+func UpdateVacancy(vacancyID uint, vacancy models.Vacancy) (err error) {
+	err = db.GetDBConn().Model(&models.Vacancy{}).Where("id = ? AND deleted_at = false", vacancyID).Updates(vacancy).Error
 	if err != nil {
 		logger.Error.Printf("[repository.UpdateVacancy]: Failed to update vacancy with ID %v. Error: %v\n", vacancyID, err)
 		return TranslateError(err)
@@ -91,8 +81,8 @@ func UpdateVacancy(vacancyID uint, vacancy models.Vacancy) error {
 	return nil
 }
 
-func DeleteVacancy(vacancyID uint) error {
-	err := db.GetDBConn().Model(&models.Vacancy{}).Where("id = ?", vacancyID).Update("deleted_at", true).Error
+func DeleteVacancy(vacancyID uint) (err error) {
+	err = db.GetDBConn().Model(&models.Vacancy{}).Where("id = ?", vacancyID).Update("deleted_at", true).Error
 	if err != nil {
 		logger.Error.Printf("[repository.DeleteVacancy] Failed to soft delete vacancy with ID %v. Error: %v\n", vacancyID, err)
 		return TranslateError(err)
@@ -116,19 +106,18 @@ func GetVacancyReportByID(vacancyID uint) (*models.VacancyReport, error) {
 		Scan(&report).Error
 	if err != nil {
 		logger.Error.Printf("[repository.GetVacancyReportByID] Error retrieving vacancy report: %v", err)
-		return nil, err
+		return nil, TranslateError(err)
 	}
 	logger.Info.Printf("[repository.GetVacancyReportByID] Successfully retrieved data: %v", report)
 	return &report, nil
 }
 
-func RecordVacancyView(userID uint, vacancyID uint) error {
+func RecordVacancyView(userID uint, vacancyID uint) (err error) {
 	var vacancyView models.VacancyView
-	err := db.GetDBConn().
+	err = db.GetDBConn().
 		Model(&models.VacancyView{}).
 		Where("user_id = ? AND vacancy_id = ?", userID, vacancyID).
 		First(&vacancyView).Error
-
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			err = db.GetDBConn().
@@ -139,15 +128,14 @@ func RecordVacancyView(userID uint, vacancyID uint) error {
 				}).Error
 			if err != nil {
 				logger.Error.Printf("[repository.RecordView] Error creating view record for vacancy ID %v. Error: %v\n", vacancyID, err)
-				return err
+				return TranslateError(err)
 			}
 		} else {
 			logger.Error.Printf("[repository.RecordView] Error checking view record for vacancy ID %v. Error: %v\n", vacancyID, err)
-			return err
+			return TranslateError(err)
 		}
 	} else {
 		logger.Info.Printf("[repository.RecordView] User ID %v already viewed vacancy ID %v.\n", userID, vacancyID)
 	}
-
 	return nil
 }
