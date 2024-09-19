@@ -4,6 +4,8 @@ import (
 	"TajikCareerHub/db"
 	"TajikCareerHub/logger"
 	"TajikCareerHub/models"
+	"errors"
+	"gorm.io/gorm"
 )
 
 func GetAllResumes(search string, minExperienceYears int, location string, category string) ([]models.Resume, error) {
@@ -91,4 +93,60 @@ func BlockResume(id uint) error {
 
 func UnblockResume(id uint) error {
 	return updateBlockStatus(id, false)
+}
+
+func RecordResumeView(userID uint, resumeID uint) error {
+	var resumeView models.ResumeView
+	err := db.GetDBConn().
+		Model(&models.ResumeView{}).
+		Where("user_id = ? AND resume_id = ?", userID, resumeID).
+		First(&resumeView).Error
+
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			err = db.GetDBConn().
+				Create(&models.ResumeView{
+					UserID:   userID,
+					ResumeID: resumeID,
+					Count:    1,
+				}).Error
+			if err != nil {
+				logger.Error.Printf("[repository.RecordResumeView] Error creating view record for resume ID %v. Error: %v\n", resumeID, err)
+				return err
+			}
+			logger.Info.Printf("[repository.RecordResumeView] Created new view record for resume ID %v by user ID %v.\n", resumeID, userID)
+		} else {
+			logger.Error.Printf("[repository.RecordResumeView] Error checking view record for resume ID %v. Error: %v\n", resumeID, err)
+			return err
+		}
+	} else {
+		logger.Info.Printf("[repository.RecordResumeView] User ID %v already viewed resume ID %v.\n", userID, resumeID)
+	}
+
+	return nil
+}
+
+func GetResumeReportByID(resumeID uint) (*models.ResumeReport, error) {
+	var report models.ResumeReport
+
+	err := db.GetDBConn().
+		Table("resumes").
+		Select(`
+			resumes.id AS resume_id, 
+			resumes.title AS resume_title, 
+			COUNT(DISTINCT resume_views.user_id) AS views_count, 
+			COUNT(DISTINCT applications.user_id) AS applications_count`).
+		Joins("LEFT JOIN resume_views ON resume_views.resume_id = resumes.id").
+		Joins("LEFT JOIN applications ON applications.resume_id = resumes.id").
+		Where("resumes.id = ? AND resumes.deleted_at = false", resumeID).
+		Group("resumes.id").
+		Scan(&report).Error
+
+	if err != nil {
+		logger.Error.Printf("[repository.GetResumeReportByID] Error retrieving resume report: %v", err)
+		return nil, err
+	}
+
+	logger.Info.Printf("[repository.GetResumeReportByID] Successfully retrieved data: %v", report)
+	return &report, nil
 }

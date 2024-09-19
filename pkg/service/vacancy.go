@@ -33,13 +33,20 @@ func GetVacancyByID(userID uint, vacancyID uint) (models.Vacancy, error) {
 	if err := checkUserBlocked(userID); err != nil {
 		return models.Vacancy{}, err
 	}
+
 	vacancy, err := repository.GetVacancyByID(vacancyID)
 	if err != nil {
 		return models.Vacancy{}, err
 	}
+
 	if err := checkVacancyBlocked(vacancyID); err != nil {
 		return models.Vacancy{}, err
 	}
+
+	if err := repository.RecordVacancyView(userID, vacancyID); err != nil {
+		return models.Vacancy{}, err
+	}
+
 	return vacancy, nil
 }
 
@@ -101,14 +108,35 @@ func DeleteVacancy(userID uint, vacancyID uint) error {
 	return repository.DeleteVacancy(vacancyID)
 }
 
-func GetVacancyReport(userID uint) ([]models.VacancyReport, error) {
-	err := checkUserBlocked(userID)
-	if err != nil {
+func GetVacancyReport(userID uint) (reports []models.VacancyReport, err error) {
+
+	if err := checkUserBlocked(userID); err != nil {
 		return nil, errs.ErrUserBlocked
 	}
-	reports, err := repository.GetVacancyReport()
+	reports, err = repository.GetVacancyReport()
 	if err != nil {
 		return nil, err
 	}
+	if len(reports) == 0 {
+		return nil, errs.ErrNoReportsFound
+	}
+
 	return reports, nil
+}
+
+func GetVacancyReportByID(vacancyID uint) (*models.VacancyReport, error) {
+	err := checkVacancyBlocked(vacancyID)
+	if err != nil {
+		return nil, errs.ErrVacancyBlocked
+	}
+	report, err := repository.GetVacancyReportByID(vacancyID)
+	if err != nil {
+		return nil, err
+	}
+
+	if report == nil {
+		return nil, errs.ErrNoReportsFound
+	}
+
+	return report, nil
 }

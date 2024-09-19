@@ -20,6 +20,7 @@ func handleError(c *gin.Context, err error) {
 		errors.Is(err, errs.ErrValidationFailed),
 		errors.Is(err, errs.ErrIDIsNotCorrect),
 		errors.Is(err, errs.ErrInvalidRole),
+		errors.Is(err, errs.ErrIDIsNotProvided),
 		errors.Is(err, errs.ErrIncorrectPasswordLength):
 		statusCode = http.StatusBadRequest
 		errorResponse = NewErrorResponse(err.Error())

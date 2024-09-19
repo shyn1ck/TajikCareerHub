@@ -16,7 +16,9 @@ func Migrate() error {
 		&models.Application{},
 		&models.Company{},
 		&models.VacancyCategory{},
+		&models.ResumeView{},
 		&models.Resume{},
+		&models.VacancyView{},
 		&models.ApplicationStatus{},
 	)
 	if err != nil {

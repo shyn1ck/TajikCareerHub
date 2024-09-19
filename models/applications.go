@@ -19,8 +19,8 @@ type ApplicationStatus struct {
 }
 
 type SpecialistActivityReport struct {
-	UserID           uint   `json:"user_id"`
-	UserName         string `json:"user_name"`
+	UserID           uint   `json:"-"`
+	UserName         string `json:"full_name"`
 	ApplicationCount uint   `json:"application_count"`
 }
 
@@ -29,4 +29,13 @@ type SwaggerApplication struct {
 	VacancyID uint `json:"vacancy_id" example:"1"`
 	ResumeID  uint `json:"resume_id" example:"1"`
 	StatusID  uint `json:"status_id" example:"1"`
+}
+
+type ResumeView struct {
+	ID       uint   `gorm:"primaryKey"`
+	UserID   uint   `json:"user_id"`
+	ResumeID uint   `json:"resume_id"`
+	User     User   `gorm:"foreignKey:UserID"`
+	Resume   Resume `gorm:"foreignKey:ResumeID"`
+	Count    int    `json:"count" gorm:"default:0"`
 }

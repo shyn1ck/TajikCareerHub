@@ -27,13 +27,20 @@ func GetAllResumes(search string, minExperienceYears int, location string, categ
 }
 
 func GetResumeByID(id uint, userID uint) (models.Resume, error) {
+	// Проверка, заблокирован ли пользователь
 	if err := checkUserBlocked(userID); err != nil {
 		return models.Resume{}, err
 	}
+
 	resume, err := repository.GetResumeByID(id)
 	if err != nil {
 		return models.Resume{}, err
 	}
+
+	if err := repository.RecordResumeView(userID, id); err != nil {
+		return models.Resume{}, err
+	}
+
 	if err := checkResumeBlocked(resume.ID); err != nil {
 		return models.Resume{}, err
 	}
@@ -126,4 +133,23 @@ func UnblockResume(id uint, userID uint) error {
 		return errs.ErrUserBlocked
 	}
 	return repository.UnblockResume(id)
+}
+
+func GetResumeReportByID(resumeID uint, userID uint) (*models.ResumeReport, error) {
+	// Check if the resume is blocked
+	if err := checkResumeBlocked(resumeID); err != nil {
+		return nil, errs.ErrResumeBlocked
+	}
+
+	// Retrieve the report from the repository
+	report, err := repository.GetResumeReportByID(resumeID)
+	if err != nil {
+		return nil, err
+	}
+
+	if report == nil {
+		return nil, errs.ErrNoReportsFound
+	}
+
+	return report, nil
 }

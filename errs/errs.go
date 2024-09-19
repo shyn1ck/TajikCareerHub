@@ -48,4 +48,5 @@ var (
 	ErrShouldBindJson                              = errors.New("ErrShouldBindJson")
 	ErrCategoryAlreadyExist                        = errors.New("ErrCategoryAlreadyExist")
 	ErrNoReportsFound                              = errors.New("ErrNoReportsFound")
+	ErrIDIsNotProvided                             = errors.New("ErrIDIsNotProvided")
 )

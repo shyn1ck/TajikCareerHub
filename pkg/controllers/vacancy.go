@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"TajikCareerHub/errs"
 	"TajikCareerHub/logger"
 	"TajikCareerHub/models"
 	"TajikCareerHub/pkg/service"
@@ -79,9 +80,8 @@ func GetAllVacancies(c *gin.Context) {
 // @ID get-vacancy-by-id
 // @Accept json
 // @Produce json
-// @Param userID query integer true "User ID to check if the user is blocked"
 // @Param vacancyID path integer true "ID of the vacancy to retrieve"
-// @Success 200 {object} models.Vacancy "Successfully retrieved vacancy"
+// @Success 200 {object} models.SwagVacancy "Successfully retrieved vacancy"
 // @Failure 400 {object} ErrorResponse "Bad Request"
 // @Failure 404 {object} ErrorResponse "Vacancy Not Found"
 // @Failure 500 {object} ErrorResponse "Internal Server Error"
@@ -91,17 +91,26 @@ func GetVacancyByID(c *gin.Context) {
 	ip := c.ClientIP()
 	idStr := c.Param("vacancyID")
 	logger.Info.Printf("[controllers.GetVacancyByID] Client IP: %s - Request to get vacancy by ID: %s\n", ip, idStr)
+
+	if idStr == "" {
+		logger.Error.Printf("[controllers.GetVacancyByID] Vacancy ID is missing in the request.")
+		handleError(c, errs.ErrIDIsNotProvided)
+		return
+	}
+
 	id, err := strconv.ParseUint(idStr, 10, 32)
 	if err != nil {
 		logger.Error.Printf("[controllers.GetVacancyByID] Error converting id to int: %s", err.Error())
-		handleError(c, err)
+		handleError(c, errs.ErrIDIsNotCorrect)
 		return
 	}
+
 	userID, err := service.GetUserIDFromToken(c)
 	if err != nil {
 		handleError(c, err)
 		return
 	}
+
 	vacancy, err := service.GetVacancyByID(userID, uint(id))
 	if err != nil {
 		handleError(c, err)
@@ -241,9 +250,23 @@ func DeleteVacancy(c *gin.Context) {
 	c.JSON(http.StatusNoContent, NewDefaultResponse("Vacancy deleted successfully"))
 }
 
+// GetVacancyReport godoc
+// @Summary Get report for vacancies
+// @Tags Reports
+// @Description Get a report of how many people viewed or applied to each vacancy
+// @ID get-vacancy-report
+// @Accept json
+// @Produce json
+// @Success 200 {array} models.VacancyReport
+// @Failure 400 {object} ErrorResponse "Invalid input"
+// @Failure 403 {object} ErrorResponse "Forbidden access"
+// @Failure 500 {object} ErrorResponse
+// @Security ApiKeyAuth
+// @Router /vacancy [get]
 func GetVacancyReport(c *gin.Context) {
 	ip := c.ClientIP()
-	logger.Info.Printf("[controllers.GetVacancyReport]: Client with IP %s requested to get vacancy report.\n", ip)
+	logger.Info.Printf("[controllers.GetVacancyReport] Client IP: %s - Request to get vacancy report\n", ip)
+
 	userID, err := service.GetUserIDFromToken(c)
 	if err != nil {
 		handleError(c, err)
@@ -256,6 +279,42 @@ func GetVacancyReport(c *gin.Context) {
 		return
 	}
 
-	logger.Info.Printf("[controllers.GetVacancyReport] Client IP: %s - Successfully retrieved vacancy report.\n", ip)
+	logger.Info.Printf("[controllers.GetVacancyReport] Client IP: %s - Successfully retrieved vacancy report\n", ip)
 	c.JSON(http.StatusOK, reports)
+}
+
+// GetVacancyReportByID godoc
+// @Summary Get report for a specific vacancy
+// @Tags Reports
+// @Description Get a report of how many people viewed or applied to a specific vacancy
+// @ID get-vacancy-report-by-id
+// @Accept json
+// @Produce json
+// @Param id path uint true "Vacancy ID"
+// @Success 200 {object} models.VacancyReport
+// @Failure 400 {object} ErrorResponse "Invalid input"
+// @Failure 403 {object} ErrorResponse "Forbidden access"
+// @Failure 500 {object} ErrorResponse
+// @Security ApiKeyAuth
+// @Router /activity/vacancy/{id} [get]
+func GetVacancyReportByID(c *gin.Context) {
+	ip := c.ClientIP()
+	logger.Info.Printf("[controllers.GetVacancyReportByID] Client IP: %s - Request to get report for vacancy ID %s\n", ip, c.Param("id"))
+
+	vacancyIDStr := c.Param("id")
+	vacancyID, err := strconv.ParseUint(vacancyIDStr, 10, 32)
+	if err != nil {
+		handleError(c, errs.ErrIDIsNotCorrect)
+		logger.Error.Printf("[controllers.GetVacancyReportByID] Error converting id to int: %s", err.Error())
+		return
+	}
+
+	report, err := service.GetVacancyReportByID(uint(vacancyID))
+	if err != nil {
+		handleError(c, err)
+		return
+	}
+
+	logger.Info.Printf("[controllers.GetVacancyReportByID] Client IP: %s - Successfully retrieved report for vacancy ID %d\n", ip, vacancyID)
+	c.JSON(http.StatusOK, report)
 }

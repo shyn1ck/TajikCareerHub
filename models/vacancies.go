@@ -18,6 +18,7 @@ type Vacancy struct {
 	VacancyCategoryID uint            `json:"vacancy_category_id"`
 	VacancyCategory   VacancyCategory `gorm:"foreignKey:VacancyCategoryID"`
 	IsBlocked         bool            `json:"is_blocked" gorm:"default:false"`
+	VacancyViews      []VacancyView   `gorm:"foreignKey:VacancyID"`
 	BaseModel
 }
 
@@ -47,9 +48,10 @@ func (v Vacancy) ValidateVacancy() error {
 }
 
 type VacancyReport struct {
-	VacancyID        uint   `json:"vacancy_id"`
-	VacancyTitle     string `json:"vacancy_title"`
-	ApplicationCount uint   `json:"application_count"`
+	VacancyID         uint   `json:"vacancy_id"`
+	VacancyTitle      string `json:"vacancy_title"`
+	ViewsCount        int64  `json:"views_count"`
+	ApplicationsCount int64  `json:"applications_count"`
 }
 
 type SwagVacancy struct {
@@ -59,4 +61,13 @@ type SwagVacancy struct {
 	Salary            float64 `json:"salary"`
 	CompanyID         uint    `json:"company_id"`
 	VacancyCategoryID uint    `json:"vacancy_category_id"`
+}
+
+type VacancyView struct {
+	ID        uint    `gorm:"primaryKey"`
+	UserID    uint    `json:"user_id"`
+	VacancyID uint    `json:"vacancy_id"`
+	User      User    `gorm:"foreignKey:UserID"`
+	Vacancy   Vacancy `gorm:"foreignKey:VacancyID"`
+	Count     int     `json:"count" gorm:"default:0"`
 }

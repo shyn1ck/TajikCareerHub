@@ -7,6 +7,7 @@ import (
 
 type Resume struct {
 	ID                uint            `json:"id" gorm:"primaryKey;autoIncrement"`
+	Title             string          `json:"title" gorm:"not null"`
 	UserID            uint            `json:"user_id" gorm:"not null"`
 	FullName          string          `json:"full_name" gorm:"type:varchar(255);not null"`
 	Summary           string          `json:"summary" gorm:"type:text"`
@@ -45,4 +46,11 @@ type SwagResume struct {
 	ExperienceYears   uint   `json:"experience_years" gorm:"not null"`
 	Location          string `json:"location" gorm:"type:varchar(255)"`
 	VacancyCategoryID uint   `json:"vacancy_category_id" gorm:"not null"`
+}
+
+type ResumeReport struct {
+	ResumeID          uint   `json:"resume_id"`
+	ResumeTitle       string `json:"resume_title"`
+	ViewsCount        int    `json:"views_count"`
+	ApplicationsCount int    `json:"applications_count"`
 }

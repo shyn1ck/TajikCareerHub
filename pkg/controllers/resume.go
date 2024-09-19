@@ -82,15 +82,12 @@ func GetResumeByID(c *gin.Context) {
 		handleError(c, errs.ErrIDIsNotCorrect)
 		return
 	}
-
 	logger.Info.Printf("[controllers.GetResumeByID] Client IP: %s - Request to get resume with ID: %d", ip, id)
-
 	userID, err := service.GetUserIDFromToken(c)
 	if err != nil {
 		handleError(c, err)
 		return
 	}
-
 	resume, err := service.GetResumeByID(uint(id), userID)
 	if err != nil {
 		handleError(c, err)
@@ -307,4 +304,43 @@ func UnblockResume(c *gin.Context) {
 
 	logger.Info.Printf("[controllers.UnblockResume] Client IP: %s - Resume with ID: %d unblocked successfully", ip, id)
 	c.JSON(http.StatusOK, NewDefaultResponse("Resume unblocked successfully"))
+}
+
+// GetResumeReportByID godoc
+// @Summary      Get report for a specific resume
+// @Tags         Reports
+// @Description  Get a report of how many people viewed or applied to a specific resume
+// @ID           get-resume-report-by-id
+// @Accept       json
+// @Produce      json
+// @Param        id  path    uint    true    "Resume ID"
+// @Success      200  {object}  models.ResumeReport  "Success"
+// @Failure      400  {object}  ErrorResponse  "Invalid input"
+// @Failure      403  {object}  ErrorResponse  "Forbidden access"
+// @Failure      500  {object}  ErrorResponse  "Internal server error"
+// @Security     ApiKeyAuth
+// @Router       /activity/resume/{id} [get]
+func GetResumeReportByID(c *gin.Context) {
+	ip := c.ClientIP()
+	idStr := c.Param("id")
+	id, err := strconv.ParseUint(idStr, 10, 32)
+	if err != nil {
+		logger.Error.Printf("[controllers.GetResumeReportByID] Client IP: %s - Error parsing resume ID: %s, Error: %v", ip, idStr, err)
+		handleError(c, errs.ErrIDIsNotCorrect)
+		return
+	}
+
+	logger.Info.Printf("[controllers.GetResumeReportByID] Client IP: %s - Request to get report for resume with ID: %d", ip, id)
+	userID, err := service.GetUserIDFromToken(c)
+	if err != nil {
+		handleError(c, err)
+		return
+	}
+	report, err := service.GetResumeReportByID(uint(id), userID)
+	if err != nil {
+		handleError(c, err)
+		return
+	}
+	logger.Info.Printf("[controllers.GetResumeReportByID] Client IP: %s - Successfully retrieved report for resume ID: %d", ip, id)
+	c.JSON(http.StatusOK, report)
 }

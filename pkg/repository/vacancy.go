@@ -4,6 +4,7 @@ import (
 	"TajikCareerHub/db"
 	"TajikCareerHub/logger"
 	"TajikCareerHub/models"
+	"errors"
 	"gorm.io/gorm"
 )
 
@@ -54,9 +55,8 @@ func GetAllVacancies(search string, minSalary int, maxSalary int, location strin
 	return vacancies, nil
 }
 
-func GetVacancyByID(id uint) (models.Vacancy, error) {
-	var vacancy models.Vacancy
-	err := db.GetDBConn().
+func GetVacancyByID(id uint) (vacancy models.Vacancy, err error) {
+	err = db.GetDBConn().
 		Preload("Company").
 		Preload("VacancyCategory").
 		Preload("User", func(db *gorm.DB) *gorm.DB {
@@ -65,10 +65,12 @@ func GetVacancyByID(id uint) (models.Vacancy, error) {
 		Where("id = ?", id).
 		Where("deleted_at = false").
 		First(&vacancy).Error
+
 	if err != nil {
 		logger.Error.Printf("[repository.GetVacancyByID] Error retrieving vacancy with ID %v. Error: %v\n", id, err)
 		return models.Vacancy{}, TranslateError(err)
 	}
+
 	return vacancy, nil
 }
 
@@ -102,8 +104,10 @@ func GetVacancyReport() ([]models.VacancyReport, error) {
 	var reports []models.VacancyReport
 	err := db.GetDBConn().
 		Table("vacancies").
-		Select("vacancies.id as vacancy_id, vacancies.title as vacancy_title, COUNT(applications.id) as application_count").
+		Select("vacancies.id as vacancy_id, vacancies.title as vacancy_title, COUNT(DISTINCT views.user_id) as views_count, COUNT(DISTINCT applications.user_id) as applications_count").
+		Joins("left join views on views.vacancy_id = vacancies.id").
 		Joins("left join applications on applications.vacancy_id = vacancies.id").
+		Where("vacancies.deleted_at IS NULL").
 		Group("vacancies.id").
 		Scan(&reports).Error
 	if err != nil {
@@ -111,4 +115,56 @@ func GetVacancyReport() ([]models.VacancyReport, error) {
 		return nil, err
 	}
 	return reports, nil
+}
+
+func GetVacancyReportByID(vacancyID uint) (*models.VacancyReport, error) {
+	var report models.VacancyReport
+	err := db.GetDBConn().
+		Table("vacancies").
+		Select(`
+			vacancies.id AS vacancy_id, 
+			vacancies.title AS vacancy_title, 
+			COUNT(DISTINCT vacancy_views.user_id) AS views_count, 
+			COUNT(DISTINCT applications.user_id) AS applications_count`).
+		Joins("LEFT JOIN vacancy_views ON vacancy_views.vacancy_id = vacancies.id").
+		Joins("LEFT JOIN applications ON applications.vacancy_id = vacancies.id").
+		Where("vacancies.id = ? AND vacancies.deleted_at = false", vacancyID).
+		Group("vacancies.id").
+		Scan(&report).Error
+	if err != nil {
+		logger.Error.Printf("[repository.GetVacancyReportByID] Error retrieving vacancy report: %v", err)
+		return nil, err
+	}
+	logger.Info.Printf("[repository.GetVacancyReportByID] Successfully retrieved data: %v", report)
+	return &report, nil
+}
+
+func RecordVacancyView(userID uint, vacancyID uint) error {
+	var vacancyView models.VacancyView
+	err := db.GetDBConn().
+		Model(&models.VacancyView{}).
+		Where("user_id = ? AND vacancy_id = ?", userID, vacancyID).
+		First(&vacancyView).Error
+
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			err = db.GetDBConn().
+				Create(&models.VacancyView{
+					UserID:    userID,
+					VacancyID: vacancyID,
+					Count:     1,
+				}).Error
+			if err != nil {
+				logger.Error.Printf("[repository.RecordView] Error creating view record for vacancy ID %v. Error: %v\n", vacancyID, err)
+				return err
+			}
+		} else {
+			logger.Error.Printf("[repository.RecordView] Error checking view record for vacancy ID %v. Error: %v\n", vacancyID, err)
+			return err
+		}
+	} else {
+		logger.Info.Printf("[repository.RecordView] User ID %v already viewed vacancy ID %v.\n", userID, vacancyID)
+	}
+
+	return nil
 }
