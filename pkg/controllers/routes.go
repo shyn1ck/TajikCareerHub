@@ -75,10 +75,11 @@ func InitRoutes() *gin.Engine {
 		applicationGroup.PUT("/:id/status/:status_id", UpdateApplicationStatus)
 	}
 
-	ActivityGroup := r.Group("/activity").Use(checkUserAuthentication)
+	activityGroup := r.Group("/activity").Use(checkUserAuthentication)
 	{
-		ActivityGroup.GET("/", GetSpecialistActivityReport)
-		ActivityGroup.GET("/vacancy/:id", GetVacancyReport)
+		activityGroup.GET("/", GetSpecialistActivityReport)
+		activityGroup.GET("/vacancy/:id", GetVacancyReport)
+		activityGroup.GET("/:user_id", GetSpecialistActivityReportByUser)
 	}
 
 	VacancyCategoryGroup := r.Group("/category").Use(checkUserAuthentication)

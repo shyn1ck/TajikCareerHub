@@ -69,10 +69,8 @@ func DeleteApplication(id uint) error {
 	return nil
 }
 
-func GetSpecialistActivityReport() ([]models.SpecialistActivityReport, error) {
-	var reports []models.SpecialistActivityReport
-
-	err := db.GetDBConn().
+func GetSpecialistActivityReport() (reports []models.SpecialistActivityReport, err error) {
+	err = db.GetDBConn().
 		Table("users").
 		Select("users.id as user_id, users.full_name as user_name, COUNT(applications.id) as application_count").
 		Joins("left join applications on applications.user_id = users.id").
@@ -95,4 +93,19 @@ func UpdateApplicationStatus(applicationID uint, statusID uint) error {
 		return err
 	}
 	return nil
+}
+
+func GetSpecialistActivityReportByUser(userID uint) (reports []models.SpecialistActivityReport, err error) {
+	err = db.GetDBConn().
+		Table("users").
+		Select("users.id as user_id, users.full_name as user_name, COUNT(applications.id) as application_count").
+		Joins("left join applications on applications.user_id = users.id").
+		Where("applications.deleted_at = false AND users.id = ?", userID).
+		Group("users.id").
+		Scan(&reports).Error
+	if err != nil {
+		logger.Error.Printf("[repository.GetSpecialistActivityReportByUser] Error retrieving specialist activity report: %v", err)
+		return nil, err
+	}
+	return reports, nil
 }
