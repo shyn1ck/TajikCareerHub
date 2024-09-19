@@ -84,3 +84,13 @@ func GetSpecialistActivityReport() ([]models.SpecialistActivityReport, error) {
 	}
 	return reports, nil
 }
+
+func UpdateApplicationStatus(applicationID uint, statusID uint) error {
+	err := db.GetDBConn().Model(&models.Application{}).
+		Where("id = ? AND deleted_at = false", applicationID).
+		Update("status_id", statusID).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}

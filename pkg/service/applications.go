@@ -78,3 +78,20 @@ func GetSpecialistActivityReport(userID uint) ([]models.SpecialistActivityReport
 	}
 	return reports, nil
 }
+
+func UpdateApplicationStatus(applicationID uint, statusID uint) error {
+	validStatusIDs := map[uint]bool{
+		1: true, // Applied
+		2: true, // Under Review
+		3: true, // Rejected
+		4: true, // Interview
+	}
+	if !validStatusIDs[statusID] {
+		return errs.ErrIDIsNotCorrect
+	}
+	err := repository.UpdateApplicationStatus(applicationID, statusID)
+	if err != nil {
+		return err
+	}
+	return nil
+}

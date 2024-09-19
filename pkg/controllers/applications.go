@@ -219,3 +219,26 @@ func GetSpecialistActivityReport(c *gin.Context) {
 	logger.Info.Printf("[controllers.GetSpecialistActivityReport] Client IP: %s - Successfully retrieved specialist activity report\n", ip)
 	c.JSON(http.StatusOK, reports)
 }
+
+func UpdateApplicationStatus(c *gin.Context) {
+	applicationIDStr := c.Param("application_id")
+	statusIDStr := c.Param("status_id")
+	applicationID, err := strconv.ParseUint(applicationIDStr, 10, 32)
+	if err != nil {
+		handleError(c, err)
+		return
+	}
+
+	statusID, err := strconv.ParseUint(statusIDStr, 10, 32)
+	if err != nil {
+		handleError(c, err)
+		return
+	}
+	err = service.UpdateApplicationStatus(uint(applicationID), uint(statusID))
+	if err != nil {
+		handleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, NewDefaultResponse("Application status updated successfully"))
+}

@@ -72,6 +72,7 @@ func InitRoutes() *gin.Engine {
 		applicationGroup.POST("/", AddApplication)
 		applicationGroup.PUT("/:id", UpdateApplication)
 		applicationGroup.DELETE("/:id", DeleteApplication)
+		applicationGroup.PUT("/:id/status/:status_id", UpdateApplicationStatus)
 	}
 
 	ActivityGroup := r.Group("/activity").Use(checkUserAuthentication)
