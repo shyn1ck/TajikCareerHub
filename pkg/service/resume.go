@@ -7,11 +7,11 @@ import (
 	"TajikCareerHub/pkg/repository"
 )
 
-func GetAllResumes(search string, minExperienceYears int, location string, category string, userID uint) ([]models.Resume, error) {
+func GetAllResumes(search string, minExperienceYears int, location string, category string, userID uint) (resumes []models.Resume, err error) {
 	if err := checkUserBlocked(userID); err != nil {
 		return nil, err
 	}
-	resumes, err := repository.GetAllResumes(search, minExperienceYears, location, category)
+	resumes, err = repository.GetAllResumes(search, minExperienceYears, location, category)
 	if err != nil {
 		return nil, err
 	}
@@ -25,12 +25,11 @@ func GetAllResumes(search string, minExperienceYears int, location string, categ
 	return filteredResumes, nil
 }
 
-func GetResumeByID(id uint, userID uint) (models.Resume, error) {
+func GetResumeByID(id uint, userID uint) (resume models.Resume, err error) {
 	if err := checkUserBlocked(userID); err != nil {
 		return models.Resume{}, err
 	}
-
-	resume, err := repository.GetResumeByID(id)
+	resume, err = repository.GetResumeByID(id)
 	if err != nil {
 		return models.Resume{}, err
 	}
@@ -96,7 +95,6 @@ func UpdateResume(resumeID uint, updatedResume models.Resume, userID uint) error
 	if updatedResume.VacancyCategoryID != 0 {
 		resume.VacancyCategoryID = updatedResume.VacancyCategoryID
 	}
-
 	err = resume.ValidateResume()
 	if err != nil {
 		logger.Error.Printf("[service.UpdateResume] validation error: %v\n", err)
@@ -113,33 +111,49 @@ func DeleteResume(id uint, userID uint) error {
 	if err := checkResumeBlocked(id); err != nil {
 		return err
 	}
-
 	return repository.DeleteResume(id)
 }
 
-func BlockResume(id uint, userID uint) error {
+func BlockResume(id uint, userID uint, role string) (err error) {
+	if role != "admin" {
+		return errs.ErrAccessDenied
+	}
+
 	if err := checkUserBlocked(userID); err != nil {
 		logger.Error.Printf("[service.BlockResume]: User %d is blocked", userID)
 		return errs.ErrUserBlocked
 	}
-	return repository.BlockResume(id)
+	err = repository.BlockResume(id)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
-func UnblockResume(id uint, userID uint) error {
+func UnblockResume(id uint, userID uint, role string) (err error) {
+	if role != "admin" {
+		return errs.ErrAccessDenied
+	}
+
 	if err := checkUserBlocked(userID); err != nil {
 		logger.Error.Printf("[service.UnblockResume]: User %d is blocked", userID)
 		return errs.ErrUserBlocked
 	}
-	return repository.UnblockResume(id)
+	err = repository.UnblockResume(id)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func GetResumeReportByID(resumeID uint, userID uint) (*models.ResumeReport, error) {
-	// Check if the resume is blocked
+	err := checkUserBlocked(userID)
+	if err != nil {
+		return nil, err
+	}
 	if err := checkResumeBlocked(resumeID); err != nil {
 		return nil, errs.ErrResumeBlocked
 	}
-
-	// Retrieve the report from the repository
 	report, err := repository.GetResumeReportByID(resumeID)
 	if err != nil {
 		return nil, err

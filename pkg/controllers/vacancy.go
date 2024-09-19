@@ -285,3 +285,97 @@ func GetVacancyReportByID(c *gin.Context) {
 	logger.Info.Printf("[controllers.GetVacancyReportByID] Client IP: %s - Successfully retrieved report for vacancy ID %d\n", ip, vacancyID)
 	c.JSON(http.StatusOK, report)
 }
+
+// BlockVacancy godoc
+// @Summary      Block a vacancy
+// @Description  Blocks a vacancy by its ID. Requires the user to be authenticated.
+// @Tags         Admin
+// @Accept       json
+// @Produce      json
+// @Param        id   path      uint  true  "Vacancy ID"
+// @Success      200   {object}  DefaultResponse  "Vacancy blocked successfully"
+// @Failure      400   {object}  ErrorResponse  "Invalid vacancy ID"
+// @Failure      401   {object}  ErrorResponse  "Unauthorized"
+// @Failure      403   {object}  ErrorResponse  "Access Denied"
+// @Failure      500   {object}  ErrorResponse  "Internal server error"
+// @Security     ApiKeyAuth
+// @Router       /vacancy/block/{id} [patch]
+func BlockVacancy(c *gin.Context) {
+	ip := c.ClientIP()
+	idStr := c.Param("id")
+	id, err := strconv.ParseUint(idStr, 10, 32)
+	if err != nil {
+		logger.Error.Printf("[controllers.BlockVacancy] Client IP: %s - Error parsing vacancy ID: %s, Error: %v", ip, idStr, err)
+		handleError(c, err)
+		return
+	}
+
+	logger.Info.Printf("[controllers.BlockVacancy] Client IP: %s - Request to block vacancy with ID: %d", ip, id)
+
+	userID, err := service.GetUserIDFromToken(c)
+	if err != nil {
+		handleError(c, err)
+		return
+	}
+	role, err := service.GetRoleFromToken(c)
+	if err != nil {
+		handleError(c, err)
+		return
+	}
+
+	err = service.BlockVacancy(uint(id), userID, role)
+	if err != nil {
+		handleError(c, err)
+		return
+	}
+
+	logger.Info.Printf("[controllers.BlockVacancy] Client IP: %s - Successfully blocked vacancy with ID: %d", ip, id)
+	c.JSON(http.StatusOK, NewDefaultResponse("Vacancy blocked successfully"))
+}
+
+// UnblockVacancy godoc
+// @Summary      Unblock a vacancy
+// @Description  Unblocks a vacancy by its ID. Requires the user to be authenticated.
+// @Tags         Admin
+// @Accept       json
+// @Produce      json
+// @Param        id   path      uint  true  "Vacancy ID"
+// @Success      200   {object}  DefaultResponse  "Vacancy unblocked successfully"
+// @Failure      400   {object}  ErrorResponse  "Invalid vacancy ID"
+// @Failure      401   {object}  ErrorResponse  "Unauthorized"
+// @Failure      403   {object}  ErrorResponse  "Access Denied"
+// @Failure      500   {object}  ErrorResponse  "Internal server error"
+// @Security     ApiKeyAuth
+// @Router       /vacancy/unblock/{id} [patch]
+func UnblockVacancy(c *gin.Context) {
+	ip := c.ClientIP()
+	idStr := c.Param("id")
+	id, err := strconv.ParseUint(idStr, 10, 32)
+	if err != nil {
+		logger.Error.Printf("[controllers.UnblockVacancy] Client IP: %s - Error parsing vacancy ID: %s, Error: %v", ip, idStr, err)
+		handleError(c, err)
+		return
+	}
+
+	logger.Info.Printf("[controllers.UnblockVacancy] Client IP: %s - Request to unblock vacancy with ID: %d", ip, id)
+
+	userID, err := service.GetUserIDFromToken(c)
+	if err != nil {
+		handleError(c, err)
+		return
+	}
+	role, err := service.GetRoleFromToken(c)
+	if err != nil {
+		handleError(c, err)
+		return
+	}
+
+	err = service.UnblockVacancy(uint(id), userID, role)
+	if err != nil {
+		handleError(c, err)
+		return
+	}
+
+	logger.Info.Printf("[controllers.UnblockVacancy] Client IP: %s - Vacancy with ID: %d unblocked successfully", ip, id)
+	c.JSON(http.StatusOK, NewDefaultResponse("Vacancy unblocked successfully"))
+}

@@ -27,7 +27,6 @@ func GetAllUsers(c *gin.Context) {
 	ip := c.ClientIP()
 	username := c.Query("username")
 	logger.Info.Printf("[controllers.GetAllUsers] Client IP: %s - Request to get users.\n", ip)
-
 	if username != "" {
 		user, err := service.GetUserByUsername(username)
 		if err != nil {
@@ -37,7 +36,12 @@ func GetAllUsers(c *gin.Context) {
 		logger.Info.Printf("[controllers.GetAllUsers] Client IP: %s - Successfully retrieved user: %s.\n", ip, username)
 		c.JSON(http.StatusOK, user)
 	} else {
-		users, err := service.GetAllUsers()
+		role, err := service.GetRoleFromToken(c)
+		if err != nil {
+			handleError(c, err)
+			return
+		}
+		users, err := service.GetAllUsers(role)
 		if err != nil {
 			handleError(c, err)
 			return
@@ -247,6 +251,7 @@ func DeleteUser(c *gin.Context) {
 		logger.Error.Printf("[controllers.DeleteUser] Client IP: %s - Error parsing user ID: %v", ip, err)
 		return
 	}
+
 	if err := service.DeleteUser(uint(id)); err != nil {
 		handleError(c, err)
 		return
@@ -277,7 +282,12 @@ func BlockUser(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, ErrorResponse{Error: idParam})
 		return
 	}
-	err = service.BlockUser(uint(id))
+	role, err := service.GetRoleFromToken(c)
+	if err != nil {
+		handleError(c, err)
+		return
+	}
+	err = service.BlockUser(uint(id), role)
 	if err != nil {
 		handleError(c, err)
 		return
@@ -308,7 +318,12 @@ func UnblockUser(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, ErrorResponse{Error: idParam})
 		return
 	}
-	err = service.UnblockUser(uint(id))
+	role, err := service.GetRoleFromToken(c)
+	if err != nil {
+		handleError(c, err)
+		return
+	}
+	err = service.UnblockUser(uint(id), role)
 	if err != nil {
 		handleError(c, err)
 		return

@@ -41,7 +41,8 @@ func InitRoutes() *gin.Engine {
 		vacancyGroup.GET("/:vacancyID", GetVacancyByID)
 		vacancyGroup.POST("/", AddVacancy)
 		vacancyGroup.PUT("/:id", UpdateVacancy)
-		vacancyGroup.DELETE("/:id", DeleteVacancy)
+		vacancyGroup.DELETE("/block/:id", BlockVacancy)
+		vacancyGroup.PATCH("/unblock/:id", UnblockVacancy)
 	}
 
 	resumeGroup := r.Group("/resume").Use(checkUserAuthentication)

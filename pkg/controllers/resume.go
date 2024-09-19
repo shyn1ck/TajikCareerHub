@@ -235,6 +235,7 @@ func DeleteResume(c *gin.Context) {
 // @Success      200   {object}  DefaultResponse  "Resume blocked successfully"
 // @Failure      400   {object}  ErrorResponse  "Invalid resume ID"
 // @Failure      401   {object}  ErrorResponse  "Unauthorized"
+// @Failure      403   {object}  ErrorResponse  "Access Denied"
 // @Failure      500   {object}  ErrorResponse  "Internal server error"
 // @Security     ApiKeyAuth
 // @Router       /resume/block/{id} [patch]
@@ -254,8 +255,13 @@ func BlockResume(c *gin.Context) {
 		handleError(c, err)
 		return
 	}
+	role, err := service.GetRoleFromToken(c)
+	if err != nil {
+		handleError(c, err)
+		return
+	}
 
-	err = service.BlockResume(uint(id), userID)
+	err = service.BlockResume(uint(id), userID, role)
 	if err != nil {
 		handleError(c, err)
 		return
@@ -275,6 +281,7 @@ func BlockResume(c *gin.Context) {
 // @Success      200   {object}  DefaultResponse  "Resume unblocked successfully"
 // @Failure      400   {object}  ErrorResponse  "Invalid resume ID"
 // @Failure      401   {object}  ErrorResponse  "Unauthorized"
+// @Failure      403   {object}  ErrorResponse  "Access Denied"
 // @Failure      500   {object}  ErrorResponse  "Internal server error"
 // @Security     ApiKeyAuth
 // @Router       /resume/unblock/{id} [patch]
@@ -295,8 +302,13 @@ func UnblockResume(c *gin.Context) {
 		handleError(c, err)
 		return
 	}
+	role, err := service.GetRoleFromToken(c)
+	if err != nil {
+		handleError(c, err)
+		return
+	}
 
-	err = service.UnblockResume(uint(id), userID)
+	err = service.UnblockResume(uint(id), userID, role)
 	if err != nil {
 		handleError(c, err)
 		return

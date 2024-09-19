@@ -20,6 +20,7 @@ import (
 // @Success      200  {object}  models.VacancyCategory   "Success"
 // @Failure      400  {object}  ErrorResponse  "Invalid ID"
 // @Failure      404  {object}  ErrorResponse  "Category not found"
+// @Failure      403   {object}  ErrorResponse  "Access Denied"
 // @Failure      500  {object}  ErrorResponse  "Internal server error"
 // @Security     ApiKeyAuth
 // @Router       /category/{id} [get]
@@ -76,6 +77,7 @@ func GetAllCategories(c *gin.Context) {
 // @Param        category  body models.VacancyCategory  true  "Category data"
 // @Success      201  {object}  DefaultResponse  "Success"
 // @Failure      400  {object}  ErrorResponse  "Invalid input"
+// @Failure      403   {object}  ErrorResponse  "Access Denied"
 // @Failure      500  {object}  ErrorResponse  "Internal server error"
 // @Security     ApiKeyAuth
 // @Router       /category [post]
@@ -86,7 +88,13 @@ func CreateCategory(c *gin.Context) {
 		handleError(c, errs.ErrShouldBindJson)
 		return
 	}
-	if err := service.AddCategory(category); err != nil {
+	role, err := service.GetRoleFromToken(c)
+	if err != nil {
+		handleError(c, err)
+		return
+	}
+
+	if err := service.AddCategory(category, role); err != nil {
 		handleError(c, err)
 		return
 	}
@@ -106,6 +114,7 @@ func CreateCategory(c *gin.Context) {
 // @Success      200  {object}  DefaultResponse  "Success"
 // @Failure      400  {object}  ErrorResponse  "Invalid ID or input"
 // @Failure      404  {object}  ErrorResponse  "Category not found"
+// @Failure      403   {object}  ErrorResponse  "Access Denied"
 // @Failure      500  {object}  ErrorResponse  "Internal server error"
 // @Security     ApiKeyAuth
 // @Router       /category/{id} [put]
@@ -124,8 +133,12 @@ func UpdateCategory(c *gin.Context) {
 		handleError(c, errs.ErrShouldBindJson)
 		return
 	}
+	role, err := service.GetRoleFromToken(c)
+	if err != nil {
+		handleError(c, err)
+	}
 
-	if err := service.UpdateCategory(category); err != nil {
+	if err := service.UpdateCategory(category, role); err != nil {
 		handleError(c, err)
 		return
 	}
@@ -143,6 +156,7 @@ func UpdateCategory(c *gin.Context) {
 // @Param        id  path    int     true    "Category ID"
 // @Success      200  {object}  DefaultResponse  "Success"
 // @Failure      400  {object}  ErrorResponse  "Invalid ID"
+// @Failure      403   {object}  ErrorResponse  "Access Denied"
 // @Failure      500  {object}  ErrorResponse  "Internal server error"
 // @Security     ApiKeyAuth
 // @Router       /category/{id} [delete]
@@ -154,8 +168,12 @@ func DeleteCategory(c *gin.Context) {
 		handleError(c, errs.ErrIDIsNotCorrect)
 		return
 	}
+	role, err := service.GetRoleFromToken(c)
+	if err != nil {
+		handleError(c, err)
+	}
 
-	if err := service.DeleteCategory(uint(id)); err != nil {
+	if err := service.DeleteCategory(uint(id), role); err != nil {
 		handleError(c, err)
 		return
 	}

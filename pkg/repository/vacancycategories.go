@@ -25,12 +25,14 @@ func GetCategoryByID(id uint) (category models.VacancyCategory, err error) {
 		First(&category).Error
 	if err != nil {
 		logger.Error.Printf("[repository.GetCategoryByID]: Error retrieving category with ID %v. Error: %v\n", id, err)
-		return models.VacancyCategory{}, TranslateError(err)
+		return models.VacancyCategory{},
+			TranslateError(err)
 	}
 	return category, nil
 }
 
 func AddCategory(category models.VacancyCategory) (err error) {
+
 	err = db.GetDBConn().Create(&category).Error
 	if err != nil {
 		logger.Error.Printf("[repository.AddCategory]: Failed to add category. Error: %v\n", err)

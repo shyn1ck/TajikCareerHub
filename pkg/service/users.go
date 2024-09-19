@@ -7,19 +7,22 @@ import (
 	"TajikCareerHub/pkg/repository"
 	"TajikCareerHub/utils"
 	"errors"
-	"fmt"
 )
 
-func GetAllUsers() ([]models.User, error) {
-	users, err := repository.GetAllUsers()
+func GetAllUsers(role string) (users []models.User, err error) {
+	if role != "admin" {
+		return nil, errs.ErrAccessDenied
+	}
+	users, err = repository.GetAllUsers()
 	if err != nil {
+		logger.Error.Printf("[service.GetAllUsers] Error retrieving users: %v\n", err)
 		return nil, err
 	}
 	return users, nil
 }
 
-func GetUserByID(id uint) (models.User, error) {
-	user, err := repository.GetUserByID(id)
+func GetUserByID(id uint) (user models.User, err error) {
+	user, err = repository.GetUserByID(id)
 	if err != nil {
 		logger.Error.Printf("[service.GetUserByID] error retrieving user by ID: %v\n", err)
 		return models.User{}, err
@@ -58,8 +61,8 @@ func CreateUser(user models.User) (uint, error) {
 	return id, nil
 }
 
-func UpdateUser(userID uint, user models.User) error {
-	err := checkUserBlocked(userID)
+func UpdateUser(userID uint, user models.User) (err error) {
+	err = checkUserBlocked(userID)
 	if err != nil {
 		return errs.ErrUserBlocked
 	}
@@ -91,16 +94,20 @@ func UpdateUser(userID uint, user models.User) error {
 	return nil
 }
 
-func DeleteUser(id uint) error {
+func DeleteUser(id uint) (err error) {
 	if id == 0 {
+		logger.Error.Printf("[service.DeleteUser] Invalid user ID: %d", id)
 		return errors.New("invalid user ID")
 	}
-	return repository.DeleteUser(id)
+	err = repository.DeleteUser(id)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
-func UpdateUserPassword(userID uint, username string, oldPassword string, newPassword string) error {
+func UpdateUserPassword(userID uint, username string, oldPassword string, newPassword string) (err error) {
 	hashedOldPassword := utils.GenerateHash(oldPassword)
-	fmt.Printf("Hashed old password: %s\n", hashedOldPassword)
 	user, err := repository.GetUserByUsernameAndPassword(username, hashedOldPassword)
 	if err != nil {
 		return errs.ErrIncorrectUsernameOrPassword
@@ -114,41 +121,51 @@ func UpdateUserPassword(userID uint, username string, oldPassword string, newPas
 	if err != nil {
 		return err
 	}
-
 	return nil
 }
 
-func BlockUser(id uint) error {
+func BlockUser(id uint, role string) (err error) {
+	if role != "admin" {
+		return errs.ErrAccessDenied
+	}
 	if id == 0 {
 		logger.Error.Printf("[service.BlockUser] Invalid ID: %v", id)
 		return errs.ErrIDIsNotCorrect
 	}
-	err := repository.BlockUser(id)
+
+	err = repository.BlockUser(id)
 	if err != nil {
 		logger.Error.Printf("[service.BlockUser] Failed to block user with ID %v: %v", id, err)
+		return err
 	}
-	return err
+	return nil
 }
 
-func UnblockUser(id uint) error {
+func UnblockUser(id uint, role string) (err error) {
+
+	if role != "admin" {
+		return errs.ErrAccessDenied
+	}
+
 	if id == 0 {
 		logger.Error.Printf("[service.UnblockUser] Invalid ID: %v", id)
 		return errs.ErrIDIsNotCorrect
 	}
-	err := repository.UnBlockUser(id)
+	err = repository.UnBlockUser(id)
 	if err != nil {
 		logger.Error.Printf("[service.UnblockUser] Failed to unblock user with ID %v: %v", id, err)
+		return err
 	}
-	return err
+	return nil
 }
 
-func GetSpecialistActivityReportByUser(userID uint) ([]models.SpecialistActivityReport, error) {
-	err := checkUserBlocked(userID)
+func GetSpecialistActivityReportByUser(userID uint) (reports []models.SpecialistActivityReport, err error) {
+	err = checkUserBlocked(userID)
 	if err != nil {
 		return nil, errs.ErrUserBlocked
 	}
 
-	reports, err := repository.GetSpecialistActivityReportByUser(userID)
+	reports, err = repository.GetSpecialistActivityReportByUser(userID)
 	if err != nil {
 		return nil, errs.ErrUsersNotFound
 	}

@@ -139,3 +139,24 @@ func RecordVacancyView(userID uint, vacancyID uint) (err error) {
 	}
 	return nil
 }
+
+func updateBlockStatusJob(id uint, isBlocked bool) (err error) {
+	err = db.GetDBConn().Model(&models.Vacancy{}).Where("id = ?", id).Update("is_blocked", isBlocked).Error
+	if err != nil {
+		action := "block"
+		if !isBlocked {
+			action = "unblock"
+		}
+		logger.Error.Printf("[repository.updateBlockStatusJob] Failed to %s job with ID %v: %v\n", action, id, err)
+		return TranslateError(err)
+	}
+	return nil
+}
+
+func BlockVacancy(id uint) (err error) {
+	return updateBlockStatusJob(id, true)
+}
+
+func UnblockVacancy(id uint) (err error) {
+	return updateBlockStatusJob(id, false)
+}

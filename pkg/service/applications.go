@@ -2,39 +2,40 @@ package service
 
 import (
 	"TajikCareerHub/errs"
+	"TajikCareerHub/logger"
 	"TajikCareerHub/models"
 	"TajikCareerHub/pkg/repository"
 )
 
-func GetAllApplications(userID uint) ([]models.Application, error) {
-	err := checkUserBlocked(userID)
+func GetAllApplications(userID uint) (applications []models.Application, err error) {
+	err = checkUserBlocked(userID)
 	if err != nil {
-		return nil, errs.ErrUserBlocked
+		logger.Error.Printf("[service.GetAllApplications] Error checking user blocked]")
+		return nil, err
 	}
-	applications, err := repository.GetAllApplications()
+	applications, err = repository.GetAllApplications()
 	if err != nil {
 		return nil, err
 	}
-
 	return applications, nil
 }
 
-func GetApplicationByID(userID, id uint) (models.Application, error) {
-	err := checkUserBlocked(userID)
+func GetApplicationByID(userID, id uint) (application models.Application, err error) {
+	err = checkUserBlocked(userID)
 	if err != nil {
-		return models.Application{}, errs.ErrUserBlocked
+		return models.Application{}, err
 	}
-	application, err := repository.GetApplicationByID(id)
+	application, err = repository.GetApplicationByID(id)
 	if err != nil {
 		return application, err
 	}
 	return application, nil
 }
 
-func AddApplication(application models.Application) error {
-	err := checkUserBlocked(application.UserID)
+func AddApplication(application models.Application) (err error) {
+	err = checkUserBlocked(application.UserID)
 	if err != nil {
-		return errs.ErrUserBlocked
+		return err
 	}
 	err = repository.AddApplication(application)
 	if err != nil {
@@ -43,10 +44,10 @@ func AddApplication(application models.Application) error {
 	return nil
 }
 
-func UpdateApplication(application models.Application) error {
-	err := checkUserBlocked(application.UserID)
+func UpdateApplication(application models.Application) (err error) {
+	err = checkUserBlocked(application.UserID)
 	if err != nil {
-		return errs.ErrUserBlocked
+		return err
 	}
 	err = repository.UpdateApplication(application.ID, application)
 	if err != nil {
@@ -55,10 +56,10 @@ func UpdateApplication(application models.Application) error {
 	return nil
 }
 
-func DeleteApplication(id, userID uint) error {
-	err := checkUserBlocked(userID)
+func DeleteApplication(id, userID uint) (err error) {
+	err = checkUserBlocked(userID)
 	if err != nil {
-		return errs.ErrUserBlocked
+		return err
 	}
 	err = repository.DeleteApplication(id)
 	if err != nil {
@@ -67,7 +68,7 @@ func DeleteApplication(id, userID uint) error {
 	return nil
 }
 
-func UpdateApplicationStatus(applicationID uint, statusID uint) error {
+func UpdateApplicationStatus(applicationID uint, statusID uint) (err error) {
 	validStatusIDs := map[uint]bool{
 		1: true, // Applied
 		2: true, // Under Review
@@ -77,7 +78,7 @@ func UpdateApplicationStatus(applicationID uint, statusID uint) error {
 	if !validStatusIDs[statusID] {
 		return errs.ErrIDIsNotCorrect
 	}
-	err := repository.UpdateApplicationStatus(applicationID, statusID)
+	err = repository.UpdateApplicationStatus(applicationID, statusID)
 	if err != nil {
 		return err
 	}

@@ -21,7 +21,14 @@ import (
 func GetAllCompanies(c *gin.Context) {
 	ip := c.ClientIP()
 	logger.Info.Printf("[controllers.GetAllCompanies] Client IP: %s - Request to get all companies\n", ip)
-	companies, err := service.GetAllCompanies()
+
+	userID, err := service.GetUserIDFromToken(c)
+	if err != nil {
+		handleError(c, err)
+		return
+	}
+
+	companies, err := service.GetAllCompanies(userID)
 	if err != nil {
 		handleError(c, err)
 		return
@@ -44,13 +51,20 @@ func GetAllCompanies(c *gin.Context) {
 func GetCompanyByID(c *gin.Context) {
 	ip := c.ClientIP()
 	idStr := c.Param("id")
+	logger.Info.Printf("[controllers.GetCompanyByID] Client IP: %s - Request to get company by id: %s\n", ip, idStr)
 	id, err := strconv.ParseUint(idStr, 10, 32)
 	if err != nil {
 		logger.Error.Printf("[controllers.GetCompanyByID] Client IP: %s - Invalid company ID %s: %v\n", ip, idStr, err)
 		handleError(c, err)
 		return
 	}
-	company, err := service.GetCompanyByID(uint(id))
+	userID, err := service.GetUserIDFromToken(c)
+	if err != nil {
+		handleError(c, err)
+		return
+	}
+
+	company, err := service.GetCompanyByID(uint(id), userID)
 	if err != nil {
 		handleError(c, err)
 		return
@@ -74,12 +88,25 @@ func GetCompanyByID(c *gin.Context) {
 func AddCompany(c *gin.Context) {
 	ip := c.ClientIP()
 	var company models.Company
+	logger.Info.Printf("[controllers.AddCompany] Client IP: %s - Request to add company\n", ip)
 	if err := c.ShouldBindJSON(&company); err != nil {
 		logger.Error.Printf("[controllers.AddCompany] Client IP: %s - Error parsing company data %v: %v\n", ip, company, err)
 		handleError(c, err)
 		return
 	}
-	if err := service.AddCompany(company); err != nil {
+	userID, err := service.GetUserIDFromToken(c)
+	if err != nil {
+		handleError(c, err)
+		return
+	}
+
+	role, err := service.GetRoleFromToken(c)
+	if err != nil {
+		handleError(c, err)
+		return
+	}
+
+	if err := service.AddCompany(userID, company, role); err != nil {
 		handleError(c, err)
 		return
 	}
@@ -117,7 +144,12 @@ func UpdateCompany(c *gin.Context) {
 		handleError(c, err)
 		return
 	}
-	if err := service.UpdateCompany(company); err != nil {
+	userID, err := service.GetUserIDFromToken(c)
+	if err != nil {
+		handleError(c, err)
+		return
+	}
+	if err := service.UpdateCompany(userID, company); err != nil {
 		handleError(c, err)
 		return
 	}
@@ -148,7 +180,12 @@ func DeleteCompany(c *gin.Context) {
 		return
 	}
 
-	if err := service.DeleteCompany(uint(id)); err != nil {
+	userID, err := service.GetUserIDFromToken(c)
+	if err != nil {
+		handleError(c, err)
+		return
+	}
+	if err := service.DeleteCompany(uint(id), userID); err != nil {
 		handleError(c, err)
 		return
 	}

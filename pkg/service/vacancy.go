@@ -29,12 +29,12 @@ func GetAllVacancies(userID uint, search string, minSalary int, maxSalary int, l
 	return filteredVacancies, nil
 }
 
-func GetVacancyByID(userID uint, vacancyID uint) (models.Vacancy, error) {
+func GetVacancyByID(userID uint, vacancyID uint) (vacancy models.Vacancy, err error) {
 	if err := checkUserBlocked(userID); err != nil {
 		return models.Vacancy{}, err
 	}
 
-	vacancy, err := repository.GetVacancyByID(vacancyID)
+	vacancy, err = repository.GetVacancyByID(vacancyID)
 	if err != nil {
 		return models.Vacancy{}, err
 	}
@@ -46,11 +46,10 @@ func GetVacancyByID(userID uint, vacancyID uint) (models.Vacancy, error) {
 	if err := repository.RecordVacancyView(userID, vacancyID); err != nil {
 		return models.Vacancy{}, err
 	}
-
 	return vacancy, nil
 }
 
-func AddVacancy(userID uint, vacancy models.Vacancy) error {
+func AddVacancy(userID uint, vacancy models.Vacancy) (err error) {
 	if err := checkUserBlocked(userID); err != nil {
 		return err
 	}
@@ -62,7 +61,7 @@ func AddVacancy(userID uint, vacancy models.Vacancy) error {
 	return repository.AddVacancy(vacancy)
 }
 
-func UpdateVacancy(userID uint, vacancyID uint, updatedVacancy models.Vacancy) error {
+func UpdateVacancy(userID uint, vacancyID uint, updatedVacancy models.Vacancy) (err error) {
 	if err := checkUserBlocked(userID); err != nil {
 		return err
 	}
@@ -95,17 +94,25 @@ func UpdateVacancy(userID uint, vacancyID uint, updatedVacancy models.Vacancy) e
 		logger.Error.Printf("[service.UpdateVacancy] validation error: %v\n", err)
 		return err
 	}
-	return repository.UpdateVacancy(vacancyID, vacancy)
+	err = repository.UpdateVacancy(vacancyID, vacancy)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
-func DeleteVacancy(userID uint, vacancyID uint) error {
+func DeleteVacancy(userID uint, vacancyID uint) (err error) {
 	if err := checkUserBlocked(userID); err != nil {
 		return err
 	}
 	if err := checkVacancyBlocked(vacancyID); err != nil {
 		return err
 	}
-	return repository.DeleteVacancy(vacancyID)
+	err = repository.DeleteVacancy(vacancyID)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func GetVacancyReportByID(vacancyID uint) (*models.VacancyReport, error) {
@@ -123,4 +130,40 @@ func GetVacancyReportByID(vacancyID uint) (*models.VacancyReport, error) {
 	}
 
 	return report, nil
+}
+
+func BlockVacancy(userID uint, vacancyID uint, role string) (err error) {
+
+	if role != "admin" {
+		return errs.ErrAccessDenied
+	}
+	if err := checkUserBlocked(userID); err != nil {
+		return err
+	}
+	if err := checkVacancyBlocked(vacancyID); err != nil {
+		return err
+	}
+	err = repository.BlockVacancy(vacancyID)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func UnblockVacancy(userID uint, vacancyID uint, role string) (err error) {
+	if role != "admin" {
+		return errs.ErrAccessDenied
+	}
+
+	if err := checkUserBlocked(userID); err != nil {
+		return err
+	}
+	if err := checkVacancyBlocked(vacancyID); err != nil {
+		return err
+	}
+	err = repository.UnblockVacancy(vacancyID)
+	if err != nil {
+		return err
+	}
+	return nil
 }
