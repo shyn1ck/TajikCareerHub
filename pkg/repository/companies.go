@@ -2,9 +2,9 @@ package repository
 
 import (
 	"TajikCareerHub/db"
+	"TajikCareerHub/errs"
 	"TajikCareerHub/logger"
 	"TajikCareerHub/models"
-	"gorm.io/gorm"
 )
 
 func GetAllCompanies() ([]models.Company, error) {
@@ -25,7 +25,7 @@ func GetCompanyByID(id uint) (models.Company, error) {
 		Where("id = ? AND deleted_at = ?", id, false).
 		First(&company).Error
 	if err != nil {
-		if err == gorm.ErrRecordNotFound {
+		if err == errs.ErrRecordNotFound {
 			return models.Company{}, nil
 		}
 		logger.Error.Printf("[repository.GetCompanyByID]: Error retrieving company with ID %v. Error: %v\n", id, err)

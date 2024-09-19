@@ -108,22 +108,6 @@ func DeleteVacancy(userID uint, vacancyID uint) error {
 	return repository.DeleteVacancy(vacancyID)
 }
 
-func GetVacancyReport(userID uint) (reports []models.VacancyReport, err error) {
-
-	if err := checkUserBlocked(userID); err != nil {
-		return nil, errs.ErrUserBlocked
-	}
-	reports, err = repository.GetVacancyReport()
-	if err != nil {
-		return nil, err
-	}
-	if len(reports) == 0 {
-		return nil, errs.ErrNoReportsFound
-	}
-
-	return reports, nil
-}
-
 func GetVacancyReportByID(vacancyID uint) (*models.VacancyReport, error) {
 	err := checkVacancyBlocked(vacancyID)
 	if err != nil {

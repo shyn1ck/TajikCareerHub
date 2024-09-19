@@ -42,7 +42,6 @@ func InitRoutes() *gin.Engine {
 		vacancyGroup.POST("/", AddVacancy)
 		vacancyGroup.PUT("/:id", UpdateVacancy)
 		vacancyGroup.DELETE("/:id", DeleteVacancy)
-		vacancyGroup.GET("/report", GetVacancyReport)
 	}
 
 	resumeGroup := r.Group("/resume").Use(checkUserAuthentication)
@@ -77,9 +76,7 @@ func InitRoutes() *gin.Engine {
 
 	activityGroup := r.Group("/activity").Use(checkUserAuthentication)
 	{
-		activityGroup.GET("/", GetSpecialistActivityReport)
 		activityGroup.GET("/:user_id", GetSpecialistActivityReportByUser)
-		activityGroup.GET("/vacancy", GetVacancyReport)
 		activityGroup.GET("/vacancy/:id", GetVacancyReportByID)
 		activityGroup.GET("/resume/:id", GetResumeReportByID)
 	}

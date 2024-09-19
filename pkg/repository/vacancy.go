@@ -100,23 +100,6 @@ func DeleteVacancy(vacancyID uint) error {
 	return nil
 }
 
-func GetVacancyReport() ([]models.VacancyReport, error) {
-	var reports []models.VacancyReport
-	err := db.GetDBConn().
-		Table("vacancies").
-		Select("vacancies.id as vacancy_id, vacancies.title as vacancy_title, COUNT(DISTINCT views.user_id) as views_count, COUNT(DISTINCT applications.user_id) as applications_count").
-		Joins("left join views on views.vacancy_id = vacancies.id").
-		Joins("left join applications on applications.vacancy_id = vacancies.id").
-		Where("vacancies.deleted_at IS NULL").
-		Group("vacancies.id").
-		Scan(&reports).Error
-	if err != nil {
-		logger.Error.Printf("[repository.GetVacancyReport] Error retrieving vacancy report: %v", err)
-		return nil, err
-	}
-	return reports, nil
-}
-
 func GetVacancyReportByID(vacancyID uint) (*models.VacancyReport, error) {
 	var report models.VacancyReport
 	err := db.GetDBConn().

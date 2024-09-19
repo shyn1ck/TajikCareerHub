@@ -250,39 +250,6 @@ func DeleteVacancy(c *gin.Context) {
 	c.JSON(http.StatusNoContent, NewDefaultResponse("Vacancy deleted successfully"))
 }
 
-// GetVacancyReport godoc
-// @Summary Get report for vacancies
-// @Tags Reports
-// @Description Get a report of how many people viewed or applied to each vacancy
-// @ID get-vacancy-report
-// @Accept json
-// @Produce json
-// @Success 200 {array} models.VacancyReport
-// @Failure 400 {object} ErrorResponse "Invalid input"
-// @Failure 403 {object} ErrorResponse "Forbidden access"
-// @Failure 500 {object} ErrorResponse
-// @Security ApiKeyAuth
-// @Router /vacancy [get]
-func GetVacancyReport(c *gin.Context) {
-	ip := c.ClientIP()
-	logger.Info.Printf("[controllers.GetVacancyReport] Client IP: %s - Request to get vacancy report\n", ip)
-
-	userID, err := service.GetUserIDFromToken(c)
-	if err != nil {
-		handleError(c, err)
-		return
-	}
-
-	reports, err := service.GetVacancyReport(userID)
-	if err != nil {
-		handleError(c, err)
-		return
-	}
-
-	logger.Info.Printf("[controllers.GetVacancyReport] Client IP: %s - Successfully retrieved vacancy report\n", ip)
-	c.JSON(http.StatusOK, reports)
-}
-
 // GetVacancyReportByID godoc
 // @Summary Get report for a specific vacancy
 // @Tags Reports

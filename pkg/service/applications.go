@@ -67,19 +67,6 @@ func DeleteApplication(id, userID uint) error {
 	return nil
 }
 
-func GetSpecialistActivityReport() ([]models.SpecialistActivityReport, error) {
-	reports, err := repository.GetSpecialistActivityReport()
-	if err != nil {
-		return nil, err
-	}
-
-	if len(reports) == 0 {
-		return nil, errs.ErrNoReportsFound
-	}
-
-	return reports, nil
-}
-
 func UpdateApplicationStatus(applicationID uint, statusID uint) error {
 	validStatusIDs := map[uint]bool{
 		1: true, // Applied

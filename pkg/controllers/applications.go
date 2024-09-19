@@ -5,7 +5,6 @@ import (
 	"TajikCareerHub/logger"
 	"TajikCareerHub/models"
 	"TajikCareerHub/pkg/service"
-	"errors"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -189,36 +188,6 @@ func DeleteApplication(c *gin.Context) {
 	}
 	logger.Info.Printf("[controllers.DeleteApplication] Client IP: %s - Successfully soft deleted application with ID %v\n", ip, id)
 	c.JSON(http.StatusOK, NewDefaultResponse("Application deleted successfully"))
-}
-
-// GetSpecialistActivityReport godoc
-// @Summary Get specialist activity report
-// @Tags Reports
-// @Description Get a report of how many vacancies a specialist has applied for
-// @ID get-specialist-activity-report
-// @Accept json
-// @Produce json
-// @Success 200 {array} models.SpecialistActivityReport
-// @Failure 400 {object} ErrorResponse "Invalid input"
-// @Failure 500 {object} ErrorResponse
-// @Security ApiKeyAuth
-// @Router /activity [get]
-func GetSpecialistActivityReport(c *gin.Context) {
-	ip := c.ClientIP()
-	logger.Info.Printf("[controllers.GetSpecialistActivityReport] Client IP: %s - Request to get specialist activity report\n", ip)
-
-	reports, err := service.GetSpecialistActivityReport()
-	if err != nil {
-		if errors.Is(err, errs.ErrNoReportsFound) {
-			handleError(c, err)
-			return
-		}
-		handleError(c, err)
-		return
-	}
-
-	logger.Info.Printf("[controllers.GetSpecialistActivityReport] Client IP: %s - Successfully retrieved specialist activity report\n", ip)
-	c.JSON(http.StatusOK, reports)
 }
 
 // UpdateApplicationStatus godoc
