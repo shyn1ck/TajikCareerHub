@@ -67,15 +67,16 @@ func DeleteApplication(id, userID uint) error {
 	return nil
 }
 
-func GetSpecialistActivityReport(userID uint) ([]models.SpecialistActivityReport, error) {
-	err := checkUserBlocked(userID)
-	if err != nil {
-		return nil, errs.ErrUserBlocked
-	}
+func GetSpecialistActivityReport() ([]models.SpecialistActivityReport, error) {
 	reports, err := repository.GetSpecialistActivityReport()
 	if err != nil {
 		return nil, err
 	}
+
+	if len(reports) == 0 {
+		return nil, errs.ErrNoReportsFound
+	}
+
 	return reports, nil
 }
 

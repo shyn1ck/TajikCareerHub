@@ -71,17 +71,19 @@ func DeleteApplication(id uint) error {
 
 func GetSpecialistActivityReport() ([]models.SpecialistActivityReport, error) {
 	var reports []models.SpecialistActivityReport
+
 	err := db.GetDBConn().
 		Table("users").
 		Select("users.id as user_id, users.full_name as user_name, COUNT(applications.id) as application_count").
 		Joins("left join applications on applications.user_id = users.id").
-		Where("applications.deleted_at IS NULL").
+		Where("applications.deleted_at = false").
 		Group("users.id").
 		Scan(&reports).Error
+
 	if err != nil {
-		logger.Error.Printf("[repository.GetSpecialistActivityReport] Error retrieving specialist activity report: %v", err)
 		return nil, err
 	}
+
 	return reports, nil
 }
 

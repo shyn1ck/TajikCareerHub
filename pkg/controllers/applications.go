@@ -5,6 +5,7 @@ import (
 	"TajikCareerHub/logger"
 	"TajikCareerHub/models"
 	"TajikCareerHub/pkg/service"
+	"errors"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -198,20 +199,20 @@ func DeleteApplication(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Success 200 {array} models.SpecialistActivityReport
+// @Failure 400 {object} ErrorResponse "Invalid input"
 // @Failure 500 {object} ErrorResponse
 // @Security ApiKeyAuth
 // @Router /activity [get]
 func GetSpecialistActivityReport(c *gin.Context) {
 	ip := c.ClientIP()
 	logger.Info.Printf("[controllers.GetSpecialistActivityReport] Client IP: %s - Request to get specialist activity report\n", ip)
-	userID, err := service.GetUserIDFromToken(c)
-	if err != nil {
-		handleError(c, err)
-		return
-	}
 
-	reports, err := service.GetSpecialistActivityReport(userID)
+	reports, err := service.GetSpecialistActivityReport()
 	if err != nil {
+		if errors.Is(err, errs.ErrNoReportsFound) {
+			handleError(c, err)
+			return
+		}
 		handleError(c, err)
 		return
 	}
@@ -220,6 +221,20 @@ func GetSpecialistActivityReport(c *gin.Context) {
 	c.JSON(http.StatusOK, reports)
 }
 
+// UpdateApplicationStatus godoc
+// @Summary Update the status of an application
+// @Description Update the status of a specific application by its ID
+// @Tags Applications
+// @Accept json
+// @Produce json
+// @Param application_id path uint true "Application ID" example(123)
+// @Param status_id path uint true "Status ID" example(2)
+// @Success 200 {object} DefaultResponse "Status updated successfully"
+// @Failure 400 {object} ErrorResponse "Invalid input"
+// @Failure 403 {object} ErrorResponse "Forbidden access"
+// @Failure 404 {object} ErrorResponse "Application not found"
+// @Security ApiKeyAuth
+// @Router /application/{application_id}/status/{status_id} [put]
 func UpdateApplicationStatus(c *gin.Context) {
 	applicationIDStr := c.Param("application_id")
 	statusIDStr := c.Param("status_id")
