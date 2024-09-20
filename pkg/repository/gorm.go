@@ -1,8 +1,8 @@
 package repository
 
 import (
-	"TajikCareerHub/errs"
 	"TajikCareerHub/logger"
+	"TajikCareerHub/utils/errs"
 	"errors"
 	"github.com/lib/pq"
 	"gorm.io/gorm"

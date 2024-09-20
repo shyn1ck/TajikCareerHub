@@ -1,10 +1,10 @@
 package service
 
 import (
-	"TajikCareerHub/errs"
 	"TajikCareerHub/logger"
 	"TajikCareerHub/models"
 	"TajikCareerHub/pkg/repository"
+	"TajikCareerHub/utils/errs"
 )
 
 func GetAllVacancies(userID uint, search string, minSalary int, maxSalary int, location string, category string, sort string) ([]models.Vacancy, error) {

@@ -2,7 +2,7 @@ package service
 
 import (
 	"TajikCareerHub/configs"
-	"TajikCareerHub/errs"
+	"TajikCareerHub/utils/errs"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"os"

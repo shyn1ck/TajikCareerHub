@@ -1,7 +1,7 @@
 package models
 
 import (
-	"TajikCareerHub/errs"
+	"TajikCareerHub/utils/errs"
 	"strings"
 	"time"
 )

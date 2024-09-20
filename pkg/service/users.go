@@ -1,11 +1,11 @@
 package service
 
 import (
-	"TajikCareerHub/errs"
 	"TajikCareerHub/logger"
 	"TajikCareerHub/models"
 	"TajikCareerHub/pkg/repository"
 	"TajikCareerHub/utils"
+	"TajikCareerHub/utils/errs"
 )
 
 func GetAllUsers(role string) (users []models.User, err error) {

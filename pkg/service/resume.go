@@ -1,10 +1,10 @@
 package service
 
 import (
-	"TajikCareerHub/errs"
 	"TajikCareerHub/logger"
 	"TajikCareerHub/models"
 	"TajikCareerHub/pkg/repository"
+	"TajikCareerHub/utils/errs"
 )
 
 func GetAllResumes(search string, minExperienceYears int, location string, category string, userID uint) (resumes []models.Resume, err error) {

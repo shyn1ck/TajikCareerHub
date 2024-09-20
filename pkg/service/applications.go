@@ -1,10 +1,10 @@
 package service
 
 import (
-	"TajikCareerHub/errs"
 	"TajikCareerHub/logger"
 	"TajikCareerHub/models"
 	"TajikCareerHub/pkg/repository"
+	"TajikCareerHub/utils/errs"
 )
 
 func GetAllApplications(userID uint) (applications []models.Application, err error) {

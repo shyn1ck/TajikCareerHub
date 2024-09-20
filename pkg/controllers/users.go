@@ -1,10 +1,10 @@
 package controllers
 
 import (
-	"TajikCareerHub/errs"
 	"TajikCareerHub/logger"
 	"TajikCareerHub/models"
 	"TajikCareerHub/pkg/service"
+	"TajikCareerHub/utils/errs"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"

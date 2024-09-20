@@ -1,10 +1,10 @@
 package service
 
 import (
-	"TajikCareerHub/errs"
 	"TajikCareerHub/logger"
 	"TajikCareerHub/pkg/repository"
 	"TajikCareerHub/utils"
+	"TajikCareerHub/utils/errs"
 )
 
 func SignIn(username, password string) (accessToken string, err error) {

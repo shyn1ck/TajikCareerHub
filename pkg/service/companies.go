@@ -1,9 +1,9 @@
 package service
 
 import (
-	"TajikCareerHub/errs"
 	"TajikCareerHub/models"
 	"TajikCareerHub/pkg/repository"
+	"TajikCareerHub/utils/errs"
 )
 
 func GetAllCompanies(userID uint) (companies []models.Company, err error) {

@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"TajikCareerHub/errs"
+	"TajikCareerHub/utils/errs"
 	"errors"
 	"github.com/gin-gonic/gin"
 	"net/http"
