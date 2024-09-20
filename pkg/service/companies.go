@@ -39,24 +39,46 @@ func AddCompany(userID uint, company models.Company, role string) (err error) {
 		return err
 	}
 
-	if role != "employer" {
+	if role != "employer" && role != "admin" {
 		return errs.ErrAccessDenied
 	}
-	return repository.AddCompany(company)
+
+	err = repository.AddCompany(company)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
-func UpdateCompany(userID uint, company models.Company) (err error) {
+func UpdateCompany(userID uint, company models.Company, role string) (err error) {
 	err = checkUserBlocked(userID)
 	if err != nil {
 		return err
 	}
-	return repository.UpdateCompany(company)
+	if role != "employer" && role != "admin" {
+		return errs.ErrAccessDenied
+	}
+
+	err = repository.UpdateCompany(company)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
-func DeleteCompany(id uint, userID uint) (err error) {
+func DeleteCompany(id uint, userID uint, role string) (err error) {
 	err = checkUserBlocked(userID)
 	if err != nil {
 		return err
 	}
-	return repository.DeleteCompany(id)
+
+	if role != "employer" && role != "admin" {
+		return errs.ErrAccessDenied
+	}
+
+	err = repository.DeleteCompany(id)
+	if err != nil {
+		return err
+	}
+	return nil
 }

@@ -68,7 +68,12 @@ func DeleteApplication(id, userID uint) (err error) {
 	return nil
 }
 
-func UpdateApplicationStatus(applicationID uint, statusID uint) (err error) {
+func UpdateApplicationStatus(applicationID uint, statusID uint, userID uint) (err error) {
+	err = checkUserBlocked(userID)
+	if err != nil {
+		return err
+	}
+
 	validStatusIDs := map[uint]bool{
 		1: true, // Applied
 		2: true, // Under Review
@@ -78,6 +83,7 @@ func UpdateApplicationStatus(applicationID uint, statusID uint) (err error) {
 	if !validStatusIDs[statusID] {
 		return errs.ErrIDIsNotCorrect
 	}
+
 	err = repository.UpdateApplicationStatus(applicationID, statusID)
 	if err != nil {
 		return err

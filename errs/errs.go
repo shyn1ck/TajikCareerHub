@@ -54,4 +54,5 @@ var (
 	ErrTokenParseError                             = errors.New("ErrTokenParseError")
 	ErrAuthorizationHeaderMissing                  = errors.New("ErrAuthorizationHeaderMissing")
 	ErrCompanyNotFound                             = errors.New("ErrCompanyNotFound")
+	ErrIncorrectInput                              = errors.New("ErrIncorrectInput")
 )

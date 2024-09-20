@@ -46,36 +46,3 @@ func checkUserAuthentication(c *gin.Context) {
 	c.Set(userRoleCtx, claims.Role)
 	c.Next()
 }
-
-func adminOnly(c *gin.Context) {
-	role, exists := c.Get(userRoleCtx)
-	if !exists || role != "admin" {
-		c.AbortWithStatusJSON(http.StatusForbidden, gin.H{
-			"error": "access forbidden: admins only",
-		})
-		return
-	}
-	c.Next()
-}
-
-func employerOnly(c *gin.Context) {
-	role, exists := c.Get(userRoleCtx)
-	if !exists || role != "Employer" {
-		c.AbortWithStatusJSON(http.StatusForbidden, gin.H{
-			"error": "access forbidden: employers only",
-		})
-		return
-	}
-	c.Next()
-}
-
-func specialistOnly(c *gin.Context) {
-	role, exists := c.Get(userRoleCtx)
-	if !exists || role != "Specialist" {
-		c.AbortWithStatusJSON(http.StatusForbidden, gin.H{
-			"error": "access forbidden: specialists only",
-		})
-		return
-	}
-	c.Next()
-}

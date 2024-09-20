@@ -6,7 +6,6 @@ import (
 	"TajikCareerHub/models"
 	"TajikCareerHub/pkg/repository"
 	"TajikCareerHub/utils"
-	"errors"
 )
 
 func GetAllUsers(role string) (users []models.User, err error) {
@@ -94,11 +93,16 @@ func UpdateUser(userID uint, user models.User) (err error) {
 	return nil
 }
 
-func DeleteUser(id uint) (err error) {
+func DeleteUser(id uint, userID uint) (err error) {
 	if id == 0 {
 		logger.Error.Printf("[service.DeleteUser] Invalid user ID: %d", id)
-		return errors.New("invalid user ID")
+		return errs.ErrIDIsNotCorrect
 	}
+	err = checkUserBlocked(userID)
+	if err != nil {
+		return errs.ErrUserBlocked
+	}
+
 	err = repository.DeleteUser(id)
 	if err != nil {
 		return err

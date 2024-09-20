@@ -41,6 +41,7 @@ func InitRoutes() *gin.Engine {
 		vacancyGroup.GET("/:vacancyID", GetVacancyByID)
 		vacancyGroup.POST("/", AddVacancy)
 		vacancyGroup.PUT("/:id", UpdateVacancy)
+		vacancyGroup.DELETE("/:id", DeleteVacancy)
 		vacancyGroup.DELETE("/block/:id", BlockVacancy)
 		vacancyGroup.PATCH("/unblock/:id", UnblockVacancy)
 	}
@@ -94,7 +95,6 @@ func InitRoutes() *gin.Engine {
 	if err := r.Run(fmt.Sprintf("%s:%s", configs.AppSettings.AppParams.ServerURL, configs.AppSettings.AppParams.PortRun)); err != nil {
 		logger.Error.Fatalf("Error starting server: %v", err)
 	}
-
 	return r
 }
 

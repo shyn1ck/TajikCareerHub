@@ -26,6 +26,7 @@ import (
 // @Param sort query string false "Sorting order for vacancies"
 // @Success 200 {array}  models.Vacancy "Successfully retrieved list of vacancies"
 // @Failure 400 {object} ErrorResponse "Bad Request"
+// @Failure 403  {object}  ErrorResponse 	 "Access Denied"
 // @Failure 500 {object} ErrorResponse "Internal Server Error"
 // @Security     ApiKeyAuth
 // @Router /vacancy [get]
@@ -49,7 +50,7 @@ func GetAllVacancies(c *gin.Context) {
 		minSalary, err = strconv.Atoi(minSalaryStr)
 		if err != nil {
 			logger.Error.Printf("[controllers.GetAllVacancies] Error converting minSalary to int: %s", err.Error())
-			handleError(c, err)
+			handleError(c, errs.ErrIDIsNotCorrect)
 			return
 		}
 	}
@@ -58,7 +59,7 @@ func GetAllVacancies(c *gin.Context) {
 		maxSalary, err = strconv.Atoi(maxSalaryStr)
 		if err != nil {
 			logger.Error.Printf("[controllers.GetAllVacancies] Error converting maxSalary to int: %s", err.Error())
-			handleError(c, err)
+			handleError(c, errs.ErrIncorrectInput)
 			return
 		}
 	}
@@ -83,6 +84,7 @@ func GetAllVacancies(c *gin.Context) {
 // @Param vacancyID path integer true "ID of the vacancy to retrieve"
 // @Success 200 {object} models.SwagVacancy "Successfully retrieved vacancy"
 // @Failure 400 {object} ErrorResponse "Bad Request"
+// @Failure 403  {object}  ErrorResponse 	 "Access Denied"
 // @Failure 404 {object} ErrorResponse "Vacancy Not Found"
 // @Failure 500 {object} ErrorResponse "Internal Server Error"
 // @Security     ApiKeyAuth
@@ -173,6 +175,7 @@ func AddVacancy(c *gin.Context) {
 // @Param vacancy body models.SwagVacancy true "Updated vacancy object"
 // @Success 200 {object} DefaultResponse "Vacancy updated successfully"
 // @Failure 400 {object} ErrorResponse "Bad Request"
+// @Failure 403 {object} ErrorResponse 	 "Access Denied"
 // @Failure 404 {object} ErrorResponse "Vacancy Not Found"
 // @Failure 500 {object} ErrorResponse "Internal Server Error"
 // @Security     ApiKeyAuth
@@ -184,7 +187,7 @@ func UpdateVacancy(c *gin.Context) {
 	id, err := strconv.ParseUint(idStr, 10, 32)
 	if err != nil {
 		logger.Error.Printf("[controllers.UpdateVacancy] Error converting id to int: %s", err.Error())
-		handleError(c, err)
+		handleError(c, errs.ErrIDIsNotCorrect)
 		return
 	}
 
@@ -220,6 +223,7 @@ func UpdateVacancy(c *gin.Context) {
 // @Param userID query integer true "User ID to check if the user is blocked"
 // @Param vacancyID path integer true "ID of the vacancy to delete"
 // @Success 204 {object} DefaultResponse "Vacancy deleted successfully"
+// @Failure 403 {object} ErrorResponse 	 "Access Denied"
 // @Failure 404 {object} ErrorResponse "Vacancy Not Found"
 // @Failure 500 {object} ErrorResponse "Internal Server Error"
 // @Security     ApiKeyAuth

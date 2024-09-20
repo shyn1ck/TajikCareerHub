@@ -205,20 +205,29 @@ func DeleteApplication(c *gin.Context) {
 // @Security ApiKeyAuth
 // @Router /application/{application_id}/status/{status_id} [put]
 func UpdateApplicationStatus(c *gin.Context) {
+	ip := c.ClientIP()
 	applicationIDStr := c.Param("application_id")
 	statusIDStr := c.Param("status_id")
 	applicationID, err := strconv.ParseUint(applicationIDStr, 10, 32)
 	if err != nil {
-		handleError(c, err)
+		logger.Info.Printf("[controllers.DeleteApplication] Client IP: %s - Client attempted to delete application with ID %s. Error: Invalid application ID\n", ip, applicationID)
+		handleError(c, errs.ErrIDIsNotCorrect)
 		return
 	}
 
 	statusID, err := strconv.ParseUint(statusIDStr, 10, 32)
 	if err != nil {
+		handleError(c, errs.ErrIDIsNotCorrect)
+		logger.Info.Printf("[controllers.DeleteApplication] Client IP: %s - Client attempted to delete application with ID %s. Error: Invalid application status ID\n", ip, statusIDStr)
+		return
+	}
+	userID, err := service.GetUserIDFromToken(c)
+	if err != nil {
 		handleError(c, err)
 		return
 	}
-	err = service.UpdateApplicationStatus(uint(applicationID), uint(statusID))
+
+	err = service.UpdateApplicationStatus(uint(applicationID), uint(statusID), uint(userID))
 	if err != nil {
 		handleError(c, err)
 		return

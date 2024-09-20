@@ -149,7 +149,13 @@ func UpdateCompany(c *gin.Context) {
 		handleError(c, err)
 		return
 	}
-	if err := service.UpdateCompany(userID, company); err != nil {
+	role, err := service.GetRoleFromToken(c)
+	if err != nil {
+		handleError(c, err)
+		return
+	}
+
+	if err := service.UpdateCompany(userID, company, role); err != nil {
 		handleError(c, err)
 		return
 	}
@@ -185,7 +191,13 @@ func DeleteCompany(c *gin.Context) {
 		handleError(c, err)
 		return
 	}
-	if err := service.DeleteCompany(uint(id), userID); err != nil {
+
+	role, err := service.GetRoleFromToken(c)
+	if err != nil {
+		handleError(c, err)
+		return
+	}
+	if err := service.DeleteCompany(uint(id), userID, role); err != nil {
 		handleError(c, err)
 		return
 	}

@@ -22,6 +22,7 @@ import (
 // @Param        min-experience-years  query   int     false  "Minimum years of experience"
 // @Success      200  {array}   models.SwagResume   "Success"  "List of resumes"
 // @Failure      400  {object}  ErrorResponse  "Invalid request"
+// @Failure      403  {object}  ErrorResponse  "Access Denied"
 // @Failure      500  {object}  ErrorResponse  "Internal server error"
 // @Security     ApiKeyAuth
 // @Router       /resume [get]
@@ -31,7 +32,6 @@ func GetAllResumes(c *gin.Context) {
 	location := c.Query("location")
 	category := c.Query("category")
 	minExperienceYearsStr := c.Query("min-experience-years")
-
 	logger.Info.Printf("[controllers.GetAllResumes] Client IP: %s - Request to get resumes with search: %s, minExperienceYears: %s, location: %s, category: %s", ip, search, minExperienceYearsStr, location, category)
 
 	var minExperienceYears int
@@ -70,6 +70,7 @@ func GetAllResumes(c *gin.Context) {
 // @Param        id  path    int     true    "Resume ID"
 // @Success      200  {object}  models.SwagResume  "Success"
 // @Failure      400  {object}  ErrorResponse  "Invalid ID"
+// @Failure      403  {object}  ErrorResponse  "Access Denied"
 // @Failure      500  {object}  ErrorResponse  "Internal server error"
 // @Security     ApiKeyAuth
 // @Router       /resume/{id} [get]
@@ -77,12 +78,12 @@ func GetResumeByID(c *gin.Context) {
 	ip := c.ClientIP()
 	idStr := c.Param("id")
 	id, err := strconv.ParseUint(idStr, 10, 32)
+	logger.Info.Printf("[controllers.GetResumeByID] Client IP: %s - Request to get resume with ID: %d", ip, id)
 	if err != nil {
 		logger.Error.Printf("[controllers.GetResumeByID] Client IP: %s - Error parsing resume ID: %s, Error: %v", ip, idStr, err)
 		handleError(c, errs.ErrIDIsNotCorrect)
 		return
 	}
-	logger.Info.Printf("[controllers.GetResumeByID] Client IP: %s - Request to get resume with ID: %d", ip, id)
 	userID, err := service.GetUserIDFromToken(c)
 	if err != nil {
 		handleError(c, err)
@@ -93,7 +94,6 @@ func GetResumeByID(c *gin.Context) {
 		handleError(c, err)
 		return
 	}
-
 	logger.Info.Printf("[controllers.GetResumeByID] Client IP: %s - Successfully retrieved resume with ID: %d", ip, id)
 	c.JSON(http.StatusOK, resume)
 }
@@ -107,6 +107,7 @@ func GetResumeByID(c *gin.Context) {
 // @Param        resume  body   models.SwagResume  true  "Resume object"
 // @Success      201  {object}  DefaultResponse  "Resume created successfully"
 // @Failure      400  {object}  ErrorResponse  "Invalid request"
+// @Failure      403  {object}  ErrorResponse  "Access Denied"
 // @Failure      500  {object}  ErrorResponse  "Internal server error"
 // @Security     ApiKeyAuth
 // @Router       /resume [post]
@@ -117,9 +118,7 @@ func AddResume(c *gin.Context) {
 		handleError(c, err)
 		return
 	}
-
 	logger.Info.Printf("[controllers.AddResume] Client IP: %s - Request to add resume with UserID: %d", ip, userID)
-
 	var resume models.Resume
 	if err := c.BindJSON(&resume); err != nil {
 		logger.Error.Printf("[controllers.AddResume] Client IP: %s - Error parsing resume JSON: %v", ip, err)
@@ -132,7 +131,6 @@ func AddResume(c *gin.Context) {
 		handleError(c, err)
 		return
 	}
-
 	logger.Info.Printf("[controllers.AddResume] Client IP: %s - Successfully added resume: %v", ip, resume)
 	c.JSON(http.StatusCreated, NewDefaultResponse("Resume added successfully"))
 }
@@ -147,6 +145,7 @@ func AddResume(c *gin.Context) {
 // @Param        resume  body   models.Resume  true  "Updated resume object"
 // @Success      200  {object}  DefaultResponse  "Success"
 // @Failure      400  {object}  ErrorResponse  "Invalid ID or request"
+// @Failure      403  {object}  ErrorResponse  "Access Denied"
 // @Failure      500  {object}  ErrorResponse  "Internal server error"
 // @Security     ApiKeyAuth
 // @Router       /resume/{id} [put]
@@ -159,9 +158,7 @@ func UpdateResume(c *gin.Context) {
 		handleError(c, errs.ErrIDIsNotCorrect)
 		return
 	}
-
 	logger.Info.Printf("[controllers.UpdateResume] Client IP: %s - Request to update resume with ID: %d", ip, id)
-
 	userID, err := service.GetUserIDFromToken(c)
 	if err != nil {
 		handleError(c, err)
@@ -194,6 +191,7 @@ func UpdateResume(c *gin.Context) {
 // @Param        id  path    int     true    "Resume ID"
 // @Success      200  {object}  DefaultResponse  "Success"
 // @Failure      400  {object}  ErrorResponse  "Invalid ID"
+// @Failure      403  {object}  ErrorResponse  "Access Denied"
 // @Failure      500  {object}  ErrorResponse  "Internal server error"
 // @Security     ApiKeyAuth
 // @Router       /resume/{id} [delete]
@@ -206,9 +204,7 @@ func DeleteResume(c *gin.Context) {
 		handleError(c, err)
 		return
 	}
-
 	logger.Info.Printf("[controllers.DeleteResume] Client IP: %s - Request to delete resume with ID: %d", ip, id)
-
 	userID, err := service.GetUserIDFromToken(c)
 	if err != nil {
 		handleError(c, err)
@@ -294,9 +290,7 @@ func UnblockResume(c *gin.Context) {
 		handleError(c, err)
 		return
 	}
-
 	logger.Info.Printf("[controllers.UnblockResume] Client IP: %s - Request to unblock resume with ID: %d", ip, id)
-
 	userID, err := service.GetUserIDFromToken(c)
 	if err != nil {
 		handleError(c, err)

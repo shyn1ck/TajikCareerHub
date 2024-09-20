@@ -20,7 +20,7 @@ import (
 // @Success      200  {object}  models.VacancyCategory   "Success"
 // @Failure      400  {object}  ErrorResponse  "Invalid ID"
 // @Failure      404  {object}  ErrorResponse  "Category not found"
-// @Failure      403   {object}  ErrorResponse  "Access Denied"
+// @Failure      403  {object}  ErrorResponse  "Access Denied"
 // @Failure      500  {object}  ErrorResponse  "Internal server error"
 // @Security     ApiKeyAuth
 // @Router       /category/{id} [get]
@@ -51,6 +51,7 @@ func GetCategoryByID(c *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Success      200  {array}   models.VacancyCategory  "Success"
+// @Failure      403  {object}  ErrorResponse  "Access Denied"
 // @Failure      500  {object}  ErrorResponse  "Internal server error"
 // @Security     ApiKeyAuth
 // @Router       /category [get]
@@ -77,7 +78,7 @@ func GetAllCategories(c *gin.Context) {
 // @Param        category  body models.VacancyCategory  true  "Category data"
 // @Success      201  {object}  DefaultResponse  "Success"
 // @Failure      400  {object}  ErrorResponse  "Invalid input"
-// @Failure      403   {object}  ErrorResponse  "Access Denied"
+// @Failure      403  {object}  ErrorResponse  "Access Denied"
 // @Failure      500  {object}  ErrorResponse  "Internal server error"
 // @Security     ApiKeyAuth
 // @Router       /category [post]
@@ -114,7 +115,7 @@ func CreateCategory(c *gin.Context) {
 // @Success      200  {object}  DefaultResponse  "Success"
 // @Failure      400  {object}  ErrorResponse  "Invalid ID or input"
 // @Failure      404  {object}  ErrorResponse  "Category not found"
-// @Failure      403   {object}  ErrorResponse  "Access Denied"
+// @Failure      403   {object} ErrorResponse  "Access Denied"
 // @Failure      500  {object}  ErrorResponse  "Internal server error"
 // @Security     ApiKeyAuth
 // @Router       /category/{id} [put]
@@ -156,7 +157,7 @@ func UpdateCategory(c *gin.Context) {
 // @Param        id  path    int     true    "Category ID"
 // @Success      200  {object}  DefaultResponse  "Success"
 // @Failure      400  {object}  ErrorResponse  "Invalid ID"
-// @Failure      403   {object}  ErrorResponse  "Access Denied"
+// @Failure      403  {object}  ErrorResponse  "Access Denied"
 // @Failure      500  {object}  ErrorResponse  "Internal server error"
 // @Security     ApiKeyAuth
 // @Router       /category/{id} [delete]

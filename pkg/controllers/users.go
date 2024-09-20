@@ -20,6 +20,7 @@ import (
 // @Param        username  query   string  false  "Username to filter the user"
 // @Success      200  {array}   models.SwagUser  "List of users"
 // @Success      200  {object}  models.User  "Single user details"
+// @Failure      403  {object}  ErrorResponse "Access Denied"
 // @Failure      500  {object}  ErrorResponse  "Internal server error"
 // @Security     ApiKeyAuth
 // @Router       /user [get]
@@ -60,6 +61,7 @@ func GetAllUsers(c *gin.Context) {
 // @Param        id  path    int     true    "User ID"
 // @Success      200  {object}  models.SwagUser  "Success"
 // @Failure      400  {object}  ErrorResponse  "Invalid ID"
+// @Failure      403  {object}  ErrorResponse "Access Denied"
 // @Failure      404  {object}  ErrorResponse  "User not found"
 // @Failure      500  {object}  ErrorResponse  "Internal server error"
 // @Security     ApiKeyAuth
@@ -118,9 +120,10 @@ func CreateUser(c *gin.Context) {
 // @Produce json
 // @Param passwordRequest body PasswordRequest true "Password request data"
 // @Success 200 {object} DefaultResponse "user password update successfully"
-// @Failure 400 {object} ErrorResponse
-// @Failure 401 {object} ErrorResponse
-// @Failure 500 {object} ErrorResponse
+// @Failure 400 {object} ErrorResponse "Invalid input"
+// @Failure 403 {object} ErrorResponse "Access Denied"
+// @Failure 401 {object} ErrorResponse "Unauthorized"
+// @Failure 500 {object} ErrorResponse "Server error"
 // @Security ApiKeyAuth
 // @Router /user/password [patch]
 func UpdateUserPassword(c *gin.Context) {
@@ -164,6 +167,7 @@ func UpdateUserPassword(c *gin.Context) {
 // @Param        user  body     models.SwagUser  true  "Updated user data"
 // @Success      200  {object}  DefaultResponse  "Success"
 // @Failure      400  {object}  ErrorResponse  "Invalid ID or input"
+// @Failure 	 403  {object}  ErrorResponse "Access Denied"
 // @Failure      404  {object}  ErrorResponse  "User not found"
 // @Failure      500  {object}  ErrorResponse  "Internal server error"
 // @Security     ApiKeyAuth
@@ -198,7 +202,6 @@ func UpdateUser(c *gin.Context) {
 		handleError(c, errs.ErrShouldBindJson)
 		return
 	}
-
 	user := models.User{
 		ID: uint(userID),
 	}
@@ -239,6 +242,7 @@ func UpdateUser(c *gin.Context) {
 // @Param        id  path    int     true    "User ID"
 // @Success      200  {object}  DefaultResponse  "User deleted successfully"
 // @Failure      400  {object}  ErrorResponse  "Invalid ID"
+// @Failure 	 403  {object}  ErrorResponse "Access Denied"
 // @Failure      500  {object}  ErrorResponse  "Internal server error"
 // @Security     ApiKeyAuth
 // @Router       /user/{id} [delete]
@@ -252,7 +256,12 @@ func DeleteUser(c *gin.Context) {
 		return
 	}
 
-	if err := service.DeleteUser(uint(id)); err != nil {
+	userID, err := service.GetUserIDFromToken(c)
+	if err != nil {
+		handleError(c, err)
+		return
+	}
+	if err := service.DeleteUser(uint(id), userID); err != nil {
 		handleError(c, err)
 		return
 	}
@@ -269,6 +278,7 @@ func DeleteUser(c *gin.Context) {
 // @Param        id  path    integer  true  "User ID"  example(1)
 // @Success      200  {object}  DefaultResponse  "User blocked successfully"
 // @Failure      400  {object}  ErrorResponse    "Invalid ID"
+// @Failure 	 403  {object}  ErrorResponse 	 "Access Denied"
 // @Failure      500  {object}  ErrorResponse    "Internal server error"
 // @Security     ApiKeyAuth
 // @Router       /user/block/{id} [patch]
@@ -305,6 +315,7 @@ func BlockUser(c *gin.Context) {
 // @Param        id  path    integer  true  "User ID"  example(1)
 // @Success      200  {object}  DefaultResponse  "User unblocked successfully"
 // @Failure      400  {object}  ErrorResponse    "Invalid ID"
+// @Failure 	 403  {object}  ErrorResponse 	 "Access Denied"
 // @Failure      500  {object}  ErrorResponse    "Internal server error"
 // @Security     ApiKeyAuth
 // @Router       /user/unblock/{id} [patch]
