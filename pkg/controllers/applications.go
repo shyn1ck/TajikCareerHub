@@ -17,8 +17,9 @@ import (
 // @Accept json
 // @Produce json
 // @Success 200 {array} models.SwaggerApplication
+// @failure 403 {object} ErrorResponse "Access Denied"
 // @Failure 401 {object} ErrorResponse
-// @Router /application [get]
+// @Router /applications [get]
 // @Security ApiKeyAuth
 func GetAllApplications(c *gin.Context) {
 	ip := c.ClientIP()
@@ -48,7 +49,7 @@ func GetAllApplications(c *gin.Context) {
 // @Failure 400 {object} ErrorResponse
 // @Failure 401 {object} ErrorResponse
 // @Failure 404 {object} ErrorResponse
-// @Router /application/{id} [get]
+// @Router /applications/{id} [get]
 // @Security ApiKeyAuth
 func GetApplicationByID(c *gin.Context) {
 	ip := c.ClientIP()
@@ -84,7 +85,7 @@ func GetApplicationByID(c *gin.Context) {
 // @Success 201 {object} DefaultResponse
 // @Failure 400 {object} ErrorResponse
 // @Failure 401 {object} ErrorResponse
-// @Router /application [post]
+// @Router /applications [post]
 // @Security ApiKeyAuth
 func AddApplication(c *gin.Context) {
 	ip := c.ClientIP()
@@ -120,7 +121,7 @@ func AddApplication(c *gin.Context) {
 // @Failure 400 {object} ErrorResponse
 // @Failure 401 {object} ErrorResponse
 // @Failure 404 {object} ErrorResponse
-// @Router /application/{id} [put]
+// @Router /applications/{id} [put]
 // @Security ApiKeyAuth
 func UpdateApplication(c *gin.Context) {
 	ip := c.ClientIP()
@@ -164,7 +165,7 @@ func UpdateApplication(c *gin.Context) {
 // @Failure 400 {object} ErrorResponse
 // @Failure 401 {object} ErrorResponse
 // @Failure 404 {object} ErrorResponse
-// @Router /application/{id} [delete]
+// @Router /applications/{id} [delete]
 // @Security ApiKeyAuth
 func DeleteApplication(c *gin.Context) {
 	ip := c.ClientIP()
@@ -203,7 +204,7 @@ func DeleteApplication(c *gin.Context) {
 // @Failure 403 {object} ErrorResponse "Forbidden access"
 // @Failure 404 {object} ErrorResponse "Application not found"
 // @Security ApiKeyAuth
-// @Router /application/{application_id}/status/{status_id} [put]
+// @Router /applications/{application_id}/status/{status_id} [put]
 func UpdateApplicationStatus(c *gin.Context) {
 	ip := c.ClientIP()
 	applicationIDStr := c.Param("application_id")

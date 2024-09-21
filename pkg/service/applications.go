@@ -49,6 +49,7 @@ func UpdateApplication(application models.Application) (err error) {
 	if err != nil {
 		return err
 	}
+
 	err = repository.UpdateApplication(application.ID, application)
 	if err != nil {
 		return err
@@ -61,6 +62,7 @@ func DeleteApplication(id, userID uint) (err error) {
 	if err != nil {
 		return err
 	}
+
 	err = repository.DeleteApplication(id)
 	if err != nil {
 		return err

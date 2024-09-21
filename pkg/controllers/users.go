@@ -23,7 +23,7 @@ import (
 // @Failure      403  {object}  ErrorResponse "Access Denied"
 // @Failure      500  {object}  ErrorResponse  "Internal server error"
 // @Security     ApiKeyAuth
-// @Router       /user [get]
+// @Router       /users [get]
 func GetAllUsers(c *gin.Context) {
 	ip := c.ClientIP()
 	username := c.Query("username")
@@ -65,7 +65,7 @@ func GetAllUsers(c *gin.Context) {
 // @Failure      404  {object}  ErrorResponse  "User not found"
 // @Failure      500  {object}  ErrorResponse  "Internal server error"
 // @Security     ApiKeyAuth
-// @Router       /user/{id} [get]
+// @Router       /users/{id} [get]
 func GetUserByID(c *gin.Context) {
 	ip := c.ClientIP()
 	idStr := c.Param("id")
@@ -85,33 +85,6 @@ func GetUserByID(c *gin.Context) {
 	c.JSON(http.StatusOK, user)
 }
 
-// CreateUser godoc
-// @Summary      Create a new user
-// @Description  Create a new user with the provided details
-// @Tags         Users
-// @Accept       json
-// @Produce      json
-// @Param        user  body     models.SwagUser  true  "User data"
-// @Success      201  {object}  DefaultResponse "Success"
-// @Failure      400  {object}  ErrorResponse  "Invalid input"
-// @Failure      500  {object}  ErrorResponse  "Internal server error"
-// @Router       /user [post]
-func CreateUser(c *gin.Context) {
-	ip := c.ClientIP()
-	var user models.User
-	if err := c.ShouldBindJSON(&user); err != nil {
-		handleError(c, err)
-		return
-	}
-	logger.Info.Printf("[controllers.CreateUser] Client IP: %s - Request to create user: %v\n", ip, user)
-	if _, err := service.CreateUser(user); err != nil {
-		handleError(c, err)
-		return
-	}
-	logger.Info.Printf("[controllers.CreateUser] Client IP: %s - User %v created successfully.\n", ip, user.UserName)
-	c.JSON(http.StatusCreated, NewDefaultResponse("User created successfully."))
-}
-
 // UpdateUserPassword godoc
 // @Summary Update user password
 // @Description Update the password for the current user. Requires authentication.
@@ -125,7 +98,7 @@ func CreateUser(c *gin.Context) {
 // @Failure 401 {object} ErrorResponse "Unauthorized"
 // @Failure 500 {object} ErrorResponse "Server error"
 // @Security ApiKeyAuth
-// @Router /user/password [patch]
+// @Router /users/password [patch]
 func UpdateUserPassword(c *gin.Context) {
 	ip := c.ClientIP()
 	userID, err := service.GetUserIDFromToken(c)
@@ -171,7 +144,7 @@ func UpdateUserPassword(c *gin.Context) {
 // @Failure      404  {object}  ErrorResponse  "User not found"
 // @Failure      500  {object}  ErrorResponse  "Internal server error"
 // @Security     ApiKeyAuth
-// @Router       /user/{id} [put]
+// @Router       /users/{id} [put]
 func UpdateUser(c *gin.Context) {
 	ip := c.ClientIP()
 	id := c.Param("id")
@@ -245,7 +218,7 @@ func UpdateUser(c *gin.Context) {
 // @Failure 	 403  {object}  ErrorResponse "Access Denied"
 // @Failure      500  {object}  ErrorResponse  "Internal server error"
 // @Security     ApiKeyAuth
-// @Router       /user/{id} [delete]
+// @Router       /users/{id} [delete]
 func DeleteUser(c *gin.Context) {
 	ip := c.ClientIP()
 	idStr := c.Param("id")
@@ -281,7 +254,7 @@ func DeleteUser(c *gin.Context) {
 // @Failure 	 403  {object}  ErrorResponse 	 "Access Denied"
 // @Failure      500  {object}  ErrorResponse    "Internal server error"
 // @Security     ApiKeyAuth
-// @Router       /user/block/{id} [patch]
+// @Router       /users/block/{id} [patch]
 func BlockUser(c *gin.Context) {
 	ip := c.ClientIP()
 	idParam := c.Param("id")
@@ -318,7 +291,7 @@ func BlockUser(c *gin.Context) {
 // @Failure 	 403  {object}  ErrorResponse 	 "Access Denied"
 // @Failure      500  {object}  ErrorResponse    "Internal server error"
 // @Security     ApiKeyAuth
-// @Router       /user/unblock/{id} [patch]
+// @Router       /users/unblock/{id} [patch]
 func UnblockUser(c *gin.Context) {
 	ip := c.ClientIP()
 	idParam := c.Param("id")
@@ -355,7 +328,7 @@ func UnblockUser(c *gin.Context) {
 // @Failure 403 {object} ErrorResponse "Forbidden access"
 // @Failure 500 {object} ErrorResponse
 // @Security ApiKeyAuth
-// @Router /activity [get]
+// @Router /activities [get]
 func GetSpecialistActivityReportByUser(c *gin.Context) {
 	ip := c.ClientIP()
 	logger.Info.Printf("[controllers.GetSpecialistActivityReportByUser] Client IP: %s - Request to get specialist activity report for user\n", ip)

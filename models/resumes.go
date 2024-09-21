@@ -46,6 +46,7 @@ type SwagResume struct {
 	ExperienceYears   uint   `json:"experience_years" gorm:"not null"`
 	Location          string `json:"location" gorm:"type:varchar(255)"`
 	VacancyCategoryID uint   `json:"vacancy_category_id" gorm:"not null"`
+	Title             string `json:"title" gorm:"type:varchar(255)"`
 }
 
 type ResumeReport struct {

@@ -19,6 +19,7 @@ import (
 // @Param input body models.SwagUser true "User registration information"
 // @Success 201 {object} DefaultResponse "User created successfully"
 // @Failure 400 {object} ErrorResponse "Bad Request"
+// @Failure 403 {object}  ErrorResponse  "Access Denied"
 // @Failure 500 {object} ErrorResponse "Internal Server Error"
 // @Router /auth/sign-up [post]
 func SignUp(c *gin.Context) {

@@ -23,7 +23,7 @@ import (
 // @Failure      403  {object}  ErrorResponse  "Access Denied"
 // @Failure      500  {object}  ErrorResponse  "Internal server error"
 // @Security     ApiKeyAuth
-// @Router       /category/{id} [get]
+// @Router       /categories/{id} [get]
 func GetCategoryByID(c *gin.Context) {
 	ip := c.ClientIP()
 	idStr := c.Param("id")
@@ -54,7 +54,7 @@ func GetCategoryByID(c *gin.Context) {
 // @Failure      403  {object}  ErrorResponse  "Access Denied"
 // @Failure      500  {object}  ErrorResponse  "Internal server error"
 // @Security     ApiKeyAuth
-// @Router       /category [get]
+// @Router       /categories [get]
 func GetAllCategories(c *gin.Context) {
 	ip := c.ClientIP()
 	logger.Info.Printf("[controllers.GetAllCategories] Client IP: %s - Client requested all categories\n", ip)
@@ -81,7 +81,7 @@ func GetAllCategories(c *gin.Context) {
 // @Failure      403  {object}  ErrorResponse  "Access Denied"
 // @Failure      500  {object}  ErrorResponse  "Internal server error"
 // @Security     ApiKeyAuth
-// @Router       /category [post]
+// @Router       /categories [post]
 func CreateCategory(c *gin.Context) {
 	ip := c.ClientIP()
 	var category models.VacancyCategory
@@ -118,7 +118,7 @@ func CreateCategory(c *gin.Context) {
 // @Failure      403   {object} ErrorResponse  "Access Denied"
 // @Failure      500  {object}  ErrorResponse  "Internal server error"
 // @Security     ApiKeyAuth
-// @Router       /category/{id} [put]
+// @Router       /categories/{id} [put]
 func UpdateCategory(c *gin.Context) {
 	ip := c.ClientIP()
 	var category models.VacancyCategory
@@ -160,7 +160,7 @@ func UpdateCategory(c *gin.Context) {
 // @Failure      403  {object}  ErrorResponse  "Access Denied"
 // @Failure      500  {object}  ErrorResponse  "Internal server error"
 // @Security     ApiKeyAuth
-// @Router       /category/{id} [delete]
+// @Router       /categories/{id} [delete]
 func DeleteCategory(c *gin.Context) {
 	ip := c.ClientIP()
 	idStr := c.Param("id")

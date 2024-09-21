@@ -23,10 +23,10 @@ func InitRoutes() *gin.Engine {
 		auth.POST("/sign-in", SignIn)
 	}
 
-	userGroup := r.Group("/user").Use(checkUserAuthentication)
+	userGroup := r.Group("/users").Use(checkUserAuthentication)
 	{
 		userGroup.GET("/", GetAllUsers)
-		userGroup.POST("/", CreateUser)
+		userGroup.POST("/", SignUp)
 		userGroup.PUT("/:id", UpdateUser)
 		userGroup.GET("/:id", GetUserByID)
 		userGroup.DELETE("/:id", DeleteUser)
@@ -35,7 +35,7 @@ func InitRoutes() *gin.Engine {
 		userGroup.PATCH("/unblock/:id", UnblockUser)
 	}
 
-	vacancyGroup := r.Group("/vacancy").Use(checkUserAuthentication)
+	vacancyGroup := r.Group("/vacancies").Use(checkUserAuthentication)
 	{
 		vacancyGroup.GET("/", GetAllVacancies)
 		vacancyGroup.GET("/:vacancyID", GetVacancyByID)
@@ -46,7 +46,7 @@ func InitRoutes() *gin.Engine {
 		vacancyGroup.PATCH("/unblock/:id", UnblockVacancy)
 	}
 
-	resumeGroup := r.Group("/resume").Use(checkUserAuthentication)
+	resumeGroup := r.Group("/resumes").Use(checkUserAuthentication)
 	{
 		resumeGroup.GET("/", GetAllResumes)
 		resumeGroup.GET("/:id", GetResumeByID)
@@ -57,7 +57,7 @@ func InitRoutes() *gin.Engine {
 		resumeGroup.PATCH("/unblock/:id", UnblockResume)
 	}
 
-	companyGroup := r.Group("/company").Use(checkUserAuthentication)
+	companyGroup := r.Group("/companies").Use(checkUserAuthentication)
 	{
 		companyGroup.GET("/", GetAllCompanies)
 		companyGroup.GET("/:id", GetCompanyByID)
@@ -66,7 +66,7 @@ func InitRoutes() *gin.Engine {
 		companyGroup.DELETE("/:id", DeleteCompany)
 	}
 
-	applicationGroup := r.Group("/application").Use(checkUserAuthentication)
+	applicationGroup := r.Group("/applications").Use(checkUserAuthentication)
 	{
 		applicationGroup.GET("/", GetAllApplications)
 		applicationGroup.GET("/:id", GetApplicationByID)
@@ -76,14 +76,14 @@ func InitRoutes() *gin.Engine {
 		applicationGroup.PUT("/:id/status/:status_id", UpdateApplicationStatus)
 	}
 
-	activityGroup := r.Group("/activity").Use(checkUserAuthentication)
+	activityGroup := r.Group("/activities").Use(checkUserAuthentication)
 	{
 		activityGroup.GET("/", GetSpecialistActivityReportByUser)
 		activityGroup.GET("/vacancy/:id", GetVacancyReportByID)
 		activityGroup.GET("/resume/:id", GetResumeReportByID)
 	}
 
-	VacancyCategoryGroup := r.Group("/category").Use(checkUserAuthentication)
+	VacancyCategoryGroup := r.Group("/categories").Use(checkUserAuthentication)
 	{
 		VacancyCategoryGroup.GET("/", GetAllCategories)
 		VacancyCategoryGroup.GET("/:id", GetCategoryByID)
