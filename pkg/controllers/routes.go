@@ -31,7 +31,7 @@ func InitRoutes() *gin.Engine {
 		userGroup.GET("/:id", GetUserByID)
 		userGroup.DELETE("/:id", DeleteUser)
 		userGroup.PATCH("/password", UpdateUserPassword)
-		userGroup.PUT("/block/:id", BlockUser)
+		userGroup.PATCH("/block/:id", BlockUser)
 		userGroup.PATCH("/unblock/:id", UnblockUser)
 	}
 

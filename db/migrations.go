@@ -4,13 +4,14 @@ import (
 	"TajikCareerHub/logger"
 	"TajikCareerHub/models"
 	"errors"
+	"fmt"
 )
 
 func Migrate() error {
 	if dbConn == nil {
 		return errors.New("database connection is not initialized")
 	}
-	err := dbConn.AutoMigrate(
+	migrateModels := []interface{}{
 		&models.Vacancy{},
 		&models.User{},
 		&models.Application{},
@@ -20,9 +21,13 @@ func Migrate() error {
 		&models.Resume{},
 		&models.VacancyView{},
 		&models.ApplicationStatus{},
-	)
-	if err != nil {
-		return errors.New("failed to migrate database schema: " + err.Error())
+	}
+	for _, model := range migrateModels {
+		err := dbConn.AutoMigrate(model)
+		if err != nil {
+			return fmt.Errorf("failed to migrate %T: %v", model, err)
+		}
+		logger.Info.Printf("Migrated model: %T\n", model)
 	}
 	initialStatuses := []models.ApplicationStatus{
 		{Name: "applied"},
@@ -30,17 +35,20 @@ func Migrate() error {
 		{Name: "rejected"},
 		{Name: "interview"},
 	}
+
 	var count int64
-	err = dbConn.Model(&models.ApplicationStatus{}).Count(&count).Error
+	err := dbConn.Model(&models.ApplicationStatus{}).Count(&count).Error
 	if err != nil {
-		return errors.New("failed to count application statuses: " + err.Error())
+		return fmt.Errorf("failed to count application statuses: %v", err)
 	}
+
 	if count == 0 {
 		if err := dbConn.Create(&initialStatuses).Error; err != nil {
-			return errors.New("failed to insert initial application statuses: " + err.Error())
+			return fmt.Errorf("failed to insert initial application statuses: %v", err)
 		}
 		logger.Info.Println("Initial application statuses inserted successfully")
 	}
+
 	logger.Info.Println("Database migration completed successfully")
 	return nil
 }
