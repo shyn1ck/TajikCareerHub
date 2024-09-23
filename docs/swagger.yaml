@@ -1,0 +1,1865 @@
+basePath: /
+definitions:
+  controllers.AccessTokenResponse:
+    properties:
+      access_token:
+        type: string
+    type: object
+  controllers.DefaultResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  controllers.ErrorResponse:
+    properties:
+      error:
+        type: string
+    type: object
+  controllers.PasswordRequest:
+    properties:
+      new_password:
+        type: string
+      old_password:
+        type: string
+    required:
+    - new_password
+    - old_password
+    type: object
+  models.Company:
+    properties:
+      created_at:
+        type: string
+      deleted_at:
+        type: boolean
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  models.Resume:
+    properties:
+      certifications:
+        type: string
+      created_at:
+        type: string
+      deleted_at:
+        type: boolean
+      education:
+        type: string
+      experience_years:
+        type: integer
+      full_name:
+        type: string
+      id:
+        type: integer
+      is_blocked:
+        type: boolean
+      location:
+        type: string
+      skills:
+        type: string
+      summary:
+        type: string
+      title:
+        type: string
+      updated_at:
+        type: string
+      user_id:
+        type: integer
+      vacancy_category_id:
+        type: integer
+      vacancyCategory:
+        $ref: '#/definitions/models.VacancyCategory'
+    type: object
+  models.ResumeReport:
+    properties:
+      applications_count:
+        type: integer
+      resume_id:
+        type: integer
+      resume_title:
+        type: string
+      views_count:
+        type: integer
+    type: object
+  models.SpecialistActivityReport:
+    properties:
+      application_count:
+        type: integer
+      full_name:
+        type: string
+    type: object
+  models.SwagInUser:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  models.SwagResume:
+    properties:
+      experience_years:
+        type: integer
+      full_name:
+        type: string
+      id:
+        type: integer
+      location:
+        type: string
+      skills:
+        type: string
+      summary:
+        type: string
+      title:
+        type: string
+      vacancy_category_id:
+        type: integer
+    type: object
+  models.SwagUser:
+    properties:
+      email:
+        type: string
+      full_name:
+        type: string
+      password:
+        type: string
+      role:
+        type: string
+      username:
+        type: string
+    type: object
+  models.SwagVacancy:
+    properties:
+      company_id:
+        type: integer
+      description:
+        type: string
+      location:
+        type: string
+      salary:
+        type: number
+      title:
+        type: string
+      vacancy_category_id:
+        type: integer
+    type: object
+  models.SwaggerApplication:
+    properties:
+      resume_id:
+        example: 1
+        type: integer
+      status_id:
+        example: 1
+        type: integer
+      user_id:
+        example: 1
+        type: integer
+      vacancy_id:
+        example: 1
+        type: integer
+    type: object
+  models.User:
+    properties:
+      birth_date:
+        type: string
+      created_at:
+        type: string
+      deleted_at:
+        type: boolean
+      email:
+        type: string
+      full_name:
+        type: string
+      id:
+        type: integer
+      is_blocked:
+        type: boolean
+      password:
+        type: string
+      role:
+        type: string
+      updated_at:
+        type: string
+      username:
+        type: string
+    type: object
+  models.Vacancy:
+    properties:
+      company:
+        $ref: '#/definitions/models.Company'
+      company_id:
+        type: integer
+      created_at:
+        type: string
+      deleted_at:
+        type: boolean
+      description:
+        type: string
+      id:
+        type: integer
+      is_blocked:
+        type: boolean
+      location:
+        type: string
+      salary:
+        type: number
+      title:
+        type: string
+      updated_at:
+        type: string
+      user:
+        $ref: '#/definitions/models.User'
+      user_id:
+        type: integer
+      vacancy_category_id:
+        type: integer
+      vacancyCategory:
+        $ref: '#/definitions/models.VacancyCategory'
+      vacancyViews:
+        items:
+          $ref: '#/definitions/models.VacancyView'
+        type: array
+    type: object
+  models.VacancyCategory:
+    properties:
+      created_at:
+        type: string
+      deleted_at:
+        type: boolean
+      id:
+        type: integer
+      name:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  models.VacancyReport:
+    properties:
+      applications_count:
+        type: integer
+      vacancy_id:
+        type: integer
+      vacancy_title:
+        type: string
+      views_count:
+        type: integer
+    type: object
+  models.VacancyView:
+    properties:
+      count:
+        type: integer
+      id:
+        type: integer
+      user:
+        $ref: '#/definitions/models.User'
+      user_id:
+        type: integer
+      vacancy:
+        $ref: '#/definitions/models.Vacancy'
+      vacancy_id:
+        type: integer
+    type: object
+host: localhost:8181
+info:
+  contact: {}
+  description: This is a Tajik Career Hub API documentation.
+  title: Tajik Career Hub API ✨
+  version: "1.0"
+paths:
+  /activity:
+    get:
+      consumes:
+      - application/json
+      description: Get a report of how many vacancies a specific specialist has applied
+        for
+      operationId: get-specialist-activity-report-by-user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.SpecialistActivityReport'
+            type: array
+        "400":
+          description: Invalid input
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "403":
+          description: Forbidden access
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get specialist activity report for a specific user
+      tags:
+      - Reports
+  /activity/resume/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get a report of how many people viewed or applied to a specific
+        resume
+      operationId: get-resume-report-by-id
+      parameters:
+      - description: Resume ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/models.ResumeReport'
+        "400":
+          description: Invalid input
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "403":
+          description: Forbidden access
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get report for a specific resume
+      tags:
+      - Reports
+  /activity/vacancy/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get a report of how many people viewed or applied to a specific
+        vacancy
+      operationId: get-vacancy-report-by-id
+      parameters:
+      - description: Vacancy ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.VacancyReport'
+        "400":
+          description: Invalid input
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "403":
+          description: Forbidden access
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get report for a specific vacancy
+      tags:
+      - Reports
+  /application:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of all applications. Requires authentication.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.SwaggerApplication'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get all applications
+      tags:
+      - Applications
+    post:
+      consumes:
+      - application/json
+      description: Add a new application. Requires authentication.
+      parameters:
+      - description: Application data
+        in: body
+        name: application
+        required: true
+        schema:
+          $ref: '#/definitions/models.SwaggerApplication'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/controllers.DefaultResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Add a new application
+      tags:
+      - Applications
+  /application/{application_id}/status/{status_id}:
+    put:
+      consumes:
+      - application/json
+      description: Update the status of a specific application by its ID
+      parameters:
+      - description: Application ID
+        example: 123
+        in: path
+        name: application_id
+        required: true
+        type: integer
+      - description: Status ID
+        example: 2
+        in: path
+        name: status_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Status updated successfully
+          schema:
+            $ref: '#/definitions/controllers.DefaultResponse'
+        "400":
+          description: Invalid input
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "403":
+          description: Forbidden access
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "404":
+          description: Application not found
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Update the status of an application
+      tags:
+      - Applications
+  /application/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Soft delete an application by its ID. Requires authentication.
+      parameters:
+      - description: Application ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.DefaultResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete an application
+      tags:
+      - Applications
+    get:
+      consumes:
+      - application/json
+      description: Get a single application by its ID. Requires authentication.
+      parameters:
+      - description: Application ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SwaggerApplication'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get application by ID
+      tags:
+      - Applications
+    put:
+      consumes:
+      - application/json
+      description: Update an application by its ID. Requires authentication.
+      parameters:
+      - description: Application ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Updated application data
+        in: body
+        name: application
+        required: true
+        schema:
+          $ref: '#/definitions/models.SwaggerApplication'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.DefaultResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Update an existing application
+      tags:
+      - Applications
+  /auth/sign-in:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate a user and return an access token
+      operationId: sign-in-to-account
+      parameters:
+      - description: User sign-in information
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/models.SwagInUser'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.AccessTokenResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+      summary: Sign in to an existing account
+      tags:
+      - Authorization
+  /auth/sign-up:
+    post:
+      consumes:
+      - application/json
+      description: Create a new user account with the provided details
+      operationId: create-account
+      parameters:
+      - description: User registration information
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/models.SwagUser'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: User created successfully
+          schema:
+            $ref: '#/definitions/controllers.DefaultResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "403":
+          description: Access Denied
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+      summary: Register a new user
+      tags:
+      - Authorization
+  /category:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a list of all categories
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            items:
+              $ref: '#/definitions/models.VacancyCategory'
+            type: array
+        "403":
+          description: Access Denied
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get all categories
+      tags:
+      - Categories
+    post:
+      consumes:
+      - application/json
+      description: Create a new category with the provided details
+      parameters:
+      - description: Category data
+        in: body
+        name: category
+        required: true
+        schema:
+          $ref: '#/definitions/models.VacancyCategory'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Success
+          schema:
+            $ref: '#/definitions/controllers.DefaultResponse'
+        "400":
+          description: Invalid input
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "403":
+          description: Access Denied
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Create a new category
+      tags:
+      - Categories
+  /category/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Soft delete a category by ID
+      parameters:
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/controllers.DefaultResponse'
+        "400":
+          description: Invalid ID
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "403":
+          description: Access Denied
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete category
+      tags:
+      - Categories
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a specific category by its ID
+      parameters:
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/models.VacancyCategory'
+        "400":
+          description: Invalid ID
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "403":
+          description: Access Denied
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "404":
+          description: Category not found
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get category by ID
+      tags:
+      - Categories
+    put:
+      consumes:
+      - application/json
+      description: Update an existing category with the provided details
+      parameters:
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Updated category data
+        in: body
+        name: category
+        required: true
+        schema:
+          $ref: '#/definitions/models.VacancyCategory'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/controllers.DefaultResponse'
+        "400":
+          description: Invalid ID or input
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "403":
+          description: Access Denied
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "404":
+          description: Category not found
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Update category
+      tags:
+      - Categories
+  /company:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a list of all companies. No authentication required.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Company'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+      summary: Get all companies
+      tags:
+      - Companies
+    post:
+      consumes:
+      - application/json
+      description: Add a new company to the database. Requires authentication.
+      parameters:
+      - description: Company data
+        in: body
+        name: company
+        required: true
+        schema:
+          $ref: '#/definitions/models.Company'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/controllers.DefaultResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Add a new company
+      tags:
+      - Companies
+  /company/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Soft delete a company by its ID. Requires authentication.
+      parameters:
+      - description: Company ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.DefaultResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete a company
+      tags:
+      - Companies
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a single company by its ID. No authentication required.
+      parameters:
+      - description: Company ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Company'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+      summary: Get company by ID
+      tags:
+      - Companies
+    put:
+      consumes:
+      - application/json
+      description: Update a company by its ID. Requires authentication.
+      parameters:
+      - description: Company ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Updated company data
+        in: body
+        name: company
+        required: true
+        schema:
+          $ref: '#/definitions/models.Company'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.DefaultResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Update an existing company
+      tags:
+      - Companies
+  /resume:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves a list of resumes with optional filters such as search
+        term, location, category, and minimum experience years.
+      parameters:
+      - description: Search term
+        in: query
+        name: search
+        type: string
+      - description: Location
+        in: query
+        name: location
+        type: string
+      - description: Category
+        in: query
+        name: category
+        type: string
+      - description: Minimum years of experience
+        in: query
+        name: min-experience-years
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success"  "List of resumes
+          schema:
+            items:
+              $ref: '#/definitions/models.SwagResume'
+            type: array
+        "400":
+          description: Invalid request
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "403":
+          description: Access Denied
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get all resumes
+      tags:
+      - Resumes
+    post:
+      consumes:
+      - application/json
+      description: Adds a new resume to the system for the authenticated user.
+      parameters:
+      - description: Resume object
+        in: body
+        name: resume
+        required: true
+        schema:
+          $ref: '#/definitions/models.SwagResume'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Resume created successfully
+          schema:
+            $ref: '#/definitions/controllers.DefaultResponse'
+        "400":
+          description: Invalid request
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "403":
+          description: Access Denied
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Add a new resume
+      tags:
+      - Resumes
+  /resume/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a specific resume by its ID
+      parameters:
+      - description: Resume ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/controllers.DefaultResponse'
+        "400":
+          description: Invalid ID
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "403":
+          description: Access Denied
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete a resume
+      tags:
+      - Resumes
+    get:
+      consumes:
+      - application/json
+      description: Get a specific resume by its ID
+      parameters:
+      - description: Resume ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/models.SwagResume'
+        "400":
+          description: Invalid ID
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "403":
+          description: Access Denied
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get resume by ID
+      tags:
+      - Resumes
+    put:
+      consumes:
+      - application/json
+      description: Update the details of an existing resume by its ID
+      parameters:
+      - description: Resume ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Updated resume object
+        in: body
+        name: resume
+        required: true
+        schema:
+          $ref: '#/definitions/models.Resume'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/controllers.DefaultResponse'
+        "400":
+          description: Invalid ID or request
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "403":
+          description: Access Denied
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Update an existing resume
+      tags:
+      - Resumes
+  /resume/block/{id}:
+    patch:
+      consumes:
+      - application/json
+      description: Blocks a resume by its ID. Requires the user to be authenticated.
+      parameters:
+      - description: Resume ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Resume blocked successfully
+          schema:
+            $ref: '#/definitions/controllers.DefaultResponse'
+        "400":
+          description: Invalid resume ID
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "403":
+          description: Access Denied
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Block a resume
+      tags:
+      - Admin
+  /resume/unblock/{id}:
+    patch:
+      consumes:
+      - application/json
+      description: Unblocks a resume by its ID. Requires the user to be authenticated.
+      parameters:
+      - description: Resume ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Resume unblocked successfully
+          schema:
+            $ref: '#/definitions/controllers.DefaultResponse'
+        "400":
+          description: Invalid resume ID
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "403":
+          description: Access Denied
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Unblock a resume
+      tags:
+      - Admin
+  /user:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a list of all users or a single user by username
+      parameters:
+      - description: Username to filter the user
+        in: query
+        name: username
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Single user details
+          schema:
+            $ref: '#/definitions/models.User'
+        "403":
+          description: Access Denied
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get all users
+      tags:
+      - Users
+    post:
+      consumes:
+      - application/json
+      description: Create a new user with the provided details
+      parameters:
+      - description: User data
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.SwagUser'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Success
+          schema:
+            $ref: '#/definitions/controllers.DefaultResponse'
+        "400":
+          description: Invalid input
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+      summary: Create a new user
+      tags:
+      - Users
+  /user/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Soft delete a user by ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User deleted successfully
+          schema:
+            $ref: '#/definitions/controllers.DefaultResponse'
+        "400":
+          description: Invalid ID
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "403":
+          description: Access Denied
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete user
+      tags:
+      - Users
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a specific user by its ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/models.SwagUser'
+        "400":
+          description: Invalid ID
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "403":
+          description: Access Denied
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "404":
+          description: User not found
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get user by ID
+      tags:
+      - Users
+    put:
+      consumes:
+      - application/json
+      description: Update an existing user with the provided details
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Updated user data
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.SwagUser'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/controllers.DefaultResponse'
+        "400":
+          description: Invalid ID or input
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "403":
+          description: Access Denied
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "404":
+          description: User not found
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Update user details
+      tags:
+      - Users
+  /user/block/{id}:
+    patch:
+      consumes:
+      - application/json
+      description: Block a user by their ID
+      parameters:
+      - description: User ID
+        example: 1
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User blocked successfully
+          schema:
+            $ref: '#/definitions/controllers.DefaultResponse'
+        "400":
+          description: Invalid ID
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "403":
+          description: Access Denied
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Block user
+      tags:
+      - Admin
+  /user/password:
+    patch:
+      consumes:
+      - application/json
+      description: Update the password for the current user. Requires authentication.
+      parameters:
+      - description: Password request data
+        in: body
+        name: passwordRequest
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.PasswordRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: user password update successfully
+          schema:
+            $ref: '#/definitions/controllers.DefaultResponse'
+        "400":
+          description: Invalid input
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "403":
+          description: Access Denied
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "500":
+          description: Server error
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Update user password
+      tags:
+      - Users
+  /user/unblock/{id}:
+    patch:
+      consumes:
+      - application/json
+      description: Unlock a user by ID
+      parameters:
+      - description: User ID
+        example: 1
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User unblocked successfully
+          schema:
+            $ref: '#/definitions/controllers.DefaultResponse'
+        "400":
+          description: Invalid ID
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "403":
+          description: Access Denied
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Unblock user
+      tags:
+      - Admin
+  /vacancy:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of all vacancies with optional filters such as search,
+        salary range, location, category, and sort order.
+      operationId: get-all-vacancies
+      parameters:
+      - description: User ID to check if the user is blocked
+        in: query
+        name: userID
+        required: true
+        type: integer
+      - description: Search keyword for filtering vacancies
+        in: query
+        name: search
+        type: string
+      - description: Minimum salary for filtering vacancies
+        in: query
+        name: minSalary
+        type: integer
+      - description: Maximum salary for filtering vacancies
+        in: query
+        name: maxSalary
+        type: integer
+      - description: Location for filtering vacancies
+        in: query
+        name: location
+        type: string
+      - description: Category for filtering vacancies
+        in: query
+        name: category
+        type: string
+      - description: Sorting order for vacancies
+        in: query
+        name: sort
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved list of vacancies
+          schema:
+            items:
+              $ref: '#/definitions/models.Vacancy'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "403":
+          description: Access Denied
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Retrieve all vacancies with filters
+      tags:
+      - Vacancies
+    post:
+      consumes:
+      - application/json
+      description: Add a new vacancy with the provided details.
+      operationId: add-vacancy
+      parameters:
+      - description: User ID to check if the user is blocked
+        in: query
+        name: userID
+        required: true
+        type: integer
+      - description: Vacancy object to be added
+        in: body
+        name: vacancy
+        required: true
+        schema:
+          $ref: '#/definitions/models.SwagVacancy'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Vacancy created successfully
+          schema:
+            $ref: '#/definitions/controllers.DefaultResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "403":
+          description: ErrPermissionDenied
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Create a new vacancy
+      tags:
+      - Vacancies
+  /vacancy/{vacancyID}:
+    delete:
+      consumes:
+      - application/json
+      description: Soft delete a specific vacancy by its ID.
+      operationId: delete-vacancy
+      parameters:
+      - description: User ID to check if the user is blocked
+        in: query
+        name: userID
+        required: true
+        type: integer
+      - description: ID of the vacancy to delete
+        in: path
+        name: vacancyID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: Vacancy deleted successfully
+          schema:
+            $ref: '#/definitions/controllers.DefaultResponse'
+        "403":
+          description: Access Denied
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "404":
+          description: Vacancy Not Found
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete a vacancy
+      tags:
+      - Vacancies
+    get:
+      consumes:
+      - application/json
+      description: Get details of a single vacancy by its ID.
+      operationId: get-vacancy-by-id
+      parameters:
+      - description: ID of the vacancy to retrieve
+        in: path
+        name: vacancyID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved vacancy
+          schema:
+            $ref: '#/definitions/models.SwagVacancy'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "403":
+          description: Access Denied
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "404":
+          description: Vacancy Not Found
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Retrieve a specific vacancy by ID
+      tags:
+      - Vacancies
+    put:
+      consumes:
+      - application/json
+      description: Update an existing vacancy by its ID.
+      operationId: update-vacancy
+      parameters:
+      - description: User ID to check if the user is blocked
+        in: query
+        name: userID
+        required: true
+        type: integer
+      - description: ID of the vacancy to update
+        in: path
+        name: vacancyID
+        required: true
+        type: integer
+      - description: Updated vacancy object
+        in: body
+        name: vacancy
+        required: true
+        schema:
+          $ref: '#/definitions/models.SwagVacancy'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Vacancy updated successfully
+          schema:
+            $ref: '#/definitions/controllers.DefaultResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "403":
+          description: Access Denied
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "404":
+          description: Vacancy Not Found
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Update an existing vacancy
+      tags:
+      - Vacancies
+  /vacancy/block/{id}:
+    patch:
+      consumes:
+      - application/json
+      description: Blocks a vacancy by its ID. Requires the user to be authenticated.
+      parameters:
+      - description: Vacancy ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Vacancy blocked successfully
+          schema:
+            $ref: '#/definitions/controllers.DefaultResponse'
+        "400":
+          description: Invalid vacancy ID
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "403":
+          description: Access Denied
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Block a vacancy
+      tags:
+      - Admin
+  /vacancy/unblock/{id}:
+    patch:
+      consumes:
+      - application/json
+      description: Unblocks a vacancy by its ID. Requires the user to be authenticated.
+      parameters:
+      - description: Vacancy ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Vacancy unblocked successfully
+          schema:
+            $ref: '#/definitions/controllers.DefaultResponse'
+        "400":
+          description: Invalid vacancy ID
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "403":
+          description: Access Denied
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Unblock a vacancy
+      tags:
+      - Admin
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
