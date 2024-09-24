@@ -14,7 +14,7 @@ type User struct {
 	Email     string    `json:"email" gorm:"type:varchar(100);unique;not null"`
 	Password  string    `json:"password" gorm:"type:varchar(255);not null"`
 	Role      string    `json:"role" gorm:"type:varchar(255);not null"`
-	IsBlocked bool      `json:"is_blocked" gorm:"type:bool;not null;default:false"`
+	IsBlocked bool      `json:"-" gorm:"type:bool;not null;default:false"`
 	BaseModel
 }
 

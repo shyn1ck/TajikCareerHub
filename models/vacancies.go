@@ -17,7 +17,7 @@ type Vacancy struct {
 	UserID            uint            `json:"user_id"`
 	VacancyCategoryID uint            `json:"vacancy_category_id"`
 	VacancyCategory   VacancyCategory `gorm:"foreignKey:VacancyCategoryID"`
-	IsBlocked         bool            `json:"is_blocked" gorm:"default:false"`
+	IsBlocked         bool            `json:"-" gorm:"default:false"`
 	VacancyViews      []VacancyView   `gorm:"foreignKey:VacancyID"`
 	BaseModel
 }

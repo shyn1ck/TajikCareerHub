@@ -2501,9 +2501,6 @@ const docTemplate = `{
                 "id": {
                     "type": "integer"
                 },
-                "is_blocked": {
-                    "type": "boolean"
-                },
                 "location": {
                     "type": "string"
                 },
@@ -2674,9 +2671,6 @@ const docTemplate = `{
                 "id": {
                     "type": "integer"
                 },
-                "is_blocked": {
-                    "type": "boolean"
-                },
                 "password": {
                     "type": "string"
                 },
@@ -2702,9 +2696,6 @@ const docTemplate = `{
                 },
                 "id": {
                     "type": "integer"
-                },
-                "is_blocked": {
-                    "type": "boolean"
                 },
                 "location": {
                     "type": "string"

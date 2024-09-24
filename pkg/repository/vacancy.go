@@ -16,7 +16,7 @@ func GetAllVacancies(search string, minSalary int, maxSalary int, location strin
 			return db.Select("id", "full_name", "email")
 		}).
 		Model(&models.Vacancy{}).
-		Where("deleted_at = false")
+		Where("vacancies.deleted_at = false")
 	if search != "" {
 		query = query.Where("title ILIKE ?", "%"+search+"%")
 	}

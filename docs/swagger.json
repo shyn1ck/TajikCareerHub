@@ -2495,9 +2495,6 @@
                 "id": {
                     "type": "integer"
                 },
-                "is_blocked": {
-                    "type": "boolean"
-                },
                 "location": {
                     "type": "string"
                 },
@@ -2668,9 +2665,6 @@
                 "id": {
                     "type": "integer"
                 },
-                "is_blocked": {
-                    "type": "boolean"
-                },
                 "password": {
                     "type": "string"
                 },
@@ -2696,9 +2690,6 @@
                 },
                 "id": {
                     "type": "integer"
-                },
-                "is_blocked": {
-                    "type": "boolean"
                 },
                 "location": {
                     "type": "string"
