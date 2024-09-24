@@ -4,66 +4,56 @@ import (
 	"TajikCareerHub/logger"
 	"TajikCareerHub/utils/errs"
 	"errors"
-	"github.com/lib/pq"
+	"github.com/jackc/pgx/v5/pgconn"
 	"gorm.io/gorm"
-	"strings"
 )
 
 func TranslateError(err error) error {
-	if err == nil {
-		return nil
-	}
+
+	// Проверка на отсутствие записи
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		logger.Warning.Printf("Record not found error: %v...", err)
+		logger.Warning.Printf("Record not found error: %v", err)
 		return errs.ErrRecordNotFound
 	}
 
-	if errors.Is(err, gorm.ErrDuplicatedKey) {
-		logger.Warning.Printf("Duplicated key error: %v...", err)
-		return errs.ErrUniqueViolation
-	}
+	// Проверка ошибок PostgreSQL (pgconn.PgError)
+	var pgErr *pgconn.PgError
+	if errors.As(err, &pgErr) {
+		switch pgErr.Code {
+		case "23505": // Нарушение уникальности
+			logger.Warning.Printf("Uniqueness violation: %v", err)
+			return errs.ErrUniquenessViolation
 
-	if errors.Is(err, gorm.ErrForeignKeyViolated) {
-		logger.Warning.Printf("Foreign key violation: %v...", err)
-		return errs.ErrForeignKeyViolation
-	}
-
-	var pqErr *pq.Error
-	if errors.As(err, &pqErr) {
-		switch pqErr.Code {
-		case "23505":
-			if strings.Contains(pqErr.Message, "uni_users_user_name") {
-				logger.Warning.Printf("Username already exists error: %v...", err)
-				return errs.ErrUsernameExists
-			}
-			if strings.Contains(pqErr.Message, "uni_users_email") {
-				logger.Warning.Printf("Email already exists error: %v...", err)
-				return errs.ErrEmailExists
-			}
-			logger.Warning.Printf("Unique constraint violation: %v...", err)
-			return errs.ErrUniqueViolation
-
-		case "23503":
-			logger.Warning.Printf("Foreign key violation: %v...", err)
+		case "23503": // Нарушение внешнего ключа
+			logger.Warning.Printf("Foreign key violation: %v", err)
 			return errs.ErrForeignKeyViolation
 
-		case "23502":
-			logger.Warning.Printf("Not null constraint violation: %v...", err)
+		case "23502": // Нарушение not-null constraint
+			logger.Warning.Printf("Not null constraint violation: %v", err)
 			return errs.ErrNotNullViolation
 
-		case "22001":
-			logger.Warning.Printf("String too long error: %v...", err)
+		case "22001": // Превышение длины строки
+			logger.Warning.Printf("String too long error: %v", err)
 			return errs.ErrStringTooLong
 
-		case "23514":
-			logger.Warning.Printf("Check constraint violation: %v...", err)
+		case "23514": // Нарушение check constraint
+			logger.Warning.Printf("Check constraint violation: %v", err)
 			return errs.ErrCheckConstraintViolation
 
-		case "40P01":
-			logger.Warning.Printf("Deadlock detected: %v...", err)
+		case "40P01": // Обнаружен дедлок
+			logger.Warning.Printf("Deadlock detected: %v", err)
 			return errs.ErrDeadlockDetected
+		case "42702":
+			logger.Warning.Printf("Foreign key violation: %v", err)
+			return errs.ErrRecordNotFound
+
+		default: // Необработанная ошибка PostgreSQL
+			logger.Error.Printf("Unhandled PostgreSQL error: %v", err)
+			return errs.ErrSomethingWentWrong
 		}
 	}
-	logger.Error.Printf("Standard error occurred: %v...", err)
-	return err
+
+	// Если ошибка не попадает под перечисленные категории
+	logger.Error.Printf("Unhandled error: %v", err)
+	return errs.ErrSomethingWentWrong
 }

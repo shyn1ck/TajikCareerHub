@@ -12,10 +12,11 @@ func GetAllResumes(search string, minExperienceYears int, location string, categ
 	query := db.GetDBConn().
 		Preload("VacancyCategory").
 		Model(&models.Resume{}).
-		Where("deleted_at = false")
+		Where("resumes.deleted_at = false")
 	if search != "" {
-		query = query.Where("summary ILIKE ?", "%"+search+"%")
+		query = query.Where("title ILIKE ?", "%"+search+"%")
 	}
+
 	if location != "" {
 		query = query.Where("location = ?", location)
 	}
@@ -23,14 +24,17 @@ func GetAllResumes(search string, minExperienceYears int, location string, categ
 		query = query.Joins("JOIN vacancy_categories ON vacancy_categories.id = resumes.vacancy_category_id").
 			Where("vacancy_categories.name = ?", category)
 	}
+
 	if minExperienceYears > 0 {
 		query = query.Where("experience_years >= ?", minExperienceYears)
 	}
+
 	err = query.Find(&resumes).Error
 	if err != nil {
 		logger.Error.Printf("[repository.GetAllResumes] Error fetching resumes: %v", err)
 		return nil, TranslateError(err)
 	}
+
 	return resumes, nil
 }
 

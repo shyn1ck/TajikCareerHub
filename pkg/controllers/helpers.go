@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"TajikCareerHub/logger"
 	"TajikCareerHub/utils/errs"
 	"errors"
 	"github.com/gin-gonic/gin"
@@ -35,6 +36,7 @@ func handleError(c *gin.Context, err error) {
 		errors.Is(err, errs.ErrUserIdDoesNotMatchTheProvidedUsername),
 		errors.Is(err, errs.ErrShouldBindJson),
 		errors.Is(err, errs.ErrIncorrectInput),
+		errors.Is(err, errs.ErrUniquenessViolation),
 		errors.Is(err, errs.ErrCategoryAlreadyExist):
 		statusCode = http.StatusBadRequest
 		errorResponse = NewErrorResponse(err.Error())
@@ -82,6 +84,7 @@ func handleError(c *gin.Context, err error) {
 		errorResponse = NewErrorResponse(err.Error())
 
 	default:
+		logger.Error.Printf("Standard error occurred: %v", err)
 		statusCode = http.StatusInternalServerError
 		errorResponse = NewErrorResponse(errs.ErrSomethingWentWrong.Error())
 	}

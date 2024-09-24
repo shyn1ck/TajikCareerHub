@@ -9,7 +9,7 @@
     "host": "localhost:8181",
     "basePath": "/",
     "paths": {
-        "/activity": {
+        "/activities": {
             "get": {
                 "security": [
                     {
@@ -59,7 +59,7 @@
                 }
             }
         },
-        "/activity/resume/{id}": {
+        "/activities/resume/{id}": {
             "get": {
                 "security": [
                     {
@@ -115,7 +115,7 @@
                 }
             }
         },
-        "/activity/vacancy/{id}": {
+        "/activities/vacancy/{id}": {
             "get": {
                 "security": [
                     {
@@ -171,7 +171,7 @@
                 }
             }
         },
-        "/application": {
+        "/applications": {
             "get": {
                 "security": [
                     {
@@ -201,6 +201,12 @@
                     },
                     "401": {
                         "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Access Denied",
                         "schema": {
                             "$ref": "#/definitions/controllers.ErrorResponse"
                         }
@@ -257,7 +263,7 @@
                 }
             }
         },
-        "/application/{application_id}/status/{status_id}": {
+        "/applications/{application_id}/status/{status_id}": {
             "put": {
                 "security": [
                     {
@@ -321,7 +327,7 @@
                 }
             }
         },
-        "/application/{id}": {
+        "/applications/{id}": {
             "get": {
                 "security": [
                     {
@@ -597,7 +603,7 @@
                 }
             }
         },
-        "/category": {
+        "/categories": {
             "get": {
                 "security": [
                     {
@@ -695,7 +701,7 @@
                 }
             }
         },
-        "/category/{id}": {
+        "/categories/{id}": {
             "get": {
                 "security": [
                     {
@@ -877,7 +883,7 @@
                 }
             }
         },
-        "/company": {
+        "/companies": {
             "get": {
                 "description": "Retrieve a list of all companies. No authentication required.",
                 "consumes": [
@@ -958,7 +964,7 @@
                 }
             }
         },
-        "/company/{id}": {
+        "/companies/{id}": {
             "get": {
                 "description": "Retrieve a single company by its ID. No authentication required.",
                 "consumes": [
@@ -1117,7 +1123,7 @@
                 }
             }
         },
-        "/resume": {
+        "/resumes": {
             "get": {
                 "security": [
                     {
@@ -1247,7 +1253,7 @@
                 }
             }
         },
-        "/resume/block/{id}": {
+        "/resumes/block/{id}": {
             "patch": {
                 "security": [
                     {
@@ -1308,7 +1314,7 @@
                 }
             }
         },
-        "/resume/unblock/{id}": {
+        "/resumes/unblock/{id}": {
             "patch": {
                 "security": [
                     {
@@ -1369,7 +1375,7 @@
                 }
             }
         },
-        "/resume/{id}": {
+        "/resumes/{id}": {
             "get": {
                 "security": [
                     {
@@ -1539,7 +1545,7 @@
                 }
             }
         },
-        "/user": {
+        "/users": {
             "get": {
                 "security": [
                     {
@@ -1585,53 +1591,9 @@
                         }
                     }
                 }
-            },
-            "post": {
-                "description": "Create a new user with the provided details",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Users"
-                ],
-                "summary": "Create a new user",
-                "parameters": [
-                    {
-                        "description": "User data",
-                        "name": "user",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.SwagUser"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Success",
-                        "schema": {
-                            "$ref": "#/definitions/controllers.DefaultResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid input",
-                        "schema": {
-                            "$ref": "#/definitions/controllers.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "schema": {
-                            "$ref": "#/definitions/controllers.ErrorResponse"
-                        }
-                    }
-                }
             }
         },
-        "/user/block/{id}": {
+        "/users/block/{id}": {
             "patch": {
                 "security": [
                     {
@@ -1687,7 +1649,7 @@
                 }
             }
         },
-        "/user/password": {
+        "/users/password": {
             "patch": {
                 "security": [
                     {
@@ -1750,7 +1712,7 @@
                 }
             }
         },
-        "/user/unblock/{id}": {
+        "/users/unblock/{id}": {
             "patch": {
                 "security": [
                     {
@@ -1806,7 +1768,7 @@
                 }
             }
         },
-        "/user/{id}": {
+        "/users/{id}": {
             "get": {
                 "security": [
                     {
@@ -1988,7 +1950,7 @@
                 }
             }
         },
-        "/vacancy": {
+        "/vacancies": {
             "get": {
                 "security": [
                     {
@@ -2008,13 +1970,6 @@
                 "summary": "Retrieve all vacancies with filters",
                 "operationId": "get-all-vacancies",
                 "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "User ID to check if the user is blocked",
-                        "name": "userID",
-                        "in": "query",
-                        "required": true
-                    },
                     {
                         "type": "string",
                         "description": "Search keyword for filtering vacancies",
@@ -2146,7 +2101,7 @@
                 }
             }
         },
-        "/vacancy/block/{id}": {
+        "/vacancies/block/{id}": {
             "patch": {
                 "security": [
                     {
@@ -2207,7 +2162,7 @@
                 }
             }
         },
-        "/vacancy/unblock/{id}": {
+        "/vacancies/unblock/{id}": {
             "patch": {
                 "security": [
                     {
@@ -2268,7 +2223,7 @@
                 }
             }
         },
-        "/vacancy/{vacancyID}": {
+        "/vacancies/{vacancyID}": {
             "get": {
                 "security": [
                     {
@@ -2511,12 +2466,6 @@
         "models.Company": {
             "type": "object",
             "properties": {
-                "created_at": {
-                    "type": "string"
-                },
-                "deleted_at": {
-                    "type": "boolean"
-                },
                 "description": {
                     "type": "string"
                 },
@@ -2524,9 +2473,6 @@
                     "type": "integer"
                 },
                 "name": {
-                    "type": "string"
-                },
-                "updated_at": {
                     "type": "string"
                 }
             }
@@ -2536,12 +2482,6 @@
             "properties": {
                 "certifications": {
                     "type": "string"
-                },
-                "created_at": {
-                    "type": "string"
-                },
-                "deleted_at": {
-                    "type": "boolean"
                 },
                 "education": {
                     "type": "string"
@@ -2568,9 +2508,6 @@
                     "type": "string"
                 },
                 "title": {
-                    "type": "string"
-                },
-                "updated_at": {
                     "type": "string"
                 },
                 "user_id": {
@@ -2722,12 +2659,6 @@
                 "birth_date": {
                     "type": "string"
                 },
-                "created_at": {
-                    "type": "string"
-                },
-                "deleted_at": {
-                    "type": "boolean"
-                },
                 "email": {
                     "type": "string"
                 },
@@ -2746,9 +2677,6 @@
                 "role": {
                     "type": "string"
                 },
-                "updated_at": {
-                    "type": "string"
-                },
                 "username": {
                     "type": "string"
                 }
@@ -2762,12 +2690,6 @@
                 },
                 "company_id": {
                     "type": "integer"
-                },
-                "created_at": {
-                    "type": "string"
-                },
-                "deleted_at": {
-                    "type": "boolean"
                 },
                 "description": {
                     "type": "string"
@@ -2785,9 +2707,6 @@
                     "type": "number"
                 },
                 "title": {
-                    "type": "string"
-                },
-                "updated_at": {
                     "type": "string"
                 },
                 "user": {
@@ -2813,19 +2732,10 @@
         "models.VacancyCategory": {
             "type": "object",
             "properties": {
-                "created_at": {
-                    "type": "string"
-                },
-                "deleted_at": {
-                    "type": "boolean"
-                },
                 "id": {
                     "type": "integer"
                 },
                 "name": {
-                    "type": "string"
-                },
-                "updated_at": {
                     "type": "string"
                 }
             }

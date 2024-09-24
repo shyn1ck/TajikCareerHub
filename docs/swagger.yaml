@@ -27,27 +27,17 @@ definitions:
     type: object
   models.Company:
     properties:
-      created_at:
-        type: string
-      deleted_at:
-        type: boolean
       description:
         type: string
       id:
         type: integer
       name:
         type: string
-      updated_at:
-        type: string
     type: object
   models.Resume:
     properties:
       certifications:
         type: string
-      created_at:
-        type: string
-      deleted_at:
-        type: boolean
       education:
         type: string
       experience_years:
@@ -65,8 +55,6 @@ definitions:
       summary:
         type: string
       title:
-        type: string
-      updated_at:
         type: string
       user_id:
         type: integer
@@ -166,10 +154,6 @@ definitions:
     properties:
       birth_date:
         type: string
-      created_at:
-        type: string
-      deleted_at:
-        type: boolean
       email:
         type: string
       full_name:
@@ -182,8 +166,6 @@ definitions:
         type: string
       role:
         type: string
-      updated_at:
-        type: string
       username:
         type: string
     type: object
@@ -193,10 +175,6 @@ definitions:
         $ref: '#/definitions/models.Company'
       company_id:
         type: integer
-      created_at:
-        type: string
-      deleted_at:
-        type: boolean
       description:
         type: string
       id:
@@ -208,8 +186,6 @@ definitions:
       salary:
         type: number
       title:
-        type: string
-      updated_at:
         type: string
       user:
         $ref: '#/definitions/models.User'
@@ -226,15 +202,9 @@ definitions:
     type: object
   models.VacancyCategory:
     properties:
-      created_at:
-        type: string
-      deleted_at:
-        type: boolean
       id:
         type: integer
       name:
-        type: string
-      updated_at:
         type: string
     type: object
   models.VacancyReport:
@@ -270,7 +240,7 @@ info:
   title: Tajik Career Hub API ✨
   version: "1.0"
 paths:
-  /activity:
+  /activities:
     get:
       consumes:
       - application/json
@@ -303,7 +273,7 @@ paths:
       summary: Get specialist activity report for a specific user
       tags:
       - Reports
-  /activity/resume/{id}:
+  /activities/resume/{id}:
     get:
       consumes:
       - application/json
@@ -340,7 +310,7 @@ paths:
       summary: Get report for a specific resume
       tags:
       - Reports
-  /activity/vacancy/{id}:
+  /activities/vacancy/{id}:
     get:
       consumes:
       - application/json
@@ -377,7 +347,7 @@ paths:
       summary: Get report for a specific vacancy
       tags:
       - Reports
-  /application:
+  /applications:
     get:
       consumes:
       - application/json
@@ -393,6 +363,10 @@ paths:
             type: array
         "401":
           description: Unauthorized
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "403":
+          description: Access Denied
           schema:
             $ref: '#/definitions/controllers.ErrorResponse'
       security:
@@ -431,7 +405,7 @@ paths:
       summary: Add a new application
       tags:
       - Applications
-  /application/{application_id}/status/{status_id}:
+  /applications/{application_id}/status/{status_id}:
     put:
       consumes:
       - application/json
@@ -473,7 +447,7 @@ paths:
       summary: Update the status of an application
       tags:
       - Applications
-  /application/{id}:
+  /applications/{id}:
     delete:
       consumes:
       - application/json
@@ -652,7 +626,7 @@ paths:
       summary: Register a new user
       tags:
       - Authorization
-  /category:
+  /categories:
     get:
       consumes:
       - application/json
@@ -714,7 +688,7 @@ paths:
       summary: Create a new category
       tags:
       - Categories
-  /category/{id}:
+  /categories/{id}:
     delete:
       consumes:
       - application/json
@@ -831,7 +805,7 @@ paths:
       summary: Update category
       tags:
       - Categories
-  /company:
+  /companies:
     get:
       consumes:
       - application/json
@@ -883,7 +857,7 @@ paths:
       summary: Add a new company
       tags:
       - Companies
-  /company/{id}:
+  /companies/{id}:
     delete:
       consumes:
       - application/json
@@ -986,7 +960,7 @@ paths:
       summary: Update an existing company
       tags:
       - Companies
-  /resume:
+  /resumes:
     get:
       consumes:
       - application/json
@@ -1070,7 +1044,7 @@ paths:
       summary: Add a new resume
       tags:
       - Resumes
-  /resume/{id}:
+  /resumes/{id}:
     delete:
       consumes:
       - application/json
@@ -1179,7 +1153,7 @@ paths:
       summary: Update an existing resume
       tags:
       - Resumes
-  /resume/block/{id}:
+  /resumes/block/{id}:
     patch:
       consumes:
       - application/json
@@ -1218,7 +1192,7 @@ paths:
       summary: Block a resume
       tags:
       - Admin
-  /resume/unblock/{id}:
+  /resumes/unblock/{id}:
     patch:
       consumes:
       - application/json
@@ -1257,7 +1231,7 @@ paths:
       summary: Unblock a resume
       tags:
       - Admin
-  /user:
+  /users:
     get:
       consumes:
       - application/json
@@ -1287,36 +1261,7 @@ paths:
       summary: Get all users
       tags:
       - Users
-    post:
-      consumes:
-      - application/json
-      description: Create a new user with the provided details
-      parameters:
-      - description: User data
-        in: body
-        name: user
-        required: true
-        schema:
-          $ref: '#/definitions/models.SwagUser'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Success
-          schema:
-            $ref: '#/definitions/controllers.DefaultResponse'
-        "400":
-          description: Invalid input
-          schema:
-            $ref: '#/definitions/controllers.ErrorResponse'
-        "500":
-          description: Internal server error
-          schema:
-            $ref: '#/definitions/controllers.ErrorResponse'
-      summary: Create a new user
-      tags:
-      - Users
-  /user/{id}:
+  /users/{id}:
     delete:
       consumes:
       - application/json
@@ -1433,7 +1378,7 @@ paths:
       summary: Update user details
       tags:
       - Users
-  /user/block/{id}:
+  /users/block/{id}:
     patch:
       consumes:
       - application/json
@@ -1469,7 +1414,7 @@ paths:
       summary: Block user
       tags:
       - Admin
-  /user/password:
+  /users/password:
     patch:
       consumes:
       - application/json
@@ -1509,7 +1454,7 @@ paths:
       summary: Update user password
       tags:
       - Users
-  /user/unblock/{id}:
+  /users/unblock/{id}:
     patch:
       consumes:
       - application/json
@@ -1545,7 +1490,7 @@ paths:
       summary: Unblock user
       tags:
       - Admin
-  /vacancy:
+  /vacancies:
     get:
       consumes:
       - application/json
@@ -1553,11 +1498,6 @@ paths:
         salary range, location, category, and sort order.
       operationId: get-all-vacancies
       parameters:
-      - description: User ID to check if the user is blocked
-        in: query
-        name: userID
-        required: true
-        type: integer
       - description: Search keyword for filtering vacancies
         in: query
         name: search
@@ -1649,7 +1589,7 @@ paths:
       summary: Create a new vacancy
       tags:
       - Vacancies
-  /vacancy/{vacancyID}:
+  /vacancies/{vacancyID}:
     delete:
       consumes:
       - application/json
@@ -1779,7 +1719,7 @@ paths:
       summary: Update an existing vacancy
       tags:
       - Vacancies
-  /vacancy/block/{id}:
+  /vacancies/block/{id}:
     patch:
       consumes:
       - application/json
@@ -1818,7 +1758,7 @@ paths:
       summary: Block a vacancy
       tags:
       - Admin
-  /vacancy/unblock/{id}:
+  /vacancies/unblock/{id}:
     patch:
       consumes:
       - application/json

@@ -15,7 +15,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/activity": {
+        "/activities": {
             "get": {
                 "security": [
                     {
@@ -65,7 +65,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/activity/resume/{id}": {
+        "/activities/resume/{id}": {
             "get": {
                 "security": [
                     {
@@ -121,7 +121,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/activity/vacancy/{id}": {
+        "/activities/vacancy/{id}": {
             "get": {
                 "security": [
                     {
@@ -177,7 +177,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/application": {
+        "/applications": {
             "get": {
                 "security": [
                     {
@@ -207,6 +207,12 @@ const docTemplate = `{
                     },
                     "401": {
                         "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Access Denied",
                         "schema": {
                             "$ref": "#/definitions/controllers.ErrorResponse"
                         }
@@ -263,7 +269,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/application/{application_id}/status/{status_id}": {
+        "/applications/{application_id}/status/{status_id}": {
             "put": {
                 "security": [
                     {
@@ -327,7 +333,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/application/{id}": {
+        "/applications/{id}": {
             "get": {
                 "security": [
                     {
@@ -603,7 +609,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/category": {
+        "/categories": {
             "get": {
                 "security": [
                     {
@@ -701,7 +707,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/category/{id}": {
+        "/categories/{id}": {
             "get": {
                 "security": [
                     {
@@ -883,7 +889,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/company": {
+        "/companies": {
             "get": {
                 "description": "Retrieve a list of all companies. No authentication required.",
                 "consumes": [
@@ -964,7 +970,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/company/{id}": {
+        "/companies/{id}": {
             "get": {
                 "description": "Retrieve a single company by its ID. No authentication required.",
                 "consumes": [
@@ -1123,7 +1129,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/resume": {
+        "/resumes": {
             "get": {
                 "security": [
                     {
@@ -1253,7 +1259,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/resume/block/{id}": {
+        "/resumes/block/{id}": {
             "patch": {
                 "security": [
                     {
@@ -1314,7 +1320,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/resume/unblock/{id}": {
+        "/resumes/unblock/{id}": {
             "patch": {
                 "security": [
                     {
@@ -1375,7 +1381,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/resume/{id}": {
+        "/resumes/{id}": {
             "get": {
                 "security": [
                     {
@@ -1545,7 +1551,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/user": {
+        "/users": {
             "get": {
                 "security": [
                     {
@@ -1591,53 +1597,9 @@ const docTemplate = `{
                         }
                     }
                 }
-            },
-            "post": {
-                "description": "Create a new user with the provided details",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Users"
-                ],
-                "summary": "Create a new user",
-                "parameters": [
-                    {
-                        "description": "User data",
-                        "name": "user",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.SwagUser"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Success",
-                        "schema": {
-                            "$ref": "#/definitions/controllers.DefaultResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid input",
-                        "schema": {
-                            "$ref": "#/definitions/controllers.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "schema": {
-                            "$ref": "#/definitions/controllers.ErrorResponse"
-                        }
-                    }
-                }
             }
         },
-        "/user/block/{id}": {
+        "/users/block/{id}": {
             "patch": {
                 "security": [
                     {
@@ -1693,7 +1655,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/password": {
+        "/users/password": {
             "patch": {
                 "security": [
                     {
@@ -1756,7 +1718,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/unblock/{id}": {
+        "/users/unblock/{id}": {
             "patch": {
                 "security": [
                     {
@@ -1812,7 +1774,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/{id}": {
+        "/users/{id}": {
             "get": {
                 "security": [
                     {
@@ -1994,7 +1956,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/vacancy": {
+        "/vacancies": {
             "get": {
                 "security": [
                     {
@@ -2014,13 +1976,6 @@ const docTemplate = `{
                 "summary": "Retrieve all vacancies with filters",
                 "operationId": "get-all-vacancies",
                 "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "User ID to check if the user is blocked",
-                        "name": "userID",
-                        "in": "query",
-                        "required": true
-                    },
                     {
                         "type": "string",
                         "description": "Search keyword for filtering vacancies",
@@ -2152,7 +2107,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/vacancy/block/{id}": {
+        "/vacancies/block/{id}": {
             "patch": {
                 "security": [
                     {
@@ -2213,7 +2168,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/vacancy/unblock/{id}": {
+        "/vacancies/unblock/{id}": {
             "patch": {
                 "security": [
                     {
@@ -2274,7 +2229,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/vacancy/{vacancyID}": {
+        "/vacancies/{vacancyID}": {
             "get": {
                 "security": [
                     {
@@ -2517,12 +2472,6 @@ const docTemplate = `{
         "models.Company": {
             "type": "object",
             "properties": {
-                "created_at": {
-                    "type": "string"
-                },
-                "deleted_at": {
-                    "type": "boolean"
-                },
                 "description": {
                     "type": "string"
                 },
@@ -2530,9 +2479,6 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "name": {
-                    "type": "string"
-                },
-                "updated_at": {
                     "type": "string"
                 }
             }
@@ -2542,12 +2488,6 @@ const docTemplate = `{
             "properties": {
                 "certifications": {
                     "type": "string"
-                },
-                "created_at": {
-                    "type": "string"
-                },
-                "deleted_at": {
-                    "type": "boolean"
                 },
                 "education": {
                     "type": "string"
@@ -2574,9 +2514,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "title": {
-                    "type": "string"
-                },
-                "updated_at": {
                     "type": "string"
                 },
                 "user_id": {
@@ -2728,12 +2665,6 @@ const docTemplate = `{
                 "birth_date": {
                     "type": "string"
                 },
-                "created_at": {
-                    "type": "string"
-                },
-                "deleted_at": {
-                    "type": "boolean"
-                },
                 "email": {
                     "type": "string"
                 },
@@ -2752,9 +2683,6 @@ const docTemplate = `{
                 "role": {
                     "type": "string"
                 },
-                "updated_at": {
-                    "type": "string"
-                },
                 "username": {
                     "type": "string"
                 }
@@ -2768,12 +2696,6 @@ const docTemplate = `{
                 },
                 "company_id": {
                     "type": "integer"
-                },
-                "created_at": {
-                    "type": "string"
-                },
-                "deleted_at": {
-                    "type": "boolean"
                 },
                 "description": {
                     "type": "string"
@@ -2791,9 +2713,6 @@ const docTemplate = `{
                     "type": "number"
                 },
                 "title": {
-                    "type": "string"
-                },
-                "updated_at": {
                     "type": "string"
                 },
                 "user": {
@@ -2819,19 +2738,10 @@ const docTemplate = `{
         "models.VacancyCategory": {
             "type": "object",
             "properties": {
-                "created_at": {
-                    "type": "string"
-                },
-                "deleted_at": {
-                    "type": "boolean"
-                },
                 "id": {
                     "type": "integer"
                 },
                 "name": {
-                    "type": "string"
-                },
-                "updated_at": {
                     "type": "string"
                 }
             }

@@ -17,17 +17,16 @@ import (
 // @ID get-all-vacancies
 // @Accept json
 // @Produce json
-// @Param userID query integer true "User ID to check if the user is blocked"
 // @Param search query string false "Search keyword for filtering vacancies"
 // @Param minSalary query integer false "Minimum salary for filtering vacancies"
 // @Param maxSalary query integer false "Maximum salary for filtering vacancies"
 // @Param location query string false "Location for filtering vacancies"
 // @Param category query string false "Category for filtering vacancies"
 // @Param sort query string false "Sorting order for vacancies"
-// @Success 200 {array}  models.Vacancy "Successfully retrieved list of vacancies"
-// @Failure 400 {object} ErrorResponse "Bad Request"
+// @Success 200 {array}    models.Vacancy "Successfully retrieved list of vacancies"
+// @Failure 400 {object}   ErrorResponse "Bad Request"
 // @Failure 403  {object}  ErrorResponse 	 "Access Denied"
-// @Failure 500 {object} ErrorResponse "Internal Server Error"
+// @Failure 500 {object}   ErrorResponse "Internal Server Error"
 // @Security     ApiKeyAuth
 // @Router /vacancies [get]
 func GetAllVacancies(c *gin.Context) {

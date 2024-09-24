@@ -55,4 +55,5 @@ var (
 	ErrAuthorizationHeaderMissing                  = errors.New("ErrAuthorizationHeaderMissing")
 	ErrCompanyNotFound                             = errors.New("ErrCompanyNotFound")
 	ErrIncorrectInput                              = errors.New("ErrIncorrectInput")
+	ErrUniquenessViolation                         = errors.New("ErrUniquenessViolation")
 )
