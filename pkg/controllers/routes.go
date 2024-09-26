@@ -69,11 +69,15 @@ func InitRoutes() *gin.Engine {
 	applicationGroup := r.Group("/applications").Use(checkUserAuthentication)
 	{
 		applicationGroup.GET("/", GetAllApplications)
-		applicationGroup.GET("/:id", GetApplicationByID)
+		applicationGroup.GET("/:application_id", GetApplicationByID) // Измените :id на :application_id
 		applicationGroup.POST("/", AddApplication)
-		applicationGroup.PUT("/:id", UpdateApplication)
-		applicationGroup.DELETE("/:id", DeleteApplication)
-		applicationGroup.PUT("/:id/status/:status_id", UpdateApplicationStatus)
+		applicationGroup.PUT("/:application_id", UpdateApplication)    // Измените :id на :application_id
+		applicationGroup.DELETE("/:application_id", DeleteApplication) // Измените :id на :application_id
+	}
+
+	statusGroup := r.Group("/applications/:application_id/status")
+	{
+		statusGroup.PUT("/:status_id", UpdateApplicationStatus)
 	}
 
 	activityGroup := r.Group("/activities").Use(checkUserAuthentication)

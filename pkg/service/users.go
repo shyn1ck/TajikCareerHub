@@ -52,6 +52,13 @@ func CreateUser(user models.User) (uint, error) {
 		logger.Error.Printf("[service.CreateUser] validation error: %v\n", err)
 		return 0, err
 	}
+
+	existingUser, err := repository.GetUserByUsername(user.UserName)
+	if err == nil && existingUser != nil {
+		logger.Error.Printf("[service.CreateUser] username already exists: %s\n", user.UserName)
+		return 0, errs.ErrUsernameExists
+	}
+
 	user.Password = utils.GenerateHash(user.Password)
 	id, err := repository.CreateUser(user)
 	if err != nil {

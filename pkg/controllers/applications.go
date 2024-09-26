@@ -5,6 +5,7 @@ import (
 	"TajikCareerHub/models"
 	"TajikCareerHub/pkg/service"
 	"TajikCareerHub/utils/errs"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -209,30 +210,49 @@ func UpdateApplicationStatus(c *gin.Context) {
 	ip := c.ClientIP()
 	applicationIDStr := c.Param("application_id")
 	statusIDStr := c.Param("status_id")
+	logger.Info.Printf("[controllers.UpdateApplicationStatus] Raw application ID: %s, status ID: %s, Client IP: %s\n", applicationIDStr, statusIDStr, ip)
+
+	if applicationIDStr == "" {
+		logger.Info.Printf("[controllers.UpdateApplicationStatus] Client IP: %s - Missing application ID\n", ip)
+		handleError(c, fmt.Errorf("missing application ID"))
+		return
+	}
+	if statusIDStr == "" {
+		logger.Info.Printf("[controllers.UpdateApplicationStatus] Client IP: %s - Missing status ID\n", ip)
+		handleError(c, fmt.Errorf("missing status ID"))
+		return
+	}
+
 	applicationID, err := strconv.ParseUint(applicationIDStr, 10, 32)
 	if err != nil {
-		logger.Info.Printf("[controllers.DeleteApplication] Client IP: %s - Client attempted to delete application with ID %s. Error: Invalid application ID\n", ip, applicationID)
-		handleError(c, errs.ErrIDIsNotCorrect)
+		logger.Info.Printf("[controllers.UpdateApplicationStatus] Client IP: %s - Invalid application ID: %s. Error: %v\n", ip, applicationIDStr, err)
+		handleError(c, fmt.Errorf("invalid application ID: %s", applicationIDStr))
 		return
 	}
 
 	statusID, err := strconv.ParseUint(statusIDStr, 10, 32)
 	if err != nil {
-		handleError(c, errs.ErrIDIsNotCorrect)
-		logger.Info.Printf("[controllers.DeleteApplication] Client IP: %s - Client attempted to delete application with ID %s. Error: Invalid application status ID\n", ip, statusIDStr)
+		logger.Info.Printf("[controllers.UpdateApplicationStatus] Client IP: %s - Invalid status ID: %s. Error: %v\n", ip, statusIDStr, err)
+		handleError(c, fmt.Errorf("invalid status ID: %s", statusIDStr))
 		return
 	}
+
 	userID, err := service.GetUserIDFromToken(c)
 	if err != nil {
-		handleError(c, err)
+		logger.Info.Printf("[controllers.UpdateApplicationStatus] Client IP: %s - Failed to extract user ID from token. Error: %v\n", ip, err)
+		handleError(c, fmt.Errorf("unable to extract user ID from token"))
 		return
 	}
 
-	err = service.UpdateApplicationStatus(uint(applicationID), uint(statusID), uint(userID))
+	logger.Info.Printf("[controllers.UpdateApplicationStatus] Client IP: %s - Attempting to update status for application ID: %d to status ID: %d by user ID: %d\n", ip, applicationID, statusID, userID)
+
+	err = service.UpdateApplicationStatus(uint(applicationID), uint(statusID), userID)
 	if err != nil {
-		handleError(c, err)
+		logger.Info.Printf("[controllers.UpdateApplicationStatus] Client IP: %s - Failed to update status for application ID: %d. Error: %v\n", ip, applicationID, err)
+		handleError(c, fmt.Errorf("failed to update application status"))
 		return
 	}
 
-	c.JSON(http.StatusOK, NewDefaultResponse("Application status updated successfully"))
+	logger.Info.Printf("[controllers.UpdateApplicationStatus] Client IP: %s - Successfully updated application ID: %d to status ID: %d\n", ip, applicationID, statusID)
+	c.JSON(http.StatusOK, DefaultResponse{Message: "Application status updated successfully"})
 }
