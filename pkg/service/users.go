@@ -8,8 +8,8 @@ import (
 	"TajikCareerHub/utils/errs"
 )
 
-func GetAllUsers(role string) (users []models.User, err error) {
-	if role != "admin" {
+func GetAllUsers(RoleID uint) (users []models.User, err error) {
+	if RoleID != 1 {
 		return nil, errs.ErrAccessDenied
 	}
 	users, err = repository.GetAllUsers()
@@ -24,7 +24,7 @@ func GetUserByID(id uint) (user models.User, err error) {
 	user, err = repository.GetUserByID(id)
 	if err != nil {
 		logger.Error.Printf("[service.GetUserByID] error retrieving user by ID: %v\n", err)
-		return models.User{}, err
+		return models.User{}, errs.ErrUserNotFound
 	}
 	return user, nil
 }
@@ -135,8 +135,8 @@ func UpdateUserPassword(userID uint, username string, oldPassword string, newPas
 	return nil
 }
 
-func BlockUser(id uint, role string) (err error) {
-	if role != "admin" {
+func BlockUser(id uint, RoleID uint) (err error) {
+	if RoleID != 1 {
 		return errs.ErrAccessDenied
 	}
 	if id == 0 {
@@ -152,9 +152,9 @@ func BlockUser(id uint, role string) (err error) {
 	return nil
 }
 
-func UnblockUser(id uint, role string) (err error) {
+func UnblockUser(id uint, RoleID uint) (err error) {
 
-	if role != "admin" {
+	if RoleID != 1 {
 		return errs.ErrAccessDenied
 	}
 

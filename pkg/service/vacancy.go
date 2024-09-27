@@ -132,9 +132,9 @@ func GetVacancyReportByID(vacancyID uint) (*models.VacancyReport, error) {
 	return report, nil
 }
 
-func BlockVacancy(userID uint, vacancyID uint, role string) (err error) {
+func BlockVacancy(userID uint, vacancyID uint, RoleID uint) (err error) {
 
-	if role != "admin" {
+	if RoleID != 1 {
 		return errs.ErrAccessDenied
 	}
 	if err := checkUserBlocked(userID); err != nil {
@@ -150,8 +150,8 @@ func BlockVacancy(userID uint, vacancyID uint, role string) (err error) {
 	return nil
 }
 
-func UnblockVacancy(userID uint, vacancyID uint, role string) (err error) {
-	if role != "admin" {
+func UnblockVacancy(userID uint, vacancyID uint, RoleID uint) (err error) {
+	if RoleID != 1 {
 		return errs.ErrAccessDenied
 	}
 

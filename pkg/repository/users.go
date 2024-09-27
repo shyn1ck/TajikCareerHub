@@ -7,7 +7,7 @@ import (
 )
 
 func GetAllUsers() (users []models.User, err error) {
-	err = db.GetDBConn().Where("deleted_at = false").Find(&users).Error
+	err = db.GetDBConn().Omit("password").Where("deleted_at = false").Find(&users).Error
 	if err != nil {
 		logger.Error.Printf("[repository.GetAllUsers] error getting all users: %s\n", err.Error())
 		return nil, TranslateError(err)
@@ -16,7 +16,7 @@ func GetAllUsers() (users []models.User, err error) {
 }
 
 func GetUserByID(id uint) (user models.User, err error) {
-	err = db.GetDBConn().Where("id = ? AND deleted_at = false", id).First(&user).Error
+	err = db.GetDBConn().Omit("password").Where("id = ? AND deleted_at = false", id).First(&user).Error
 	if err != nil {
 		logger.Error.Printf("[repository.GetUserByID] error getting user by id: %v\n", err)
 		return models.User{}, TranslateError(err)
@@ -26,7 +26,7 @@ func GetUserByID(id uint) (user models.User, err error) {
 
 func GetUserByUsername(username string) (*models.User, error) {
 	var user models.User
-	err := db.GetDBConn().Where("user_name = ? AND deleted_at = false", username).First(&user).Error
+	err := db.GetDBConn().Omit("password").Where("user_name = ? AND deleted_at = false", username).First(&user).Error
 
 	if err != nil {
 		logger.Error.Printf("[repository.GetUserByUsername] error getting user by username: %v\n", err)

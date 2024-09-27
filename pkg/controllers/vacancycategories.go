@@ -75,7 +75,7 @@ func GetAllCategories(c *gin.Context) {
 // @Tags         Categories
 // @Accept       json
 // @Produce      json
-// @Param        category  body models.VacancyCategory  true  "Category data"
+// @Param        category  body models.SwagVacancyCategories  true  "Category data"
 // @Success      201  {object}  DefaultResponse  "Success"
 // @Failure      400  {object}  ErrorResponse  "Invalid input"
 // @Failure      403  {object}  ErrorResponse  "Access Denied"
@@ -89,13 +89,13 @@ func CreateCategory(c *gin.Context) {
 		handleError(c, errs.ErrShouldBindJson)
 		return
 	}
-	role, err := service.GetRoleFromToken(c)
+	RoleID, err := service.GetRoleIDFromToken(c)
 	if err != nil {
 		handleError(c, err)
 		return
 	}
 
-	if err := service.AddCategory(category, role); err != nil {
+	if err := service.AddCategory(category, RoleID); err != nil {
 		handleError(c, err)
 		return
 	}
@@ -134,12 +134,12 @@ func UpdateCategory(c *gin.Context) {
 		handleError(c, errs.ErrShouldBindJson)
 		return
 	}
-	role, err := service.GetRoleFromToken(c)
+	RoleID, err := service.GetRoleIDFromToken(c)
 	if err != nil {
 		handleError(c, err)
 	}
 
-	if err := service.UpdateCategory(category, role); err != nil {
+	if err := service.UpdateCategory(category, RoleID); err != nil {
 		handleError(c, err)
 		return
 	}
@@ -169,12 +169,12 @@ func DeleteCategory(c *gin.Context) {
 		handleError(c, errs.ErrIDIsNotCorrect)
 		return
 	}
-	role, err := service.GetRoleFromToken(c)
+	RoleID, err := service.GetRoleIDFromToken(c)
 	if err != nil {
 		handleError(c, err)
 	}
 
-	if err := service.DeleteCategory(uint(id), role); err != nil {
+	if err := service.DeleteCategory(uint(id), RoleID); err != nil {
 		handleError(c, err)
 		return
 	}

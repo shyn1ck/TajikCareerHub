@@ -17,7 +17,7 @@ func SignIn(username, password string) (accessToken string, err error) {
 		logger.Error.Printf("[service.SignIn]: Error user blocked")
 		return "", errs.ErrUserBlocked
 	}
-	accessToken, err = GenerateToken(user.ID, user.UserName, user.Role)
+	accessToken, err = GenerateToken(user.ID, user.UserName, user.RoleID)
 	if err != nil {
 		logger.Error.Printf("[service.SignIn]: Error generating access token")
 		return "", err

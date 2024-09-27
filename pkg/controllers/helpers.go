@@ -44,6 +44,8 @@ func handleError(c *gin.Context, err error) {
 	case errors.Is(err, errs.ErrRecordNotFound),
 		errors.Is(err, errs.ErrUsersNotFound),
 		errors.Is(err, errs.ErrUserNotFound),
+		errors.Is(err, errs.ErrResumeNotFound),
+		errors.Is(err, errs.ErrUserNotFound),
 		errors.Is(err, errs.ErrCompanyNotFound):
 		statusCode = http.StatusNotFound
 		errorResponse = NewErrorResponse(err.Error())

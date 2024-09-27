@@ -13,29 +13,35 @@ type User struct {
 	BirthDate time.Time `json:"birth_date" gorm:"type:date"`
 	Email     string    `json:"email" gorm:"type:varchar(100);unique;not null"`
 	Password  string    `json:"password" gorm:"type:varchar(255);not null"`
-	Role      string    `json:"role" gorm:"type:varchar(255);not null"`
+	RoleID    uint      `json:"role_id" gorm:"not null"`
+	Role      Role      `json:"role" gorm:"foreignKey:RoleID"`
 	IsBlocked bool      `json:"-" gorm:"type:bool;not null;default:false"`
 	BaseModel
 }
 
-func (u User) ValidateCredentials() error {
+func (u User) ValidateCredentials() (err error) {
 	if strings.TrimSpace(u.UserName) == "" {
 		return errs.ErrUsernameExists
 	}
+
 	if strings.TrimSpace(u.Email) == "" {
 		return errs.ErrEmailExists
 	}
-	if strings.TrimSpace(u.Role) == "" {
+
+	if u.RoleID == 0 {
 		return errs.ErrRoleExist
 	}
-	if strings.ToLower(u.Role) == "admin" {
-		return errs.ErrRoleCannotBeAdmin
-	}
-	if strings.TrimSpace(u.Role) != "specialist" && strings.TrimSpace(u.Role) != "employer" {
-		return errs.ErrInvalidRole
-	}
+
 	if len(u.Password) < 8 {
 		return errs.ErrIncorrectPasswordLength
+	}
+
+	switch u.RoleID {
+	case 1:
+		return errs.ErrRoleCannotBeAdmin
+	case 2, 3:
+	default:
+		return errs.ErrInvalidRole
 	}
 	return nil
 }
@@ -45,7 +51,7 @@ type SwagUser struct {
 	Password string `json:"password" gorm:"not null"`
 	FullName string `json:"full_name"`
 	Email    string `json:"email"`
-	Role     string `json:"role"`
+	RoleID   uint   `json:"role_id"`
 }
 
 type SwagInUser struct {

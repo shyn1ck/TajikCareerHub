@@ -27,8 +27,8 @@ func GetCategoryByID(id uint) (category models.VacancyCategory, err error) {
 	return category, nil
 }
 
-func AddCategory(category models.VacancyCategory, role string) (err error) {
-	if role != "admin" {
+func AddCategory(category models.VacancyCategory, RoleID uint) (err error) {
+	if RoleID != 1 {
 		return errs.ErrPermissionDenied
 	}
 	existingCategory, err := repository.GetCategoryByName(category.Name)
@@ -44,8 +44,8 @@ func AddCategory(category models.VacancyCategory, role string) (err error) {
 	return repository.AddCategory(category)
 }
 
-func UpdateCategory(category models.VacancyCategory, role string) (err error) {
-	if role != "admin" {
+func UpdateCategory(category models.VacancyCategory, RoleID uint) (err error) {
+	if RoleID != 1 {
 		return errs.ErrPermissionDenied
 	}
 	existingCategory, err := repository.GetCategoryByID(category.ID)
@@ -65,8 +65,8 @@ func UpdateCategory(category models.VacancyCategory, role string) (err error) {
 	return nil
 }
 
-func DeleteCategory(id uint, role string) (err error) {
-	if role != "admin" {
+func DeleteCategory(id uint, RoleID uint) (err error) {
+	if RoleID != 1 {
 		return errs.ErrPermissionDenied
 	}
 	existingCategory, err := repository.GetCategoryByID(id)

@@ -56,4 +56,5 @@ var (
 	ErrCompanyNotFound                             = errors.New("ErrCompanyNotFound")
 	ErrIncorrectInput                              = errors.New("ErrIncorrectInput")
 	ErrUniquenessViolation                         = errors.New("ErrUniquenessViolation")
+	ErrResumeNotFound                              = errors.New("ErrResumeNotFound")
 )

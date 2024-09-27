@@ -251,13 +251,13 @@ func BlockResume(c *gin.Context) {
 		handleError(c, err)
 		return
 	}
-	role, err := service.GetRoleFromToken(c)
+	RoleID, err := service.GetRoleIDFromToken(c)
 	if err != nil {
 		handleError(c, err)
 		return
 	}
 
-	err = service.BlockResume(uint(id), userID, role)
+	err = service.BlockResume(uint(id), userID, RoleID)
 	if err != nil {
 		handleError(c, err)
 		return
@@ -296,13 +296,13 @@ func UnblockResume(c *gin.Context) {
 		handleError(c, err)
 		return
 	}
-	role, err := service.GetRoleFromToken(c)
+	RoleID, err := service.GetRoleIDFromToken(c)
 	if err != nil {
 		handleError(c, err)
 		return
 	}
 
-	err = service.UnblockResume(uint(id), userID, role)
+	err = service.UnblockResume(uint(id), userID, RoleID)
 	if err != nil {
 		handleError(c, err)
 		return

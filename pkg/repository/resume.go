@@ -14,7 +14,7 @@ func GetAllResumes(search string, minExperienceYears int, location string, categ
 		Model(&models.Resume{}).
 		Where("resumes.deleted_at = false")
 	if search != "" {
-		query = query.Where("title ILIKE ?", "%"+search+"%")
+		query = query.Where("summary ILIKE ?", "%"+search+"%")
 	}
 
 	if location != "" {

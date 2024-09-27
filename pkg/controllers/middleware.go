@@ -41,8 +41,8 @@ func checkUserAuthentication(c *gin.Context) {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
 	}
-	fmt.Println("UserID:", claims.UserID, "Role:", claims.Role)
+	fmt.Println("UserID:", claims.UserID, "Role:", claims.RoleID)
 	c.Set(userIDCtx, claims.UserID)
-	c.Set(userRoleCtx, claims.Role)
+	c.Set(userRoleCtx, claims.RoleID)
 	c.Next()
 }

@@ -18,6 +18,7 @@ import (
 // @Success 200 {array} models.Company
 // @Failure 500 {object} ErrorResponse
 // @Router /companies [get]
+// @Security ApiKeyAuth
 func GetAllCompanies(c *gin.Context) {
 	ip := c.ClientIP()
 	logger.Info.Printf("[controllers.GetAllCompanies] Client IP: %s - Request to get all companies\n", ip)
@@ -48,6 +49,7 @@ func GetAllCompanies(c *gin.Context) {
 // @Failure 400 {object} ErrorResponse
 // @Failure 404 {object} ErrorResponse
 // @Router /companies/{id} [get]
+// @Security ApiKeyAuth
 func GetCompanyByID(c *gin.Context) {
 	ip := c.ClientIP()
 	idStr := c.Param("id")
@@ -79,7 +81,7 @@ func GetCompanyByID(c *gin.Context) {
 // @Tags Companies
 // @Accept json
 // @Produce json
-// @Param company body models.Company true "Company data"
+// @Param company body models.SwagCompany true "Company data"
 // @Success 201 {object} DefaultResponse
 // @Failure 400 {object} ErrorResponse
 // @Failure 401 {object} ErrorResponse
@@ -100,13 +102,13 @@ func AddCompany(c *gin.Context) {
 		return
 	}
 
-	role, err := service.GetRoleFromToken(c)
+	RoleID, err := service.GetRoleIDFromToken(c)
 	if err != nil {
 		handleError(c, err)
 		return
 	}
 
-	if err := service.AddCompany(userID, company, role); err != nil {
+	if err := service.AddCompany(userID, company, RoleID); err != nil {
 		handleError(c, err)
 		return
 	}
@@ -121,7 +123,7 @@ func AddCompany(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param id path integer true "Company ID"
-// @Param company body models.Company true "Updated company data"
+// @Param company body models.SwagCompany true "Updated company data"
 // @Success 200 {object} DefaultResponse
 // @Failure 400 {object} ErrorResponse
 // @Failure 401 {object} ErrorResponse
@@ -133,6 +135,7 @@ func UpdateCompany(c *gin.Context) {
 	var company models.Company
 	idStr := c.Param("id")
 	id, err := strconv.ParseUint(idStr, 10, 32)
+	logger.Info.Printf("[controllers.UpdateCompany] Client IP: %s - Request to update company with ID %v\n", ip, id)
 	if err != nil {
 		logger.Error.Printf("[controllers.UpdateCompany] Client IP: %s - Invalid company ID %s: %v\n", ip, idStr, err)
 		handleError(c, err)
@@ -149,13 +152,13 @@ func UpdateCompany(c *gin.Context) {
 		handleError(c, err)
 		return
 	}
-	role, err := service.GetRoleFromToken(c)
+	RoleID, err := service.GetRoleIDFromToken(c)
 	if err != nil {
 		handleError(c, err)
 		return
 	}
 
-	if err := service.UpdateCompany(userID, company, role); err != nil {
+	if err := service.UpdateCompany(userID, company, RoleID); err != nil {
 		handleError(c, err)
 		return
 	}
@@ -179,6 +182,7 @@ func UpdateCompany(c *gin.Context) {
 func DeleteCompany(c *gin.Context) {
 	ip := c.ClientIP()
 	idStr := c.Param("id")
+	logger.Info.Printf("[controllers.DeleteCompany] Client IP: %s - Request to delete company\n", ip)
 	id, err := strconv.ParseUint(idStr, 10, 32)
 	if err != nil {
 		logger.Error.Printf("[controllers.DeleteCompany] Client IP: %s - Invalid company ID %s: %v\n", ip, idStr, err)
@@ -192,12 +196,12 @@ func DeleteCompany(c *gin.Context) {
 		return
 	}
 
-	role, err := service.GetRoleFromToken(c)
+	RoleID, err := service.GetRoleIDFromToken(c)
 	if err != nil {
 		handleError(c, err)
 		return
 	}
-	if err := service.DeleteCompany(uint(id), userID, role); err != nil {
+	if err := service.DeleteCompany(uint(id), userID, RoleID); err != nil {
 		handleError(c, err)
 		return
 	}

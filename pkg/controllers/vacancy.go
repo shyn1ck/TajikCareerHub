@@ -320,13 +320,13 @@ func BlockVacancy(c *gin.Context) {
 		handleError(c, err)
 		return
 	}
-	role, err := service.GetRoleFromToken(c)
+	RoleID, err := service.GetRoleIDFromToken(c)
 	if err != nil {
 		handleError(c, err)
 		return
 	}
 
-	err = service.BlockVacancy(uint(id), userID, role)
+	err = service.BlockVacancy(uint(id), userID, RoleID)
 	if err != nil {
 		handleError(c, err)
 		return
@@ -367,13 +367,13 @@ func UnblockVacancy(c *gin.Context) {
 		handleError(c, err)
 		return
 	}
-	role, err := service.GetRoleFromToken(c)
+	RoleID, err := service.GetRoleIDFromToken(c)
 	if err != nil {
 		handleError(c, err)
 		return
 	}
 
-	err = service.UnblockVacancy(uint(id), userID, role)
+	err = service.UnblockVacancy(uint(id), userID, RoleID)
 	if err != nil {
 		handleError(c, err)
 		return

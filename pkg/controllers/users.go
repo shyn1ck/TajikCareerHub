@@ -37,12 +37,12 @@ func GetAllUsers(c *gin.Context) {
 		logger.Info.Printf("[controllers.GetAllUsers] Client IP: %s - Successfully retrieved user: %s.\n", ip, username)
 		c.JSON(http.StatusOK, user)
 	} else {
-		role, err := service.GetRoleFromToken(c)
+		RoleID, err := service.GetRoleIDFromToken(c)
 		if err != nil {
 			handleError(c, err)
 			return
 		}
-		users, err := service.GetAllUsers(role)
+		users, err := service.GetAllUsers(RoleID)
 		if err != nil {
 			handleError(c, err)
 			return
@@ -167,7 +167,7 @@ func UpdateUser(c *gin.Context) {
 		BirthDate *string `json:"birth_date"`
 		Email     *string `json:"email"`
 		Password  *string `json:"password"`
-		Role      *string `json:"role"`
+		Role      *uint   `json:"role_id"`
 	}
 
 	if err := c.ShouldBindJSON(&userInput); err != nil {
@@ -265,12 +265,12 @@ func BlockUser(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, ErrorResponse{Error: idParam})
 		return
 	}
-	role, err := service.GetRoleFromToken(c)
+	RoleID, err := service.GetRoleIDFromToken(c)
 	if err != nil {
 		handleError(c, err)
 		return
 	}
-	err = service.BlockUser(uint(id), role)
+	err = service.BlockUser(uint(id), RoleID)
 	if err != nil {
 		handleError(c, err)
 		return
@@ -302,12 +302,12 @@ func UnblockUser(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, ErrorResponse{Error: idParam})
 		return
 	}
-	role, err := service.GetRoleFromToken(c)
+	RoleID, err := service.GetRoleIDFromToken(c)
 	if err != nil {
 		handleError(c, err)
 		return
 	}
-	err = service.UnblockUser(uint(id), role)
+	err = service.UnblockUser(uint(id), RoleID)
 	if err != nil {
 		handleError(c, err)
 		return

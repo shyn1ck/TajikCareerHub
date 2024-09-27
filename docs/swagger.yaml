@@ -72,11 +72,25 @@ definitions:
       views_count:
         type: integer
     type: object
+  models.Role:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
   models.SpecialistActivityReport:
     properties:
       application_count:
         type: integer
       full_name:
+        type: string
+    type: object
+  models.SwagCompany:
+    properties:
+      description:
+        type: string
+      name:
         type: string
     type: object
   models.SwagInUser:
@@ -92,8 +106,6 @@ definitions:
         type: integer
       full_name:
         type: string
-      id:
-        type: integer
       location:
         type: string
       skills:
@@ -113,8 +125,8 @@ definitions:
         type: string
       password:
         type: string
-      role:
-        type: string
+      role_id:
+        type: integer
       username:
         type: string
     type: object
@@ -132,6 +144,11 @@ definitions:
         type: string
       vacancy_category_id:
         type: integer
+    type: object
+  models.SwagVacancyCategories:
+    properties:
+      name:
+        type: string
     type: object
   models.SwaggerApplication:
     properties:
@@ -161,7 +178,9 @@ definitions:
       password:
         type: string
       role:
-        type: string
+        $ref: '#/definitions/models.Role'
+      role_id:
+        type: integer
       username:
         type: string
     type: object
@@ -657,7 +676,7 @@ paths:
         name: category
         required: true
         schema:
-          $ref: '#/definitions/models.VacancyCategory'
+          $ref: '#/definitions/models.SwagVacancyCategories'
       produces:
       - application/json
       responses:
@@ -817,6 +836,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/controllers.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
       summary: Get all companies
       tags:
       - Companies
@@ -830,7 +851,7 @@ paths:
         name: company
         required: true
         schema:
-          $ref: '#/definitions/models.Company'
+          $ref: '#/definitions/models.SwagCompany'
       produces:
       - application/json
       responses:
@@ -911,6 +932,8 @@ paths:
           description: Not Found
           schema:
             $ref: '#/definitions/controllers.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
       summary: Get company by ID
       tags:
       - Companies
@@ -929,7 +952,7 @@ paths:
         name: company
         required: true
         schema:
-          $ref: '#/definitions/models.Company'
+          $ref: '#/definitions/models.SwagCompany'
       produces:
       - application/json
       responses:

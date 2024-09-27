@@ -675,7 +675,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.VacancyCategory"
+                            "$ref": "#/definitions/models.SwagVacancyCategories"
                         }
                     }
                 ],
@@ -891,6 +891,11 @@ const docTemplate = `{
         },
         "/companies": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Retrieve a list of all companies. No authentication required.",
                 "consumes": [
                     "application/json"
@@ -944,7 +949,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.Company"
+                            "$ref": "#/definitions/models.SwagCompany"
                         }
                     }
                 ],
@@ -972,6 +977,11 @@ const docTemplate = `{
         },
         "/companies/{id}": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Retrieve a single company by its ID. No authentication required.",
                 "consumes": [
                     "application/json"
@@ -1044,7 +1054,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.Company"
+                            "$ref": "#/definitions/models.SwagCompany"
                         }
                     }
                 ],
@@ -2541,6 +2551,17 @@ const docTemplate = `{
                 }
             }
         },
+        "models.Role": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "models.SpecialistActivityReport": {
             "type": "object",
             "properties": {
@@ -2548,6 +2569,17 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "full_name": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.SwagCompany": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "name": {
                     "type": "string"
                 }
             }
@@ -2571,9 +2603,6 @@ const docTemplate = `{
                 },
                 "full_name": {
                     "type": "string"
-                },
-                "id": {
-                    "type": "integer"
                 },
                 "location": {
                     "type": "string"
@@ -2604,8 +2633,8 @@ const docTemplate = `{
                 "password": {
                     "type": "string"
                 },
-                "role": {
-                    "type": "string"
+                "role_id": {
+                    "type": "integer"
                 },
                 "username": {
                     "type": "string"
@@ -2632,6 +2661,14 @@ const docTemplate = `{
                 },
                 "vacancy_category_id": {
                     "type": "integer"
+                }
+            }
+        },
+        "models.SwagVacancyCategories": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
                 }
             }
         },
@@ -2675,7 +2712,10 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "role": {
-                    "type": "string"
+                    "$ref": "#/definitions/models.Role"
+                },
+                "role_id": {
+                    "type": "integer"
                 },
                 "username": {
                     "type": "string"

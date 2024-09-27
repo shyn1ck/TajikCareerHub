@@ -21,6 +21,7 @@ func Migrate() error {
 		&models.Resume{},
 		&models.VacancyView{},
 		&models.ApplicationStatus{},
+		&models.Role{},
 	}
 	for _, model := range migrateModels {
 		err := dbConn.AutoMigrate(model)
@@ -29,6 +30,7 @@ func Migrate() error {
 		}
 		logger.Info.Printf("Migrated model: %T\n", model)
 	}
+
 	initialStatuses := []models.ApplicationStatus{
 		{Name: "applied"},
 		{Name: "under_review"},
@@ -47,6 +49,24 @@ func Migrate() error {
 			return fmt.Errorf("failed to insert initial application statuses: %v", err)
 		}
 		logger.Info.Println("Initial application statuses inserted successfully")
+	}
+
+	initialRoles := []models.Role{
+		{Name: "admin"},
+		{Name: "specialist"},
+		{Name: "employer"},
+	}
+
+	err = dbConn.Model(&models.Role{}).Count(&count).Error
+	if err != nil {
+		return fmt.Errorf("failed to count roles: %v", err)
+	}
+
+	if count == 0 {
+		if err := dbConn.Create(&initialRoles).Error; err != nil {
+			return fmt.Errorf("failed to insert initial roles: %v", err)
+		}
+		logger.Info.Println("Initial roles inserted successfully")
 	}
 
 	logger.Info.Println("Database migration completed successfully")

@@ -6,3 +6,8 @@ type Company struct {
 	Description string `json:"description" gorm:"type:text"`
 	BaseModel
 }
+
+type SwagCompany struct {
+	Name        string `json:"name"`
+	Description string `json:"description"`
+}

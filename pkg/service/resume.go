@@ -31,7 +31,7 @@ func GetResumeByID(id uint, userID uint) (resume models.Resume, err error) {
 	}
 	resume, err = repository.GetResumeByID(id)
 	if err != nil {
-		return models.Resume{}, err
+		return models.Resume{}, errs.ErrResumeNotFound
 	}
 
 	if err := repository.RecordResumeView(userID, id); err != nil {
@@ -114,8 +114,8 @@ func DeleteResume(id uint, userID uint) error {
 	return repository.DeleteResume(id)
 }
 
-func BlockResume(id uint, userID uint, role string) (err error) {
-	if role != "admin" {
+func BlockResume(id uint, userID uint, RoleID uint) (err error) {
+	if RoleID != 1 {
 		return errs.ErrAccessDenied
 	}
 
@@ -130,8 +130,8 @@ func BlockResume(id uint, userID uint, role string) (err error) {
 	return nil
 }
 
-func UnblockResume(id uint, userID uint, role string) (err error) {
-	if role != "admin" {
+func UnblockResume(id uint, userID uint, RoleID uint) (err error) {
+	if RoleID != 1 {
 		return errs.ErrAccessDenied
 	}
 

@@ -13,15 +13,15 @@ import (
 type CustomClaims struct {
 	UserID   uint   `json:"user_id"`
 	Username string `json:"username"`
-	Role     string `json:"role"`
+	RoleID   uint   `json:"role_id"`
 	jwt.StandardClaims
 }
 
-func GenerateToken(userID uint, username, role string) (string, error) {
+func GenerateToken(userID uint, username string, roleID uint) (string, error) { // Изменяем параметры
 	claims := CustomClaims{
 		UserID:   userID,
 		Username: username,
-		Role:     role,
+		RoleID:   roleID,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(time.Minute * time.Duration(configs.AppSettings.AuthParams.JwtTtlMinutes)).Unix(),
 			Issuer:    configs.AppSettings.AppParams.ServerName,
@@ -63,17 +63,17 @@ func GetUserIDFromToken(c *gin.Context) (uint, error) {
 	return claims.UserID, nil
 }
 
-func GetRoleFromToken(c *gin.Context) (string, error) {
+func GetRoleIDFromToken(c *gin.Context) (uint, error) {
 	tokenString := c.GetHeader("Authorization")
 	if tokenString == "" {
-		return "", errs.ErrAuthorizationHeaderMissing
+		return 0, errs.ErrAuthorizationHeaderMissing
 	}
 	tokenString = strings.TrimPrefix(tokenString, "Bearer ")
 	claims, err := ParseToken(tokenString)
 	if err != nil {
-		return "", err
+		return 0, err
 	}
-	return claims.Role, nil
+	return claims.RoleID, nil
 }
 
 func GetUsernameFromToken(c *gin.Context) (string, error) {

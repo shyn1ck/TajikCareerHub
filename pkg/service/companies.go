@@ -33,13 +33,13 @@ func GetCompanyByID(id uint, userID uint) (company models.Company, err error) {
 	return company, nil
 }
 
-func AddCompany(userID uint, company models.Company, role string) (err error) {
+func AddCompany(userID uint, company models.Company, RoleID uint) (err error) {
 	err = checkUserBlocked(userID)
 	if err != nil {
 		return err
 	}
 
-	if role != "employer" && role != "admin" {
+	if RoleID != 2 && RoleID != 1 {
 		return errs.ErrAccessDenied
 	}
 
@@ -50,12 +50,13 @@ func AddCompany(userID uint, company models.Company, role string) (err error) {
 	return nil
 }
 
-func UpdateCompany(userID uint, company models.Company, role string) (err error) {
+func UpdateCompany(userID uint, company models.Company, RoleID uint) (err error) {
 	err = checkUserBlocked(userID)
 	if err != nil {
 		return err
 	}
-	if role != "employer" && role != "admin" {
+
+	if RoleID != 2 && RoleID != 1 {
 		return errs.ErrAccessDenied
 	}
 
@@ -66,13 +67,13 @@ func UpdateCompany(userID uint, company models.Company, role string) (err error)
 	return nil
 }
 
-func DeleteCompany(id uint, userID uint, role string) (err error) {
+func DeleteCompany(id uint, userID uint, RoleID uint) (err error) {
 	err = checkUserBlocked(userID)
 	if err != nil {
 		return err
 	}
 
-	if role != "employer" && role != "admin" {
+	if RoleID != 2 && RoleID != 1 {
 		return errs.ErrAccessDenied
 	}
 
