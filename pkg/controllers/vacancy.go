@@ -129,7 +129,6 @@ func GetVacancyByID(c *gin.Context) {
 // @ID add-vacancy
 // @Accept json
 // @Produce json
-// @Param userID query integer true "User ID to check if the user is blocked"
 // @Param vacancy body models.SwagVacancy true "Vacancy object to be added"
 // @Success 201 {object} DefaultResponse "Vacancy created successfully"
 // @Failure 400 {object} ErrorResponse "Bad Request"
@@ -150,8 +149,6 @@ func AddVacancy(c *gin.Context) {
 		handleError(c, err)
 		return
 	}
-
-	vacancy.UserID = userID
 
 	err = service.AddVacancy(userID, vacancy)
 	if err != nil {

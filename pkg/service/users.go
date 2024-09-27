@@ -121,7 +121,7 @@ func UpdateUserPassword(userID uint, username string, oldPassword string, newPas
 	hashedOldPassword := utils.GenerateHash(oldPassword)
 	user, err := repository.GetUserByUsernameAndPassword(username, hashedOldPassword)
 	if err != nil {
-		return errs.ErrIncorrectUsernameOrPassword
+		return errs.ErrIncorrectPassword
 	}
 	if user.ID != userID {
 		return errs.ErrUserIdDoesNotMatchTheProvidedUsername

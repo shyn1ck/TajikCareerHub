@@ -11,17 +11,6 @@ import (
 	"strconv"
 )
 
-// GetAllApplications godoc
-// @Summary Get all applications
-// @Description Get a list of all applications. Requires authentication.
-// @Tags Applications
-// @Accept json
-// @Produce json
-// @Success 200 {array} models.SwaggerApplication
-// @failure 403 {object} ErrorResponse "Access Denied"
-// @Failure 401 {object} ErrorResponse
-// @Router /applications [get]
-// @Security ApiKeyAuth
 func GetAllApplications(c *gin.Context) {
 	ip := c.ClientIP()
 	logger.Info.Printf("[controllers.GetAllApplications] Client IP: %s - Client requested all applications\n", ip)
@@ -110,20 +99,6 @@ func AddApplication(c *gin.Context) {
 	c.JSON(http.StatusCreated, NewDefaultResponse("Application added successfully"))
 }
 
-// UpdateApplication godoc
-// @Summary Update an existing application
-// @Description Update an application by its ID. Requires authentication.
-// @Tags Applications
-// @Accept json
-// @Produce json
-// @Param id path integer true "Application ID"
-// @Param application body models.SwaggerApplication true "Updated application data"
-// @Success 200 {object} DefaultResponse
-// @Failure 400 {object} ErrorResponse
-// @Failure 401 {object} ErrorResponse
-// @Failure 404 {object} ErrorResponse
-// @Router /applications/{id} [put]
-// @Security ApiKeyAuth
 func UpdateApplication(c *gin.Context) {
 	ip := c.ClientIP()
 	var application models.SwaggerApplication

@@ -47,14 +47,22 @@ func (u User) ValidateCredentials() (err error) {
 }
 
 type SwagUser struct {
-	Username string `json:"username" gorm:"unique"`
-	Password string `json:"password" gorm:"not null"`
-	FullName string `json:"full_name"`
-	Email    string `json:"email"`
-	RoleID   uint   `json:"role_id"`
+	Username  string    `json:"username" gorm:"unique"`
+	Password  string    `json:"password" gorm:"not null"`
+	FullName  string    `json:"full_name"`
+	Email     string    `json:"email"`
+	RoleID    uint      `json:"role_id"`
+	BirthDate time.Time `json:"birth_date"`
 }
 
 type SwagInUser struct {
 	Username string `json:"username" gorm:"unique"`
 	Password string `json:"password" gorm:"not null"`
+}
+
+type UpdateUser struct {
+	FullName  string    `json:"full_name"`
+	UserName  string    `json:"username"`
+	BirthDate time.Time `json:"birth_date"`
+	Email     string    `json:"email"`
 }

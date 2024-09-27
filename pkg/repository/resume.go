@@ -40,6 +40,7 @@ func GetAllResumes(search string, minExperienceYears int, location string, categ
 
 func GetResumeByID(id uint) (resume models.Resume, err error) {
 	err = db.GetDBConn().
+		Preload("VacancyCategory").
 		Where("id = ?", id).
 		Where("deleted_at = false").
 		First(&resume).Error

@@ -17,6 +17,7 @@ func GetAllVacancies(search string, minSalary int, maxSalary int, location strin
 		}).
 		Model(&models.Vacancy{}).
 		Where("vacancies.deleted_at = false")
+
 	if search != "" {
 		query = query.Where("title ILIKE ?", "%"+search+"%")
 	}
@@ -39,6 +40,7 @@ func GetAllVacancies(search string, minSalary int, maxSalary int, location strin
 	} else if sort == "desc" {
 		query = query.Order("salary DESC")
 	}
+
 	err = query.Find(&vacancies).Error
 	if err != nil {
 		logger.Error.Printf("[repository.GetAllVacancies] Error fetching vacancies: %v", err)
@@ -52,7 +54,7 @@ func GetVacancyByID(id uint) (vacancy models.Vacancy, err error) {
 		Preload("Company").
 		Preload("VacancyCategory").
 		Preload("User", func(db *gorm.DB) *gorm.DB {
-			return db.Select("id", "full_name", "email")
+			return db.Select("id", "full_name", "email") // Исключаем role и password
 		}).
 		Where("id = ? AND deleted_at = false", id).
 		First(&vacancy).Error

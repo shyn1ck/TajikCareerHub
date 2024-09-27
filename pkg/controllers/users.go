@@ -136,38 +136,23 @@ func UpdateUserPassword(c *gin.Context) {
 // @Tags         Users
 // @Accept       json
 // @Produce      json
-// @Param        id  path    int     true    "User ID"
-// @Param        user  body     models.SwagUser  true  "Updated user data"
+// @Param        user  body     models.UpdateUser  true  "Updated user data"
 // @Success      200  {object}  DefaultResponse  "Success"
 // @Failure      400  {object}  ErrorResponse  "Invalid ID or input"
 // @Failure 	 403  {object}  ErrorResponse "Access Denied"
 // @Failure      404  {object}  ErrorResponse  "User not found"
 // @Failure      500  {object}  ErrorResponse  "Internal server error"
 // @Security     ApiKeyAuth
-// @Router       /users/{id} [put]
+// @Router       /users [put]
 func UpdateUser(c *gin.Context) {
 	ip := c.ClientIP()
-	id := c.Param("id")
-	logger.Info.Printf("[controllers.UpdateUser] Client IP: %s - Request to update user with ID: %s\n", ip, id)
-
-	if id == "" {
-		c.JSON(http.StatusBadRequest, ErrorResponse{"Invalid ID"})
-		return
-	}
-	userID, err := strconv.ParseUint(id, 10, 32)
-	if err != nil {
-		logger.Error.Printf("[controllers.UpdateUser] Client IP: %s - Error parsing user ID: %v", ip, err)
-		handleError(c, err)
-		return
-	}
+	logger.Info.Printf("[controllers.UpdateUser] Client IP: %s - Request to update user information with ID: \n", ip)
 
 	var userInput struct {
 		FullName  *string `json:"full_name"`
 		Username  *string `json:"username"`
 		BirthDate *string `json:"birth_date"`
 		Email     *string `json:"email"`
-		Password  *string `json:"password"`
-		Role      *uint   `json:"role_id"`
 	}
 
 	if err := c.ShouldBindJSON(&userInput); err != nil {
@@ -175,8 +160,14 @@ func UpdateUser(c *gin.Context) {
 		handleError(c, errs.ErrShouldBindJson)
 		return
 	}
+
+	userID, err := service.GetUserIDFromToken(c)
+	if err != nil {
+		handleError(c, err)
+		return
+	}
 	user := models.User{
-		ID: uint(userID),
+		ID: userID,
 	}
 
 	if userInput.FullName != nil {
